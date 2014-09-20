@@ -148,7 +148,11 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         try {
             con = DbConnectionManager.getConnection();
             pstmt = con.prepareStatement(INSERT_OFFLINE);
-            pstmt.setString(1, username);
+            /**
+             * Magnet modification here.
+             * Store the offline message using the complete JID of the recipient
+             */
+            pstmt.setString(1, recipient.toString());
             pstmt.setLong(2, messageID);
             pstmt.setString(3, StringUtils.dateToMillis(new java.util.Date()));
             pstmt.setInt(4, msgXML.length());
@@ -452,6 +456,7 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         // Add this module as a user event listener so we can delete
         // all offline messages when a user is deleted
         UserEventDispatcher.addListener(this);
+        Log.info("Started magnet modified offline message store");
     }
 
     @Override
