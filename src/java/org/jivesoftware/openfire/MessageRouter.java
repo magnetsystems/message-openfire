@@ -67,6 +67,7 @@ public class MessageRouter extends BasicModule {
      */
     public MessageRouter() {
         super("XMPP Message Router");
+    	log.debug("MessageRouter : strictRouting : {}", JiveGlobals.getBooleanProperty("xmpp.routing.strict"));
     }
 
     /**
@@ -83,11 +84,11 @@ public class MessageRouter extends BasicModule {
      * @throws NullPointerException If the packet is null
      */
     public void route(Message packet) {
-        if (packet == null) {
+    	if (packet == null) {
             throw new NullPointerException();
         }
         ClientSession session = sessionManager.getSession(packet.getFrom());
-
+        log.debug("route : Routing packet : {}", packet);
         try {
             // Invoke the interceptors before we process the read packet
             InterceptorManager.getInstance().invokeInterceptors(packet, session, true, false);
@@ -248,7 +249,9 @@ public class MessageRouter extends BasicModule {
      */
     public void routingFailed(JID recipient, Packet packet) {
         // If message was sent to an unavailable full JID of a user then retry using the bare JID
-        if (serverName.equals(recipient.getDomain()) && recipient.getResource() != null &&
+        boolean strictRouting = JiveGlobals.getBooleanProperty("xmpp.routing.strict");
+    	log.debug("routingFailed : strictRouting : {}", strictRouting);
+        if (!strictRouting && serverName.equals(recipient.getDomain()) && recipient.getResource() != null &&
                 userManager.isRegisteredUser(recipient.getNode())) {
             routingTable.routePacket(recipient.asBareJID(), packet, false);
         } else {
