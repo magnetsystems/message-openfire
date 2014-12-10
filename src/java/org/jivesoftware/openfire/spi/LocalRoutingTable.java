@@ -62,7 +62,8 @@ class LocalRoutingTable {
      * @return true if the element was added or false if was already present.
      */
     boolean addRoute(String address, RoutableChannelHandler route) {
-        return routes.put(address, route) != route;
+		Log.debug("addRoute : address={}, route={}", address, route.getAddress());
+    	return routes.put(address, route) != route;
     }
 
     /**
@@ -72,7 +73,8 @@ class LocalRoutingTable {
      * @return the route hosted by this node that is associated to the specified address.
      */
     RoutableChannelHandler getRoute(String address) {
-        return routes.get(address);
+		Log.debug("getRoute : address : {}", address);
+    	return routes.get(address);
     }
 
     /**

@@ -43,6 +43,7 @@ CREATE TABLE ofOffline (
   messageID             BIGINT          NOT NULL,
   creationDate          CHAR(15)        NOT NULL,
   messageSize           INTEGER         NOT NULL,
+  packetId              VARCHAR(100)    DEFAULT NULL,
   stanza                TEXT            NOT NULL,
   PRIMARY KEY (username, messageID)
 );

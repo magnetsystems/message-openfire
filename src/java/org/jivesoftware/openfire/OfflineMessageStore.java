@@ -80,6 +80,11 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         "DELETE FROM ofOffline WHERE username=?";
     private static final String DELETE_OFFLINE_MESSAGE =
         "DELETE FROM ofOffline WHERE username=? AND creationDate=?";
+    private static final String INSERT_WITH_PACKET_ID = "INSERT INTO ofOffline (username, messageID, creationDate, messageSize, packetId, stanza) " +
+        "VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_WITH_PACKET_ID =
+    	"DELETE FROM ofOffline WHERE username = ? AND packetId = ?";
+    
 
     private static final int POOL_SIZE = 10;
     
@@ -147,16 +152,31 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         PreparedStatement pstmt = null;
         try {
             con = DbConnectionManager.getConnection();
-            pstmt = con.prepareStatement(INSERT_OFFLINE);
-            /**
-             * Magnet modification here.
-             * Store the offline message using the complete JID of the recipient
-             */
-            pstmt.setString(1, recipient.toString());
-            pstmt.setLong(2, messageID);
-            pstmt.setString(3, StringUtils.dateToMillis(new java.util.Date()));
-            pstmt.setInt(4, msgXML.length());
-            pstmt.setString(5, msgXML);
+            if(message.getID() != null) {
+            	pstmt = con.prepareStatement(INSERT_WITH_PACKET_ID);
+            	/**
+                 * Magnet modification here.
+                 * Store the offline message using the complete JID of the recipient
+                 */
+                pstmt.setString(1, recipient.toString());
+                pstmt.setLong(2, messageID);
+                pstmt.setString(3, StringUtils.dateToMillis(new java.util.Date()));
+                pstmt.setInt(4, msgXML.length());
+                pstmt.setString(5, message.getID());
+                pstmt.setString(6, msgXML);
+            }
+            else {
+            	pstmt = con.prepareStatement(INSERT_OFFLINE);
+            	/**
+                 * Magnet modification here.
+                 * Store the offline message using the complete JID of the recipient
+                 */
+                pstmt.setString(1, recipient.toString());
+                pstmt.setLong(2, messageID);
+                pstmt.setString(3, StringUtils.dateToMillis(new java.util.Date()));
+                pstmt.setInt(4, msgXML.length());
+                pstmt.setString(5, msgXML);
+            }
             pstmt.executeUpdate();
         }
 
@@ -361,6 +381,37 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         catch (Exception e) {
             Log.error("Error deleting offline messages of username: " + username +
                     " creationDate: " + creationDate, e);
+        }
+        finally {
+            DbConnectionManager.closeConnection(pstmt, con);
+        }
+    }
+    
+    /**
+     * Deletes the specified offline message in the store for a user. The way to identify the
+     * message to delete is based on the messageId and username.
+     *
+     * @param username the username of the user who's message is going to be deleted.
+     * @param packetId the date when the offline message was stored in the database.
+     */
+    public void deleteMessage(String username, String packetId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            pstmt = con.prepareStatement(DELETE_WITH_PACKET_ID);
+            pstmt.setString(1, username);
+            pstmt.setString(2, packetId);
+            pstmt.executeUpdate();
+            
+            // Force a refresh for next call to getSize(username),
+            // it's easier than loading the message to be deleted just
+            // to update the cache.
+            removeUsernameFromSizeCache(username);
+        }
+        catch (Exception e) {
+            Log.error("Error deleting offline messages of username: " + username +
+                    " creationDate: " + packetId, e);
         }
         finally {
             DbConnectionManager.closeConnection(pstmt, con);
