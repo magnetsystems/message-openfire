@@ -114,6 +114,7 @@ public class IQRouter extends BasicModule {
             }
             else if (session == null || session.getStatus() == Session.STATUS_AUTHENTICATED || (
                     isLocalServer(to) && (
+                            "com.magnet:user".equals(packet.getChildElement().getNamespaceURI()) ||
                             "jabber:iq:auth".equals(packet.getChildElement().getNamespaceURI()) ||
                                     "jabber:iq:register"
                                             .equals(packet.getChildElement().getNamespaceURI()) ||
