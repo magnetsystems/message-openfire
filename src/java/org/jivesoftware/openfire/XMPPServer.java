@@ -330,7 +330,7 @@ public class XMPPServer {
 
     private void initialize() throws FileNotFoundException {
         locateOpenfire();
-
+ 
         startDate = new Date();
 
         try {

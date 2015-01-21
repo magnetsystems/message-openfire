@@ -1,5 +1,3 @@
 #!/bin/bash
-
-zip  openfire.zip ./target/openfire
-
-
+cd ./target
+zip -r openfire.zip openfire
