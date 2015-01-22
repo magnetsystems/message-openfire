@@ -17,7 +17,7 @@ public class BootstrapProperties {
 	private String mysqlPassword;
 	private String xmppDomain;
 	private String xmppPort;
-	private String xmppAddress;
+	private String xmppAddr;
 	private String xmppPortSecure;
 	private String xmppSecurePort;
 	private String encryptionKey;
@@ -82,12 +82,12 @@ public class BootstrapProperties {
 		this.xmppPort = xmppPort;
 	}
 
-	public String getXmppAddress() {
-		return xmppAddress;
+	public String getXmppAddr() {
+		return xmppAddr;
 	}
 
-	public void setXmppAddress(String xmppAddress) {
-		this.xmppAddress = xmppAddress;
+	public void setXmppAddr(String xmppAddr) {
+		this.xmppAddr = xmppAddr;
 	}
 
 	public String getXmppPortSecure() {

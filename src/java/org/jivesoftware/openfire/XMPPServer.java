@@ -504,6 +504,7 @@ public class XMPPServer {
             	InputStream is = locateBootstrapFile();
             	Properties props = new Properties();
             	props.load(is);
+            	Log.debug("Parsed system properties : {}", props);
             	BootstrapPropertyParser parser = new BootstrapPropertyParser(props);
             	BootstrapProperties bootstrapProperties = parser.getProperties();
             	Log.debug("Bootstrap properties parser : {}", bootstrapProperties);

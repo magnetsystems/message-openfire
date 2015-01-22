@@ -31,8 +31,8 @@ public class BootstrapPropertyParser {
 
 	public boolean isNullOrEmpty(String s) {
 		if (s == null || s.isEmpty())
-			return false;
-		return true;
+			return true;
+		return false;
 	}
 
 	public String getMemberNameFromProperty(String propertyName) {
