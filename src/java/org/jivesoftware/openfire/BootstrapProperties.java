@@ -149,7 +149,7 @@ public class BootstrapProperties {
 	@Override
 	public String toString() {
 		return "BootstrapProperties [mysqlHost=" + mysqlHost + ", mysqlPort=" + mysqlPort + ", mysqlDb=" + mysqlDb + ", mysqlUser=" + mysqlUser
-				+ ", mysqlPassword=" + mysqlPassword + ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppAddress=" + xmppAddress
+				+ ", mysqlPassword=" + mysqlPassword + ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppAddr=" + xmppAddr
 				+ ", xmppPortSecure=" + xmppPortSecure + ", xmppSecurePort=" + xmppSecurePort + ", encryptionKey=" + encryptionKey + ", encryptionPort="
 				+ encryptionPort + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + "]";
 	}
