@@ -505,7 +505,10 @@ public class XMPPServer {
             	Properties props = new Properties();
             	props.load(is);
             	BootstrapPropertyParser parser = new BootstrapPropertyParser(props);
-            	
+            	BootstrapProperties bootstrapProperties = parser.getProperties();
+            	Log.debug("Bootstrap properties parser : {}", bootstrapProperties);
+            	BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(bootstrapProperties);
+            	bootstrapProcessor.bootstrap();	
             } else {
             	Log.debug("Bootstrap flag not set, ignoring automatic bootstrapping");
             }

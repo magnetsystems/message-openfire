@@ -21,7 +21,7 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 		this.bootstrapProps = bootstrapProps;
 	}
 
-	public void exec(Map<String, String> xmppSettings, Map<String, String> xmlSettings) {
+	public BootstrapSetupStage exec(Map<String, String> xmppSettings, Map<String, String> xmlSettings) {
 		JiveGlobals.setXMLProperty("connectionProvider.className", "org.jivesoftware.database.DefaultConnectionProvider");
 		DefaultConnectionProvider conProvider = new DefaultConnectionProvider();
 		try {
@@ -54,6 +54,7 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 		} else {
 			throw new RuntimeException("Error connecting to DB bootstrapProps = " + bootstrapProps);
 		}
+		return new BootstrapProfileSettings(bootstrapProps);
 	}
 
 	private String getServerUrl() {

@@ -2,14 +2,21 @@ package org.jivesoftware.openfire;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BootstrapProfileSettings implements BootstrapSetupStage {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(BootstrapProfileSettings.class);
 	private BootstrapProperties bootstrapProps;
 
 	public BootstrapProfileSettings(BootstrapProperties bootstrapProps) {
 		this.bootstrapProps = bootstrapProps;
 	}
 
-	public void exec(Map<String, String> xmppSettings, Map<String, String> xmlSettings) {
+	public BootstrapSetupStage exec(Map<String, String> xmppSettings, Map<String, String> xmlSettings) {
+		LOGGER.trace("exec : setting default profile settings");
+	
 		xmppSettings.put("provider.auth.className",
                 org.jivesoftware.openfire.auth.DefaultAuthProvider.class.getName());
         xmppSettings.put("provider.user.className",
@@ -24,5 +31,6 @@ public class BootstrapProfileSettings implements BootstrapSetupStage {
                 org.jivesoftware.openfire.security.DefaultSecurityAuditProvider.class.getName());
         xmppSettings.put("provider.admin.className",
                 org.jivesoftware.openfire.admin.DefaultAdminProvider.class.getName());
+        return new BootstrapAdminSettings(bootstrapProps);
 	}
 }
