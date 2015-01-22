@@ -15,6 +15,10 @@ public class BootstrapPropertyDefinitions {
 	private static final String XMPP_SECURE_PORT = "xmpp.secure.port";
 	private static final String HTTP_PORT = "http.port";
 	private static final String HTTPS_PORT = "https.port"; 
+	private static final String LOCALE = "locale";
+	private static final String ENCRYPTION = "encryption";
+	private static final String ENCRYPTION_KEY = "encryption.key";
+	
 	private static final List<BootstrapProperty> propertyDefinitions;
 	
 	static {
@@ -31,6 +35,9 @@ public class BootstrapPropertyDefinitions {
 		propertyDefinitions.add(new BootstrapProperty(XMPP_SECURE_PORT, "5223"));
 		propertyDefinitions.add(new BootstrapProperty(HTTP_PORT, "9090"));
 		propertyDefinitions.add(new BootstrapProperty(HTTPS_PORT, "9091"));
+		propertyDefinitions.add(new BootstrapProperty(LOCALE, "en"));
+		propertyDefinitions.add(new BootstrapProperty(ENCRYPTION, null));
+		propertyDefinitions.add(new BootstrapProperty(ENCRYPTION_KEY, null));
 	}
 	
 	public static List<BootstrapProperty> getPropertyDefinitions() {

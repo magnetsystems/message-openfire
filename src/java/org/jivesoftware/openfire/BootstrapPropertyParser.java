@@ -20,9 +20,16 @@ public class BootstrapPropertyParser {
 		List<BootstrapProperty> propertyList = BootstrapPropertyDefinitions.getPropertyDefinitions();
 		for (BootstrapProperty property : propertyList) {
 			String value = fileProperties.getProperty(property.getName());
-			if (isNullOrEmpty(value) && property.isMandatory()) {
-				throw new IllegalArgumentException("Property : " + property.getName() + " is Mandatory, please set a value in bootstrap.properties");
-			}
+			String defaultValue = property.getDefaultValue();
+	
+		    if(property.isMandatory()) {
+		    	if(isNullOrEmpty(value)) 
+		    		throw new IllegalArgumentException("Property : " + property.getName() + " is mandatory, please set a value in bootstrap.properties");
+		    }
+		    
+		    if(value == null)
+		    	value = defaultValue;
+		    
 			Statement s = new Statement(properties, "set" + getMemberNameFromProperty(property.getName()), new Object[]{value});
 		    s.execute();
 		}
