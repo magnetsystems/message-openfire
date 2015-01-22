@@ -13,7 +13,7 @@ public class BootstrapLocale implements BootstrapSetupStage {
 		this.bootstrapProps = bootstrapProps;
 	}
 
-	public void exec(Map<String, String> settings) {
+	public void exec(Map<String, String> xmppSettings, Map<String, String> xmlSettings) {
 		String localeCode = bootstrapProps.getLocale();
 		Locale newLocale = LocaleUtils.localeCodeToLocale(localeCode.trim());
          if (newLocale == null) {
