@@ -22,7 +22,7 @@ public class BootstrapHostSettings implements BootstrapSetupStage {
          xmppSettings.put("xmpp.auth.anonymous", "true");
 
          xmlSettings.put("adminConsole.port", bootstrapProps.getHttpPort());
-         xmlSettings.put("adminConsole.securePort", bootstrapProps.getHttpPortSecure());
+         xmlSettings.put("adminConsole.securePort", bootstrapProps.getHttpsPort());
 
          JiveGlobals.setupPropertyEncryptionAlgorithm(bootstrapProps.getEncryptionKey());
 		 JiveGlobals.setupPropertyEncryptionKey(bootstrapProps.getEncryptionKey());
