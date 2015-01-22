@@ -1,3 +1,3 @@
 #!/bin/bash
 cd ./target
-unzip openfire.zip -d /opt/openfire
+unzip openfire.zip -d /opt
