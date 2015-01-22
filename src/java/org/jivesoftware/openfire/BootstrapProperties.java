@@ -15,6 +15,7 @@ public class BootstrapProperties {
 	private String encryptionPort;
 	private String httpPort;
 	private String httpPortSecure;
+	private String locale;
 
 	public String getMysqlHost() {
 		return mysqlHost;
@@ -72,6 +73,10 @@ public class BootstrapProperties {
 		return httpPortSecure;
 	}
 
+	public String getLocale() {
+		return locale;
+	}
+
 	public static class Builder {
 		private String mysqlHost;
 		private String mysqlPort;
@@ -87,6 +92,7 @@ public class BootstrapProperties {
 		private String encryptionPort;
 		private String httpPort;
 		private String httpPortSecure;
+		private String locale;
 
 		public Builder mysqlHost(String mysqlHost) {
 			this.mysqlHost = mysqlHost;
@@ -158,6 +164,11 @@ public class BootstrapProperties {
 			return this;
 		}
 
+		public Builder locale(String locale) {
+			this.locale = locale;
+			return this;
+		}
+
 		public BootstrapProperties build() {
 			return new BootstrapProperties(this);
 		}
@@ -178,6 +189,7 @@ public class BootstrapProperties {
 		this.encryptionPort = builder.encryptionPort;
 		this.httpPort = builder.httpPort;
 		this.httpPortSecure = builder.httpPortSecure;
+		this.locale = builder.locale;
 	}
 
 	@Override
@@ -185,6 +197,7 @@ public class BootstrapProperties {
 		return "BootstrapProperties [mysqlHost=" + mysqlHost + ", mysqlPort=" + mysqlPort + ", mysqlDb=" + mysqlDb + ", mysqlUser=" + mysqlUser
 				+ ", mysqlPassword=" + mysqlPassword + ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppAddress=" + xmppAddress
 				+ ", xmppPortSecure=" + xmppPortSecure + ", xmppSecurePort=" + xmppSecurePort + ", encryptionKey=" + encryptionKey + ", encryptionPort="
-				+ encryptionPort + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + "]";
+				+ encryptionPort + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + "]";
 	}
+	
 }
