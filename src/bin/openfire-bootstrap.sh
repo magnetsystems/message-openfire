@@ -71,7 +71,7 @@ if [ -z "$OPENFIRE_HOME" -o ! -d "$OPENFIRE_HOME" ]; then
 	#make it fully qualified
 	OPENFIRE_HOME=`cd "$OPENFIRE_HOME" && pwd`
 fi
-OPENFIRE_OPTS="${OPENFIRE_OPTS} -DopenfireHome=\"${OPENFIRE_HOME}\""
+OPENFIRE_OPTS="${OPENFIRE_OPTS} -DopenfireHome=\"${OPENFIRE_HOME}\" -Dbootstrap=true"
 
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
