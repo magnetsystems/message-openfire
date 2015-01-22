@@ -19,6 +19,7 @@ package org.jivesoftware.openfire;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -496,6 +498,17 @@ public class XMPPServer {
             for (XMPPServerListener listener : listeners) {
                 listener.serverStarted();
             }
+            
+            if(Boolean.getBoolean("bootstrap")) {
+            	Log.debug("Bootstrap flag set, following bootstrap setup flow");
+            	InputStream is = locateBootstrapFile();
+            	Properties props = new Properties();
+            	props.load(is);
+            	BootstrapPropertyParser parser = new BootstrapPropertyParser(props);
+            	
+            } else {
+            	Log.debug("Bootstrap flag not set, ignoring automatic bootstrapping");
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -876,6 +889,15 @@ public class XMPPServer {
         }
     }
 
+    private FileInputStream locateBootstrapFile()  throws FileNotFoundException {
+    	String bootstrapFilePath = "conf" + File.separator + "bootstrap.properties";
+        File bootstrapFile = new File(openfireHome, bootstrapFilePath);
+        if(!bootstrapFile.exists()) {
+        	throw new FileNotFoundException();
+        }
+        final FileInputStream fis = new FileInputStream(bootstrapFile);
+        return fis;
+    }
     /**
      * This timer task is used to monitor the System input stream
      * for a "terminate" command from the launcher (or the console). 
