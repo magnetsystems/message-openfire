@@ -19,6 +19,7 @@ package org.jivesoftware.openfire;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -330,7 +332,7 @@ public class XMPPServer {
 
     private void initialize() throws FileNotFoundException {
         locateOpenfire();
-
+ 
         startDate = new Date();
 
         try {
@@ -430,9 +432,9 @@ public class XMPPServer {
                             // Otherwise, the page that requested the setup finish won't
                             // render properly!
                             Thread.sleep(1000);
-                            ((AdminConsolePlugin) pluginManager.getPlugin("admin")).restart();
-//                            ((AdminConsolePlugin) pluginManager.getPlugin("admin")).shutdown();
-//                            ((AdminConsolePlugin) pluginManager.getPlugin("admin")).startup();
+                           // ((AdminConsolePlugin) pluginManager.getPlugin("admin")).restart();
+                            ((AdminConsolePlugin) pluginManager.getPlugin("admin")).shutdown();
+                            ((AdminConsolePlugin) pluginManager.getPlugin("admin")).startup();
                         }
 
                         verifyDataSource();
@@ -495,6 +497,21 @@ public class XMPPServer {
             // Notify server listeners that the server has been started
             for (XMPPServerListener listener : listeners) {
                 listener.serverStarted();
+            }
+            
+            if(Boolean.getBoolean("bootstrap") && setupMode) {
+            	Log.debug("Bootstrap flag set, following bootstrap setup flow");
+            	InputStream is = locateBootstrapFile();
+            	Properties props = new Properties();
+            	props.load(is);
+            	Log.debug("Parsed system properties : {}", props);
+            	BootstrapPropertyParser parser = new BootstrapPropertyParser(props);
+            	BootstrapProperties bootstrapProperties = parser.getProperties();
+            	Log.debug("Bootstrap properties parser : {}", bootstrapProperties);
+            	BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(bootstrapProperties);
+            	bootstrapProcessor.bootstrap();	
+            } else {
+            	Log.debug("Bootstrap flag not set, ignoring automatic bootstrapping");
             }
         }
         catch (Exception e) {
@@ -876,6 +893,15 @@ public class XMPPServer {
         }
     }
 
+    private FileInputStream locateBootstrapFile()  throws FileNotFoundException {
+    	String bootstrapFilePath = "conf" + File.separator + "bootstrap.properties";
+        File bootstrapFile = new File(openfireHome, bootstrapFilePath);
+        if(!bootstrapFile.exists()) {
+        	throw new FileNotFoundException();
+        }
+        final FileInputStream fis = new FileInputStream(bootstrapFile);
+        return fis;
+    }
     /**
      * This timer task is used to monitor the System input stream
      * for a "terminate" command from the launcher (or the console). 
