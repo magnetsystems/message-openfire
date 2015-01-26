@@ -125,6 +125,7 @@ public class SchemaManager {
         final PluginManager pluginManager = XMPPServer.getInstance().getPluginManager();
         String schemaKey = pluginManager.getDatabaseKey(plugin);
         int schemaVersion = pluginManager.getDatabaseVersion(plugin);
+        Log.debug("checkPluginSchema : name={}, schemaKey={}, schemaVersion={}", new Object[]{plugin.toString(), schemaKey, schemaVersion});
         // If the schema key or database version aren't defined, then the plugin doesn't
         // need database tables.
         if (schemaKey == null || schemaVersion == -1) {
@@ -136,13 +137,15 @@ public class SchemaManager {
             return checkSchema(con, schemaKey, schemaVersion, new ResourceLoader() {
                 @Override
 				public InputStream loadResource(String resourceName) {
-                    File file = new File(pluginManager.getPluginDirectory(plugin) +
+                    Log.debug("checkPluginSchema trying to load resource : {}", resourceName);
+                	File file = new File(pluginManager.getPluginDirectory(plugin) +
                             File.separator + "database", resourceName);
                     try {
                         return new FileInputStream(file);
                     }
                     catch (FileNotFoundException e) {
-                        return null;
+                        Log.error("File not found : file : {}", file, e);
+                    	return null;
                     }
                 }
             });

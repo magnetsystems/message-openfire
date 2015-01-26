@@ -115,4 +115,14 @@ public class BootstrapProperties {
 	public void setLocale(String locale) {
 		this.locale = locale;
 	}
+	
+	@Override
+	public String toString() {
+		return "BootstrapProperties [mysqlHost=" + mysqlHost + ", mysqlPort=" + mysqlPort + ", mysqlDb=" + mysqlDb + ", mysqlUser=" + mysqlUser
+				+ ", mysqlPassword=" + mysqlPassword + ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppAddr=" + xmppAddr + ", xmppPortSecure="
+				+ xmppPortSecure + ", xmppSecurePort=" + xmppSecurePort + ", encryptionKey=" + encryptionKey + ", encryption=" + encryption + ", httpPort="
+				+ httpPort + ", httpsPort=" + httpsPort + ", locale=" + locale + "]";
+	}
+	
+	
 }
