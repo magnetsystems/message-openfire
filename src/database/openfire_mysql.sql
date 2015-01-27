@@ -39,12 +39,12 @@ CREATE TABLE ofPrivate (
 );
 
 CREATE TABLE ofOffline (
-  username              VARCHAR(64)     NOT NULL,
+  username              VARCHAR(200)     NOT NULL,
   messageID             BIGINT          NOT NULL,
   creationDate          CHAR(15)        NOT NULL,
   messageSize           INTEGER         NOT NULL,
   packetId              VARCHAR(100)    DEFAULT NULL,
-  stanza                TEXT            NOT NULL,
+  stanza                MEDIUMTEXT      NOT NULL,
   PRIMARY KEY (username, messageID)
 );
 
@@ -370,3 +370,13 @@ INSERT INTO ofUser (username, plainPassword, name, email, creationDate, modifica
 
 # Entry for default conference service
 INSERT INTO ofMucService (serviceID, subdomain, isHidden) VALUES (1, 'conference', 0);
+
+insert into ofProperty values ('provider.lockout.className', 'com.magnet.mmx.lockout.MmxLockoutProvider');
+
+insert into ofProperty values ('xmpp.parser.buffer.size', '2097152');
+
+insert into ofProperty values('xmpp.routing.strict', 'true');
+
+insert into ofProperty values('xmpp.client.idle', '-1');
+
+insert into ofProperty values('xmpp.client.idle.ping', 'false');
