@@ -23,3 +23,8 @@ eclipse: .settings .classpath .project
 
 .project:
 	ln -s build/eclipse/project .project
+
+mvninstall:
+	./package.sh
+	cd target
+        mvn install:install-file -Dfile=openfire.zip -DgroupId=com.magnet.mmx.ext -DartifactId=mmx-openfire -Dversion=0.8.1-SNAPSHOT -Dpackaging=zip -DgeneratePom=true

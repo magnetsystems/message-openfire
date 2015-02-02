@@ -146,6 +146,7 @@
 	<classpathentry kind="lib" path="src/web/WEB-INF/lib/commons-fileupload.jar"/>
 	<classpathentry kind="lib" path="src/web/WEB-INF/lib/commons-io.jar"/>
 	<classpathentry kind="lib" path="src/web/WEB-INF/lib/dwr.jar"/>
+	<classpathentry kind="lib" path="build/lib/dist/gson-2.3.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="src/plugins/stunserver/lib/jstun-0.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
