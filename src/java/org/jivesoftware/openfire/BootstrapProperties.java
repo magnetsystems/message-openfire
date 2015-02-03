@@ -231,7 +231,4 @@ public class BootstrapProperties {
 			return false;
 		return true;
 	}
-	
-	
-	
 }

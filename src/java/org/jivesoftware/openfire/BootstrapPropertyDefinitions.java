@@ -27,7 +27,7 @@ public class BootstrapPropertyDefinitions {
 		propertyDefinitions.add(new BootstrapProperty(MYSQL_HOST));
 		propertyDefinitions.add(new BootstrapProperty(MYSQL_PORT, "3306"));
 		propertyDefinitions.add(new BootstrapProperty(MYSQL_USER));
-		propertyDefinitions.add(new BootstrapProperty(MYSQL_PASSWORD));
+		propertyDefinitions.add(new BootstrapProperty(MYSQL_PASSWORD, ""));
 		propertyDefinitions.add(new BootstrapProperty(MYSQL_DB));
 		propertyDefinitions.add(new BootstrapProperty(XMPP_DOMAIN, "127.0.0.1"));
 		propertyDefinitions.add(new BootstrapProperty(XMPP_ADDR, "127.0.0.1"));
