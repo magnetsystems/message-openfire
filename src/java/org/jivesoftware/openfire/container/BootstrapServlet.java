@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.mysql.fabric.Response;
 
 public class BootstrapServlet extends HttpServlet {
     
