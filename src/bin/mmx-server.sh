@@ -174,7 +174,7 @@ openfire_start() {
 start() {
 	if [ -e "$PID_PATH/$PROG.pid" ]; then
 		## Program is running, exit with error.
-		echo "Error! $PROG is already running!" 1>&2
+		echo "Error! $PROG is already running or you have a stale pid file. If $PROG is not running delete $PID_PATH/$PROG.pid file and restart" 1>&2
 		exit 1
 	else
 		openfire_start
