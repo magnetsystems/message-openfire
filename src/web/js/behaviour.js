@@ -252,3 +252,35 @@ document.getElementsBySelector = function(selector) {
     |   Attribute 
    Tag
 */
+
+
+/* Magnet Systems */
+document.observe('dom:loaded', function(){
+  var dom1 = document.getElementById('jive-latest-activity')
+  , dom2 = document.getElementById('jive-logo')
+  , dom3 = document.getElementById('jive-userstatus')
+  , dom4 = document.getElementsByClassName('jive-footer-copyright')
+  , dom5 = document.getElementsByTagName('title')
+  , dom6 = document.getElementById('jive-nav').getElementsByTagName('ul')[0].getElementsByTagName('a')
+  , dom7 = document.getElementById('jive-footer').getElementsByTagName('a')
+  , dom8 = document.getElementsByClassName('c1')
+  , dom9 = document.getElementById('jive-main-content').children;
+  function removeLinks(dom, text, level){
+    for(var i=0;i<dom.length;++i){
+      if(dom[i].innerHTML.indexOf(text) != -1){
+        if(level === 1) return dom[i].parentNode.remove();
+        if(level === 0) return dom[i].remove();
+      }
+    }
+  }
+  if(dom1) dom1.parentNode.remove();
+  if(dom2) dom2.innerHTML = '<nav><a class="navbar-brand" href="#"><img src="images/heading.png" />Messaging - Admin Console</a></nav>';
+  if(dom3) dom3.innerHTML = dom3.innerHTML.replace(/Openfire [0-9.].+/i, '');
+  if(dom4) dom4[0].remove();
+  if(dom5) dom5[0].innerHTML = dom5[0].innerHTML.replace(/Openfire/i, 'Magnet');
+  if(dom6) removeLinks(dom6,'Plugins', 1);
+  if(dom7) removeLinks(dom7,'Plugins', 0);
+  if(dom8) removeLinks(dom8, 'Version:', 1);
+  if(dom9 && dom9[1].tagName == 'P') dom9[1].innerHTML = dom9[1].innerHTML.replace(' and latest news about Openfire.', '.');
+});
+

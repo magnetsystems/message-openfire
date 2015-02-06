@@ -951,3 +951,10 @@ th.jive-table-th-center {
 	padding:18px 20px;
     width: 95%;
 }
+
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+#jive-logo{background:#1a1a1a;border:none;width:100%;height:50px}
+#jive-logo .navbar-brand{box-sizing:border-box;text-decoration:none;color:#8c8c8c;display:block;font-size:17px;float:left;height:50px;line-height:20px;padding:13px 0 0}
+#jive-logo .navbar-brand img{margin-right:-1px;margin-top:-4px;max-width:100px;float:none;padding:0;line-height:20px;vertical-align:middle}
+#jive-userstatus{z-index:100;position:absolute;top:0;right:5px}
+a{color:#036285;}
