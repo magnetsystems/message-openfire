@@ -2064,8 +2064,9 @@ public abstract class Node {
      *        a node owner.
      * @param options the data form with the subscription configuration or null if subscriber
      *        didn't provide a configuration.
+     * @return The subscription node.
      */
-    public void createSubscription(IQ originalIQ, JID owner, JID subscriber,
+    public NodeSubscription createSubscription(IQ originalIQ, JID owner, JID subscriber,
             boolean authorizationRequired, DataForm options) {
         // Create a new affiliation if required
         if (getAffiliate(owner) == null) {
@@ -2128,6 +2129,8 @@ public abstract class Node {
                 service.presenceSubscriptionRequired(this, owner);
             }
         }
+
+        return subscription;
     }
 
     /**
