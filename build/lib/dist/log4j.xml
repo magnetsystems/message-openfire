@@ -21,13 +21,14 @@
         </appender>
         <!-- OF-506: Jetty INFO messages are generally not useful. Ignore them by default. -->
         <logger name="org.eclipse.jetty">
-                <level value="debug" />
-        </logger>
+                <level value="debug" />	
+	</logger>
         <logger name="org.jivesoftware">
                 <level value="debug" />
         </logger>
         <logger name="com.magnet.mmx.server.plugin.mmxmgmt">
-                <level value="trace"/>
+		<level value="trace"/>
+		<additivity value="false"/>
                 <appender-ref ref="mmxmgmt-out"/>
         </logger>
         <root>
