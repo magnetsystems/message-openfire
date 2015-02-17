@@ -166,7 +166,7 @@ openfire_start() {
 		esac
 	fi
 
-	openfire_exec_command="nohup $JAVACMD -server $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" &"
+	openfire_exec_command="nohup $JAVACMD -server $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1 &"
 	eval $openfire_exec_command
 	pid=$!
 }
