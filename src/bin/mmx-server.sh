@@ -27,7 +27,7 @@ openfire_start() {
 		Linux*) linux=true
 			if [ -z "$JAVA_HOME" ]; then
 				shopt -s nullglob
-				jdks=`ls -r1d /usr/java/j* /usr/lib/jvm/* 2>/dev/null`
+                jdks=`ls -r1d /usr/java/j* /usr/lib/jvm/* /usr/bin/j* 2>/dev/null`
 				for jdk in $jdks; do
 					if [ -f "$jdk/bin/java" ]; then
 						JAVA_HOME="$jdk"
