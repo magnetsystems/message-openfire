@@ -109,7 +109,8 @@ public class PublishedItem implements Serializable {
      * @param id
      * @param creationDate
      */
-    PublishedItem(LeafNode node, JID publisher, String id, Date creationDate) {
+    
+    public PublishedItem(LeafNode node, JID publisher, String id, Date creationDate) {
         this.node = node;
         this.nodeId = node.getNodeID();
         this.serviceId = node.getService().getServiceID();
