@@ -228,7 +228,7 @@ public class PublishedItem implements Serializable {
      * @param payloadXML the payload included when publishing the item or <tt>null</tt>
      *        if none was found.
      */
-    void setPayloadXML(String payloadXML) {
+    public void setPayloadXML(String payloadXML) {
     	this.payloadXML = payloadXML;
     	this.payload = null; // will be recreated only if needed
     }
@@ -241,7 +241,7 @@ public class PublishedItem implements Serializable {
      * @param payload the payload included when publishing the item or <tt>null</tt>
      *        if none was found.
      */
-    void setPayload(Element payload) {
+    public void setPayload(Element payload) {
         this.payload = payload;
         // Update XML representation of the payload
         if (payload == null) {
