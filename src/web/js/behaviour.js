@@ -256,31 +256,54 @@ document.getElementsBySelector = function(selector) {
 
 /* Magnet Systems */
 document.observe('dom:loaded', function(){
-  var dom1 = document.getElementById('jive-latest-activity')
-  , dom2 = document.getElementById('jive-logo')
-  , dom3 = document.getElementById('jive-userstatus')
-  , dom4 = document.getElementsByClassName('jive-footer-copyright')
-  , dom5 = document.getElementsByTagName('title')
-  , dom6 = document.getElementById('jive-nav').getElementsByTagName('ul')[0].getElementsByTagName('a')
-  , dom7 = document.getElementById('jive-footer').getElementsByTagName('a')
-  , dom8 = document.getElementsByClassName('c1')
-  , dom9 = document.getElementById('jive-main-content').children;
-  function removeLinks(dom, text, level){
-    for(var i=0;i<dom.length;++i){
-      if(dom[i].innerHTML.indexOf(text) != -1){
-        if(level === 1) return dom[i].parentNode.remove();
-        if(level === 0) return dom[i].remove();
-      }
+    var dom1 = document.getElementById('jive-latest-activity')
+    , dom2 = document.getElementById('jive-logo')
+    , dom3 = document.getElementById('jive-userstatus')
+    , dom4 = document.getElementsByClassName('jive-footer-copyright')
+    , dom5 = document.getElementsByTagName('title')
+    , dom6 = document.getElementById('jive-nav').getElementsByTagName('ul')[0].getElementsByTagName('a')
+    , dom7 = document.getElementById('jive-footer').getElementsByTagName('a')
+    , dom8 = document.getElementsByClassName('c1')
+    , dom9 = document.getElementById('jive-main-content').children
+    , dom10 = document.getElementById('jive-footer')
+    , dom11 = document.getElementById('jive-subnav').getElementsByTagName('ul')[0].getElementsByTagName('a')
+    , dom12 = document.getElementById('jive-sidebar').getElementsByTagName('ul')[0].getElementsByTagName('a');
+    function removeLinks(dom, text, level){
+        for(var i=0;i<dom.length;++i){
+            if(Object.prototype.toString.call(text) === '[object Array]'){
+                for(var j=text.length;j--;)
+                    removeHelper(dom[i], text[j], level);
+            }else{
+                removeHelper(dom[i], text, level);
+            }
+        }
     }
-  }
-  if(dom1) dom1.parentNode.remove();
-  if(dom2) dom2.innerHTML = '<nav><a class="navbar-brand" href="#"><img src="images/heading.png" />Messaging - Admin Console</a></nav>';
-  if(dom3) dom3.innerHTML = dom3.innerHTML.replace(/Openfire [0-9.].+/i, '');
-  if(dom4) dom4[0].remove();
-  if(dom5) dom5[0].innerHTML = dom5[0].innerHTML.replace(/Openfire/i, 'Magnet');
-  if(dom6) removeLinks(dom6,'Plugins', 1);
-  if(dom7) removeLinks(dom7,'Plugins', 0);
-  if(dom8) removeLinks(dom8, 'Version:', 1);
-  if(dom9 && dom9[1].tagName == 'P') dom9[1].innerHTML = dom9[1].innerHTML.replace(' and latest news about Openfire.', '.');
+    function removeHelper(dom, text, level){
+        if(dom && dom.innerHTML.indexOf(text) != -1){
+            if(level === 1) dom.parentNode.remove();
+            if(level === 0) dom.remove();
+        }
+    }
+    function removeLastValue(dom, texts){
+        var html;
+        for(var j=texts.length;j--;){
+            html = dom.innerHTML;
+            dom.innerHTML = html.substr(0, html.lastIndexOf(texts[j]));
+        }
+    }
+    if(dom1) dom1.parentNode.remove();
+    if(dom2) dom2.innerHTML = '<nav><a class="navbar-brand" href="#"><img src="images/heading.png" />Messaging - Admin Console</a></nav>';
+    if(dom3) dom3.innerHTML = dom3.innerHTML.replace(/Openfire [0-9.].+/i, '');
+    if(dom4) dom4[0].remove();
+    if(dom5) dom5[0].innerHTML = dom5[0].innerHTML.replace(/Openfire/i, 'Magnet');
+    if(dom6) removeLinks(dom6, ['Plugins', 'Group Chat'], 1);
+    if(dom7) removeLinks(dom7, ['Plugins', 'Group Chat'], 0);
+    if(dom8) removeLinks(dom8, 'Version:', 1);
+    if(dom9 && dom9[1].tagName == 'P') dom9[1].innerHTML = dom9[1].innerHTML.replace(' and latest news about Openfire.', '.');
+    if(dom10) removeLastValue(dom10, ['|', '|']);
+    if(dom11) removeLinks(dom11, ['Media Services'], 1);
+    if(dom12){
+        removeLinks(dom12, ['Email Settings'], 1);
+        removeLinks(dom12, ['Private Data Storage', 'Manage Updates', 'Resource Policy', 'File Transfer Settings', 'Server to Server'], 1);
+    }
 });
-
