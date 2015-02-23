@@ -63,9 +63,10 @@
         <sidebar id="sidebar-server-settings" name="${sidebar.sidebar-server-settings}">
 
             <!-- Profile Settings -->
-            <item id="profile-settings" name="${sidebar.profile-settings}"
+            <!-- Magnet Customize -->
+            <!--item id="profile-settings" name="${sidebar.profile-settings}"
                   url="profile-settings.jsp"
-                  description="${sidebar.profile-settings.descr}"/>
+                  description="${sidebar.profile-settings.descr}"/-->
 
             <!-- Client connections settings-->
             <item id="client-connections-settings" name="${sidebar.client-connections-settings}"

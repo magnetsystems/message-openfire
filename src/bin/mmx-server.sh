@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 # $RCSfile$
@@ -27,7 +27,7 @@ openfire_start() {
 		Linux*) linux=true
 			if [ -z "$JAVA_HOME" ]; then
 				shopt -s nullglob
-				jdks=`ls -r1d /usr/java/j* /usr/lib/jvm/* 2>/dev/null`
+                jdks=`ls -r1d /usr/java/j* /usr/lib/jvm/* /usr/bin/j* 2>/dev/null`
 				for jdk in $jdks; do
 					if [ -f "$jdk/bin/java" ]; then
 						JAVA_HOME="$jdk"
@@ -166,7 +166,7 @@ openfire_start() {
 		esac
 	fi
 
-	openfire_exec_command="nohup $JAVACMD -server $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" &"
+	openfire_exec_command="nohup $JAVACMD -server $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1 &"
 	eval $openfire_exec_command
 	pid=$!
 }
