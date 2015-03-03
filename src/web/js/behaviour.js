@@ -299,7 +299,7 @@ document.observe('dom:loaded', function(){
     if(dom6) removeLinks(dom6, ['Plugins', 'Group Chat'], 1);
     if(dom7) removeLinks(dom7, ['Plugins', 'Group Chat'], 0);
     if(dom8) removeLinks(dom8, 'Version:', 1);
-    if(dom9 && dom9[1].tagName == 'P') dom9[1].innerHTML = dom9[1].innerHTML.replace(' and latest news about Openfire.', '.');
+    if(dom9 && dom9[1] && dom9[1].tagName == 'P') dom9[1].innerHTML = dom9[1].innerHTML.replace(' and latest news about Openfire.', '.');
     if(dom10) removeLastValue(dom10, ['|', '|']);
     if(dom11) removeLinks(dom11, ['Media Services'], 1);
     if(dom12){
