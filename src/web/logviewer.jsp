@@ -37,13 +37,6 @@
 <%!
     static final String NONE = LocaleUtils.getLocalizedString("global.none");
 
-    //skwok
-//    static final String ERROR = "error";
-//    static final String INFO = "info";
-//    static final String WARN = "warn";
-//    static final String DEBUG = "debug";
-//    static final String DEFAULT = ERROR;
-
     static final String MMXMGMT = "mmxmgmt";
     static final String OPENFIRE = "openfire";
 
@@ -93,8 +86,6 @@
     {
         // Get the cookie associated with the log files
         HashMap cookie = parseCookie(CookieUtils.getCookie(request,"jiveforums.admin.logviewer"));
-        //skwok
-//        String[] logs = {"error", "info", "warn", "debug"};
         String[] logs = {MMXMGMT, OPENFIRE};
         HashMap<String,String> newCookie = new HashMap<String,String>();
         HashMap<String,String> updates = new HashMap<String,String>();
@@ -154,19 +145,6 @@
     User pageUser = admin.getUser();
 
     if (clearLog && log != null) {
-//        if ("error".equals(log)) {
-//            Log.rotateErrorLogFile();
-//        }
-//        else if ("warn".equals(log)) {
-//            Log.rotateWarnLogFile();
-//        }
-//        else if ("info".equals(log)) {
-//            Log.rotateInfoLogFile();
-//        }
-//        else if ("debug".equals(log)) {
-//            Log.rotateDebugLogFile();
-//        }
-//        skwok
         if ("mmxmgmt".equals(log)) {
             Log.rotateMMXMgmtLogFile();
         }
@@ -177,20 +155,7 @@
         return;
     }
     else if (markLog && log != null) {
-//        if ("error".equals(log)) {
-//            Log.markErrorLogFile(pageUser.getUsername());
-//        }
-//        else if ("warn".equals(log)) {
-//            Log.markWarnLogFile(pageUser.getUsername());
-//        }
-//        else if ("info".equals(log)) {
-//            Log.markInfoLogFile(pageUser.getUsername());
-//        }
-//        else if ("debug".equals(log)) {
-//            Log.markDebugLogFile(pageUser.getUsername());
-//        }
-        //skwok
-        if ("mmxmgnt".equals(log)) {
+        if ("mmxmgmt".equals(log)) {
             Log.markMMXMgmtLogFile(pageUser.getUsername());
         }
         else if ("openfire".equals(log)) {
@@ -212,8 +177,6 @@
 
     // Set defaults
     if (log == null) {
-//        log = ERROR;
-        //skwok
         log = MMXMGMT;
     }
     if (mode == null) {
@@ -280,39 +243,6 @@ IFRAME {
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 <tbody>
     <tr>
-        <%--skwok--%>
-        <%--<td class="jive-spacer" width="1%">&nbsp;</td>--%>
-        <%--<td class="jive-tab<%= (("error".equals(log))?"-active":"") %>" width="1%">--%>
-            <%--<a href="logviewer.jsp?log=error"--%>
-            <%--><fmt:message key="logviewer.error" /></a>--%>
-            <%--<span class="new">--%>
-            <%--<%= ((newlogs.containsKey("error"))?"*":"") %>--%>
-            <%--</span>--%>
-        <%--</td>--%>
-        <%--<td class="jive-spacer" width="1%">&nbsp;</td>--%>
-        <%--<td class="jive-tab<%= (("warn".equals(log))?"-active":"") %>" width="1%">--%>
-            <%--<a href="logviewer.jsp?log=warn"--%>
-            <%--><fmt:message key="logviewer.warn" /></a>--%>
-            <%--<span class="new">--%>
-            <%--<%= ((newlogs.containsKey("warn"))?"*":"") %>--%>
-            <%--</span>--%>
-        <%--</td>--%>
-        <%--<td class="jive-spacer" width="1%">&nbsp;</td>--%>
-        <%--<td class="jive-tab<%= (("info".equals(log))?"-active":"") %>" width="1%">--%>
-            <%--<a href="logviewer.jsp?log=info"--%>
-            <%--><fmt:message key="logviewer.info" /></a>--%>
-            <%--<span class="new">--%>
-            <%--<%= ((newlogs.containsKey("info"))?"*":"") %>--%>
-            <%--</span>--%>
-        <%--</td>--%>
-        <%--<td class="jive-spacer" width="1%">&nbsp;</td>--%>
-        <%--<td class="jive-tab<%= (("debug".equals(log))?"-active":"") %>" width="1%">--%>
-            <%--<a href="logviewer.jsp?log=debug"--%>
-            <%--><fmt:message key="logviewer.debug" /></a>--%>
-            <%--<span class="new">--%>
-            <%--<%= ((newlogs.containsKey("debug"))?"*":"") %>--%>
-            <%--</span>--%>
-        <%--</td>--%>
         <td class="jive-spacer" width="1%">&nbsp;</td>
         <td class="jive-tab<%= (("mmxmgmt".equals(log))?"-active":"") %>" width="1%">
             <a href="logviewer.jsp?log=mmxmgmt"

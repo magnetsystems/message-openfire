@@ -86,13 +86,13 @@
     String mode = ParamUtils.getParameter(request,"mode");
 
     // Only allow requests for valid log file names.
-    if (!("debug".equals(log) || "warn".equals(log) || "info".equals(log) || "error".equals(log))) {
+    if (!("mmxmgmt".equals(log) || "openfire".equals(log))) {
         log = null;
     }
 
     // Set defaults
     if (log == null) {
-        log = "error";
+        log = "mmxmgmt";
     }
     if (mode == null) {
         mode = "asc";

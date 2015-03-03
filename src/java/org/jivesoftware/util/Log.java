@@ -46,6 +46,7 @@ import java.util.List;
 public class Log {
 
 	private static final org.slf4j.Logger Logger = org.slf4j.LoggerFactory.getLogger(Log.class);
+    private static final org.slf4j.Logger MMXLogger = org.slf4j.LoggerFactory.getLogger("com.magnet.mmx.server.plugin.mmxmgmt");
 
 // TODO deprecate these properties
 //	JiveGlobals.getXMLProperty("log.debug.format");
@@ -238,9 +239,9 @@ public class Log {
     }
 
     public static void markMMXMgmtLogFile(String username) {
+
         String message = getMarkMessage(username);
-        // skwok: log to mmxmgmt.log
-        info(message);
+        MMXLogger.info(message);
     }
 
     public static void rotateWarnLogFile() {
