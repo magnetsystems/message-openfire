@@ -232,6 +232,17 @@ public class Log {
         warn(message);
     }
 
+    public static void markOpenfireLogFile(String username) {
+        String message = getMarkMessage(username);
+        info(message);
+    }
+
+    public static void markMMXMgmtLogFile(String username) {
+        String message = getMarkMessage(username);
+        // skwok: how to log to mmxmgmt.log
+        info(message);
+    }
+
     public static void rotateWarnLogFile() {
         // SLF4J doesn't provide a hook into the logging implementation. We'll have to do this 'direct', bypassing slf4j.
         File logFile = new File(Log.getLogDirectory(), "warn.log");
@@ -288,6 +299,18 @@ public class Log {
     public static void rotateErrorLogFile() {
         // SLF4J doesn't provide a hook into the logging implementation. We'll have to do this 'direct', bypassing slf4j.
         File logFile = new File(Log.getLogDirectory(), "error.log");
+        emptyFile(logFile);
+    }
+
+    public static void rotateMMXMgmtLogFile() {
+        // SLF4J doesn't provide a hook into the logging implementation. We'll have to do this 'direct', bypassing slf4j.
+        File logFile = new File(Log.getLogDirectory(), "mmxmgmt.log");
+        emptyFile(logFile);
+    }
+
+    public static void rotateOpenfireLogFile() {
+        // SLF4J doesn't provide a hook into the logging implementation. We'll have to do this 'direct', bypassing slf4j.
+        File logFile = new File(Log.getLogDirectory(), "openfire.log");
         emptyFile(logFile);
     }
 

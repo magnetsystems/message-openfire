@@ -43,6 +43,9 @@
     static final String DEBUG = "debug";
     static final String DEFAULT = ERROR;
 
+//    static final String MMXMGMT = "mmxmgmt";
+//    static final String OPENFIRE = "openfire";
+
     static final String ASCENDING = "asc";
     static final String DESCENDING = "desc";
 
@@ -90,6 +93,8 @@
         // Get the cookie associated with the log files
         HashMap cookie = parseCookie(CookieUtils.getCookie(request,"jiveforums.admin.logviewer"));
         String[] logs = {"error", "info", "warn", "debug"};
+        //skwok
+//        String[] logs = {MMXMGMT, OPENFIRE};
         HashMap<String,String> newCookie = new HashMap<String,String>();
         HashMap<String,String> updates = new HashMap<String,String>();
         for (String log : logs) {
@@ -160,6 +165,13 @@
         else if ("debug".equals(log)) {
             Log.rotateDebugLogFile();
         }
+        //skwok
+//        if ("mmxmgmt".equals(log)) {
+//            Log.rotateMMXMgmtLogFile();
+//        }
+//        else if ("openfire".equals(log)) {
+//            Log.rotateOpenfireLogFile();
+//        }
         response.sendRedirect("logviewer.jsp?log=" + log);
         return;
     }
@@ -176,6 +188,14 @@
         else if ("debug".equals(log)) {
             Log.markDebugLogFile(pageUser.getUsername());
         }
+        //skwok
+//        if ("mmxmgnt".equals(log)) {
+//            Log.markMMXMgmtLogFile(pageUser.getUsername());
+//        }
+//        else if ("openfire".equals(log)) {
+//            Log.markOpenfireLogFile(pageUser.getUsername());
+//        }
+
         response.sendRedirect("logviewer.jsp?log=" + log);
         return;
     }
@@ -191,7 +211,9 @@
 
     // Set defaults
     if (log == null) {
-        log = DEFAULT;
+        log = ERROR;
+        //skwok
+//        log = MMXMGMT;
     }
     if (mode == null) {
         mode = ASCENDING;
@@ -289,6 +311,22 @@ IFRAME {
             <%= ((newlogs.containsKey("debug"))?"*":"") %>
             </span>
         </td>
+        <%--<td class="jive-spacer" width="1%">&nbsp;</td>--%>
+        <%--<td class="jive-tab<%= (("mmxmgmt".equals(log))?"-active":"") %>" width="1%">--%>
+            <%--<a href="logviewer.jsp?log=mmxmgmt"--%>
+            <%--><fmt:message key="logviewer.mmxmgmt" /></a>--%>
+            <%--<span class="new">--%>
+            <%--<%= ((newlogs.containsKey("mmxmgmt"))?"*":"") %>--%>
+            <%--</span>--%>
+        <%--</td>--%>
+        <%--<td class="jive-spacer" width="1%">&nbsp;</td>--%>
+        <%--<td class="jive-tab<%= (("openfire".equals(log))?"-active":"") %>" width="1%">--%>
+            <%--<a href="logviewer.jsp?log=openfire"--%>
+        <%--><fmt:message key="logviewer.openfire" /></a>--%>
+            <%--<span class="new">--%>
+            <%--<%= ((newlogs.containsKey("openfire"))?"*":"") %>--%>
+            <%--</span>--%>
+        <%--</td>--%>
         <td class="jive-stretch" width="92%" align="right" nowrap>
             &nbsp;
         </td>
