@@ -239,7 +239,7 @@ public class Log {
 
     public static void markMMXMgmtLogFile(String username) {
         String message = getMarkMessage(username);
-        // skwok: how to log to mmxmgmt.log
+        // skwok: log to mmxmgmt.log
         info(message);
     }
 
