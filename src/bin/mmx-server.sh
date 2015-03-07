@@ -10,9 +10,12 @@
 
 # OS specific support.  $var _must_ be set to either true or false.
 
+PORT_TO_CHECK=9090
+
 PROG="mmx"
 PID_PATH="./"
 pid=
+
 openfire_start() {
 	cygwin=false;
 	darwin=false;
@@ -171,12 +174,40 @@ openfire_start() {
 	pid=$!
 }
 
+check_ports() {
+    if lsof -Pi :$PORT_TO_CHECK -sTCP:LISTEN -t >/dev/null ; then
+        echo "TCP port $PORT_TO_CHECK is already in use, cannot start messaging server"
+        exit 1
+    else
+        echo
+        echo "Using ports $PORT_TO_CHECK"
+        echo
+    fi
+}
+
+check_cmd() {
+    type "$1" &> /dev/null;
+}
+
+check_java() {
+    if check_cmd java ; then
+        echo "java is installed"
+    else
+        echo "java is not installed"
+        echo "MMX server needs java version 1.6 OR higher"
+        echo "Please check https://java.com/en/download/"
+        exit 1
+    fi
+}
+
 start() {
 	if [ -e "$PID_PATH/$PROG.pid" ]; then
 		## Program is running, exit with error.
 		echo "Error! $PROG is already running or you have a stale pid file. If $PROG is not running delete $PID_PATH/$PROG.pid file and restart" 1>&2
 		exit 1
 	else
+        check_ports
+        check_java
 		openfire_start
 		touch "$PID_PATH/$PROG.pid"
 		echo $pid >> $PID_PATH/$PROG.pid
