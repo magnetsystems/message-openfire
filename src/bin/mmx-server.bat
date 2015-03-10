@@ -1,6 +1,7 @@
 @echo off
 
 setlocal
+
 rem Change the following if it has been changed to use another port
 set PORT_TO_CHECK=9090
 
@@ -131,5 +132,3 @@ goto :eof
 goto :eof
 
 :end
-
-
