@@ -41,4 +41,32 @@ public class BootstrapServlet extends HttpServlet {
 		Log.debug("doPost : Server is already setup, ignoring...");
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
+	
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Gson gson = new Gson();
+		String jsonString = null;
+		if("true".equals(JiveGlobals.getXMLProperty("setup"))) {
+			jsonString = gson.toJson(new Setup(true));
+		} else {
+			jsonString = gson.toJson(new Setup(false));		
+		}
+		Log.debug("doGet : Returning setupStatus : {}", jsonString);
+		response.setContentType("application/json");
+		response.getWriter().write(jsonString);
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+	
+	public static class Setup {
+	  	private boolean setupComplete;
+	  	
+		public Setup(boolean setupComplete) {
+			super();
+			this.setupComplete = setupComplete;
+		}
+
+		public boolean isSetupComplete() {
+			return setupComplete;
+		}	  	
+	}
 }
