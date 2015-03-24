@@ -423,7 +423,8 @@ public class XMPPServer {
             Thread finishSetup = new Thread() {
                 @Override
 				public void run() {
-                    try {
+                    Log.debug("finishSetup.run() : finishing setup");
+                	try {
                         if (isStandAlone()) {
                             // Always restart the HTTP server manager. This covers the case
                             // of changing the ports, as well as generating self-signed certificates.
@@ -433,18 +434,32 @@ public class XMPPServer {
                             // render properly!
                             Thread.sleep(1000);
                            // ((AdminConsolePlugin) pluginManager.getPlugin("admin")).restart();
+                           Log.debug("finishSetup.run() : reloading admin plugin");
                             ((AdminConsolePlugin) pluginManager.getPlugin("admin")).shutdown();
                             ((AdminConsolePlugin) pluginManager.getPlugin("admin")).startup();
                         }
-
+                        Log.debug("finishSetup.run() : verifying data source");	
                         verifyDataSource();
                         // First load all the modules so that modules may access other modules while
                         // being initialized
+                        Log.debug("finishSetup.run() : loading all modules {}");
+                        
                         loadModules();
                         // Initize all the modules
+                        
+                        Log.debug("finishSetup.run() : Initializing all modules");
                         initModules();
                         // Start all the modules
+                        Log.debug("finishSetup.run() : Starting all modules");
                         startModules();
+                        
+                        // We can now safely indicate that setup has finished
+                        Log.debug("finishSetup.run() : Setting setup mode to false");
+                        setupMode = false;
+                        
+                        // Try and load mmx plugin
+                        Log.debug("finishSetup.run() : Installing available plugins");
+                        pluginManager.installAvailablePlugins();
                     }
                     catch (Exception e) {
                         e.printStackTrace();
@@ -456,8 +471,6 @@ public class XMPPServer {
             // Use the correct class loader.
             finishSetup.setContextClassLoader(loader);
             finishSetup.start();
-            // We can now safely indicate that setup has finished
-            setupMode = false;
         }
     }
 

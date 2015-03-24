@@ -158,6 +158,14 @@ public class PluginManager {
         pluginMonitor = null;
     }
 
+   /**
+    * Runs the plugin monitor task immediately. To be used in case certain events occur due to which
+    * an immediate reload of plugin is required
+    */
+    public void installAvailablePlugins() {
+    	pluginMonitor.run();
+    }
+    
     /**
      * Installs or updates an existing plugin.
      *
