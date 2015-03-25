@@ -64,6 +64,7 @@ exit /b
 	)	
 	call :check_java_home
 	start %TITLE% "%JAVA_HOME%\bin\java" -server -DopenfireHome="%OPENFIRE_HOME%" -jar ..\lib\startup.jar
+	timeout /t 3
 	FOR /F "usebackq tokens=2" %%i IN (`tasklist /nh /fi "WINDOWTITLE eq %TITLE%"`) DO echo %%i > .\%PROG%.pid
 goto :end
 
