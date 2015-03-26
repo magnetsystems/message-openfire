@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 public class BootstrapLocale implements BootstrapSetupStage {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BootstrapLocale.class);
-	private BootstrapProperties bootstrapProps;
+	private StartupProperties bootstrapProps;
 
-	public BootstrapLocale(BootstrapProperties bootstrapProps) {
+	public BootstrapLocale(StartupProperties bootstrapProps) {
 		this.bootstrapProps = bootstrapProps;
 	}
 

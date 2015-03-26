@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 public class BootstrapSetupFinished implements BootstrapSetupStage {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BootstrapSetupFinished.class);
-	private BootstrapProperties bootstrapProps;
+	private StartupProperties bootstrapProps;
 
-	public BootstrapSetupFinished(BootstrapProperties bootstrapProps) {
+	public BootstrapSetupFinished(StartupProperties bootstrapProps) {
 		this.bootstrapProps = bootstrapProps;
 	}
 
