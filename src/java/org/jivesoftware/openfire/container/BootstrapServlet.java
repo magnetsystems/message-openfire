@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jivesoftware.openfire.BootstrapProcessor;
-import org.jivesoftware.openfire.BootstrapProperties;
+import org.jivesoftware.openfire.StartupProperties;
+import org.jivesoftware.openfire.XMPPServer;
 import org.jivesoftware.util.JiveGlobals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +32,36 @@ public class BootstrapServlet extends HttpServlet {
 		if (!"true".equals(JiveGlobals.getXMLProperty("setup"))) {
 			BufferedReader reader = request.getReader();
 			Gson gson = new Gson();
-			BootstrapProperties bootsrapProperties = gson.fromJson(reader, BootstrapProperties.class);
-			Log.debug("doPost : bootsrapProperties={}", bootsrapProperties);
-			BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(bootsrapProperties);
+			StartupProperties bootstrapProperties = gson.fromJson(reader, StartupProperties.class);
+			
+			String dbHost = bootstrapProperties.getDbHost();
+			String dbPort = bootstrapProperties.getDbPort();
+			String dbUser = bootstrapProperties.getDbUser();
+			String dbPassword = bootstrapProperties.getDbPassword();
+			String dbName = bootstrapProperties.getDbName();
+			
+			if(isNullOrEmpty(dbHost) || 
+			   isNullOrEmpty(dbPort) || 
+			   isNullOrEmpty(dbUser) || 
+			   isNullOrEmpty(dbPassword) || 
+			   isNullOrEmpty(dbName))  {
+				
+				response.setContentType("text/plain");
+				response.getWriter().write("Invalid DB properties");
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+				
+			StartupProperties startupProperties = XMPPServer.getInstance().getStartupProperties();
+			
+			startupProperties.setDbHost(bootstrapProperties.getDbHost());
+			startupProperties.setDbPort(bootstrapProperties.getDbPort());
+			startupProperties.setDbUser(bootstrapProperties.getDbUser());
+			startupProperties.setDbPassword(bootstrapProperties.getDbPassword());
+			startupProperties.setDbName(bootstrapProperties.getDbName());
+			
+			Log.debug("doPost : bootsrapProperties={}", bootstrapProperties);
+			BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(bootstrapProperties);
 			bootstrapProcessor.bootstrap();
 			response.setStatus(HttpServletResponse.SC_CREATED);
 			return;
@@ -47,9 +75,17 @@ public class BootstrapServlet extends HttpServlet {
 		Gson gson = new Gson();
 		String jsonString = null;
 		if("true".equals(JiveGlobals.getXMLProperty("setup"))) {
-			jsonString = gson.toJson(new Setup(true));
+			BootstrapInfo info = new BootstrapInfo(); 
+			info.setSetupComplete(true);
+			info.setMmxAdminPort(JiveGlobals.getProperty("mmx.admin.api.port"));
+			info.setMmxAdminPortSecure(JiveGlobals.getProperty("mmx.admin.api.https.port"));
+			info.setMmxPublicPort(JiveGlobals.getProperty("mmx.rest.http.port"));
+			info.setMmxPublicPortSecure(JiveGlobals.getProperty("mmx.rest.https.port"));
+			jsonString = gson.toJson(new BootstrapInfo());
 		} else {
-			jsonString = gson.toJson(new Setup(false));		
+			BootstrapInfo info = new BootstrapInfo();
+			info.setSetupComplete(false);
+			jsonString = gson.toJson(new BootstrapInfo());		
 		}
 		Log.debug("doGet : Returning setupStatus : {}", jsonString);
 		response.setContentType("application/json");
@@ -57,16 +93,46 @@ public class BootstrapServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 	
-	public static class Setup {
+	public static class BootstrapInfo {
 	  	private boolean setupComplete;
-	  	
-		public Setup(boolean setupComplete) {
-			super();
-			this.setupComplete = setupComplete;
-		}
 
+	  	private String mmxAdminPort;
+	  	private String mmxAdminPortSecure;
+	  	private String mmxPublicPort;
+	  	private String mmxPublicPortSecure;
 		public boolean isSetupComplete() {
 			return setupComplete;
-		}	  	
+		}
+		public void setSetupComplete(boolean setupComplete) {
+			this.setupComplete = setupComplete;
+		}
+		public String getMmxAdminPort() {
+			return mmxAdminPort;
+		}
+		public void setMmxAdminPort(String mmxAdminPort) {
+			this.mmxAdminPort = mmxAdminPort;
+		}
+		public String getMmxAdminPortSecure() {
+			return mmxAdminPortSecure;
+		}
+		public void setMmxAdminPortSecure(String mmxAdminPortSecure) {
+			this.mmxAdminPortSecure = mmxAdminPortSecure;
+		}
+		public String getMmxPublicPort() {
+			return mmxPublicPort;
+		}
+		public void setMmxPublicPort(String mmxPublicPort) {
+			this.mmxPublicPort = mmxPublicPort;
+		}
+		public String getMmxPublicPortSecure() {
+			return mmxPublicPortSecure;
+		}
+		public void setMmxPublicPortSecure(String mmxPublicPortSecure) {
+			this.mmxPublicPortSecure = mmxPublicPortSecure;
+		}
+	}
+	
+	private boolean isNullOrEmpty(String s) {
+		return s == null || s.isEmpty();
 	}
 }

@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 public class BootstrapAdminSettings implements BootstrapSetupStage {
 	
 	private static final Logger Log = LoggerFactory.getLogger(BootstrapAdminSettings.class);
-	private BootstrapProperties bootstrapProps;
+	private StartupProperties bootstrapProps;
 
-	public BootstrapAdminSettings(BootstrapProperties bootstrapProps) {
+	public BootstrapAdminSettings(StartupProperties bootstrapProps) {
 		this.bootstrapProps = bootstrapProps;
 	}
 

@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage {
 
 	private static final Logger Log = LoggerFactory.getLogger(BootstrapDatasourceStandardSettings.class);
-	private BootstrapProperties bootstrapProps;
+	private StartupProperties bootstrapProps;
 	private static final String dbServerUrl = "jdbc:mysql://%s:%s/%s?rewriteBatchedStatements=true";
 
-	public BootstrapDatasourceStandardSettings(BootstrapProperties bootstrapProps) {
+	public BootstrapDatasourceStandardSettings(StartupProperties bootstrapProps) {
 		this.bootstrapProps = bootstrapProps;
 	}
 
@@ -32,14 +32,14 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 			conProvider.setMinConnections(5);
 			conProvider.setMaxConnections(25);
 			conProvider.setServerURL(dbServerUrl);
-			conProvider.setUsername(bootstrapProps.getMysqlUser());
-			conProvider.setPassword(bootstrapProps.getMysqlPassword());
+			conProvider.setUsername(bootstrapProps.getDbUser());
+			conProvider.setPassword(bootstrapProps.getDbPassword());
 			conProvider.setTestSQL(DbConnectionManager.getTestSQL(driver));
 
 			JiveGlobals.setXMLProperty("database.defaultProvider.driver", driver);
 			JiveGlobals.setXMLProperty("database.defaultProvider.serverURL", dbServerUrl);
-			JiveGlobals.setXMLProperty("database.defaultProvider.username", bootstrapProps.getMysqlUser());
-			JiveGlobals.setXMLProperty("database.defaultProvider.password", bootstrapProps.getMysqlPassword());
+			JiveGlobals.setXMLProperty("database.defaultProvider.username", bootstrapProps.getDbUser());
+			JiveGlobals.setXMLProperty("database.defaultProvider.password", bootstrapProps.getDbPassword());
 			JiveGlobals.setXMLProperty("database.defaultProvider.testSQL", DbConnectionManager.getTestSQL(driver));
 
 			JiveGlobals.setXMLProperty("database.defaultProvider.minConnections", Integer.toString(5));
@@ -58,7 +58,7 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 	}
 
 	private String getServerUrl() {
-		String url = String.format(dbServerUrl, bootstrapProps.getMysqlHost(), bootstrapProps.getMysqlPort(), bootstrapProps.getMysqlDb());
+		String url = String.format(dbServerUrl, bootstrapProps.getDbHost(), bootstrapProps.getDbPort(), bootstrapProps.getDbName());
 		Log.debug("DB Server url : {}", url);
 		return url;
 	}
