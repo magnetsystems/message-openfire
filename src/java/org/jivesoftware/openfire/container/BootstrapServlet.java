@@ -40,12 +40,13 @@ public class BootstrapServlet extends HttpServlet {
 			String dbPassword = bootstrapProperties.getDbPassword();
 			String dbName = bootstrapProperties.getDbName();
 			
+			Log.debug("Received DB properties : dbHost={}, dpPort={}, dbUser={}, dbName={}", 
+					  new Object[]{dbHost, dbPort, dbUser, dbHost});
+			
 			if(isNullOrEmpty(dbHost) || 
 			   isNullOrEmpty(dbPort) || 
 			   isNullOrEmpty(dbUser) || 
-			   isNullOrEmpty(dbPassword) || 
 			   isNullOrEmpty(dbName))  {
-				
 				response.setContentType("text/plain");
 				response.getWriter().write("Invalid DB properties");
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -57,11 +58,12 @@ public class BootstrapServlet extends HttpServlet {
 			startupProperties.setDbHost(bootstrapProperties.getDbHost());
 			startupProperties.setDbPort(bootstrapProperties.getDbPort());
 			startupProperties.setDbUser(bootstrapProperties.getDbUser());
+			if(dbPassword == null) dbPassword = "";	
 			startupProperties.setDbPassword(bootstrapProperties.getDbPassword());
 			startupProperties.setDbName(bootstrapProperties.getDbName());
 			
-			Log.debug("doPost : bootsrapProperties={}", bootstrapProperties);
-			BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(bootstrapProperties);
+			Log.debug("doPost : bootsrapProperties={}", startupProperties);
+			BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(startupProperties);
 			bootstrapProcessor.bootstrap();
 			response.setStatus(HttpServletResponse.SC_CREATED);
 			return;
@@ -81,11 +83,11 @@ public class BootstrapServlet extends HttpServlet {
 			info.setMmxAdminPortSecure(JiveGlobals.getProperty("mmx.admin.api.https.port"));
 			info.setMmxPublicPort(JiveGlobals.getProperty("mmx.rest.http.port"));
 			info.setMmxPublicPortSecure(JiveGlobals.getProperty("mmx.rest.https.port"));
-			jsonString = gson.toJson(new BootstrapInfo());
+			jsonString = gson.toJson(info);
 		} else {
 			BootstrapInfo info = new BootstrapInfo();
 			info.setSetupComplete(false);
-			jsonString = gson.toJson(new BootstrapInfo());		
+			jsonString = gson.toJson(info);		
 		}
 		Log.debug("doGet : Returning setupStatus : {}", jsonString);
 		response.setContentType("application/json");
