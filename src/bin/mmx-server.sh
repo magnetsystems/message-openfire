@@ -11,9 +11,7 @@
 # OS specific support.  $var _must_ be set to either true or false.
 
 # Change the following if it has been changed to use another port
-PORT_TO_CHECK=9090
-
-check_port=true
+source ../conf/startup.properties
 
 PROG="mmx"
 PID_PATH="./"
@@ -33,7 +31,7 @@ openfire_start() {
 		Linux*) linux=true
 			if [ -z "$JAVA_HOME" ]; then
 				shopt -s nullglob
-                jdks=`ls -r1d /usr/java/j* /usr/lib/jvm/* /usr/bin/j* 2>/dev/null`
+				jdks=`ls -r1d /usr/java/j* /usr/lib/jvm/* /usr/bin/j* 2>/dev/null`
 				for jdk in $jdks; do
 					if [ -f "$jdk/bin/java" ]; then
 						JAVA_HOME="$jdk"
@@ -177,30 +175,35 @@ openfire_start() {
 	pid=$!
 }
 
-check_ports() {
-    if lsof -Pi :$PORT_TO_CHECK -sTCP:LISTEN -t >/dev/null ; then
-        echo "TCP port $PORT_TO_CHECK is already in use, cannot start messaging server"
-        exit 1
-    else
-        echo
-        echo "Using ports $PORT_TO_CHECK"
-        echo
-    fi
+check_port() {
+	if nc -z 127.0.0.1 $1 > /dev/null; then
+		echo "ERROR: TCP port $1 is already in use, cannot start messaging server"
+		exit 1
+	else
+		echo "validated port $1"
+	fi
+}
+
+check_port_list() {
+	portList=( "$@" );
+	for i in "${portList[@]}"; do
+		check_port $i
+	done
 }
 
 check_cmd() {
-    type "$1" &> /dev/null;
+	type "$1" &> /dev/null;
 }
 
 check_java() {
-    if check_cmd java ; then
-        echo "java is installed"
-    else
-        echo "java is not installed"
-        echo "MMX server needs java version 1.6 OR higher"
-        echo "Please check https://java.com/en/download/"
-        exit 1
-    fi
+	if check_cmd java ; then
+		echo "java is installed"
+	else
+		echo "java is not installed"
+		echo "MMX server needs java version 1.6 OR higher"
+		echo "Please check https://java.com/en/download/"
+		exit 1
+	fi
 }
 
 start() {
@@ -209,10 +212,8 @@ start() {
 		echo "Error! $PROG is already running or you have a stale pid file. If $PROG is not running delete $PID_PATH/$PROG.pid file and restart" 1>&2
 		exit 1
 	else
-        if [ $check_port == true ]; then
-            check_ports
-        fi
-        check_java
+		check_port_list $xmppPort $xmppPortSecure $httpPort $httpPortSecure $mmxAdminPort $mmxAdminPortSecure $mmxPublicPort $mmxPublicPortSecure
+		check_java
 		openfire_start
 		touch "$PID_PATH/$PROG.pid"
 		echo $pid >> $PID_PATH/$PROG.pid
@@ -233,34 +234,31 @@ stop() {
 }
 
 print_usage() {
-    echo "Usage: mmx-server.sh [-p] {start|stop|restart}" >&2
-    echo >&2
-    echo "Start, stop, or restart the Magnet Messaging server." >&2
-    echo >&2
-    echo "Options:" >&2
-    echo "    [-p]    No port check when starting" >&2
-    echo >&2
+	echo "Usage: mmx-server.sh [-p] {start|stop|restart}" >&2
+	echo >&2
+	echo "Start, stop, or restart the Magnet Messaging server." >&2
+	echo >&2
+	echo "Options:" >&2
+	echo "    [-p]    No port check when starting" >&2
+	echo >&2
 }
 
 if [ "$#" == 0 ] || [ "$#" -gt 2 ] ; then
-    print_usage
-    exit 1
+	print_usage
+	exit 1
 fi
 
 while getopts "p h" opt; do
-    case $opt in
-    p)
-        check_port=false
-        ;;
-    h)
-        print_usage
-        exit 1
-        ;;
-    \?)
-        print_usage
-        exit 1
-        ;;
-    esac
+	case $opt in
+		h)
+			print_usage
+			exit 1
+			;;
+		\?)
+			print_usage
+			exit 1
+			;;
+	esac
 done
 
 shift $((OPTIND-1))

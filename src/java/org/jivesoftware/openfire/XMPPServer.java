@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,6 +35,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -440,6 +442,7 @@ public class XMPPServer {
                         }
                         Log.debug("finishSetup.run() : verifying data source");	
                         verifyDataSource();
+                        reconcileProperties();
                         // First load all the modules so that modules may access other modules while
                         // being initialized
                         Log.debug("finishSetup.run() : loading all modules {}");
@@ -485,6 +488,7 @@ public class XMPPServer {
             // If the server has already been setup then we can start all the server's modules
             if (!setupMode) {
                 verifyDataSource();
+                reconcileProperties();
                 // First load all the modules so that modules may access other modules while
                 // being initialized
                 loadModules();
@@ -512,19 +516,15 @@ public class XMPPServer {
                 listener.serverStarted();
             }
             
-            if(Boolean.getBoolean("bootstrap") && setupMode) {
-            	Log.debug("Bootstrap flag set, following bootstrap setup flow");
-            	InputStream is = locateBootstrapFile();
-            	Properties props = new Properties();
-            	props.load(is);
-            	Log.debug("Parsed system properties : {}", props);
-            	BootstrapPropertyParser parser = new BootstrapPropertyParser(props);
-            	BootstrapProperties bootstrapProperties = parser.getProperties();
-            	Log.debug("Bootstrap properties parser : {}", bootstrapProperties);
-            	BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(bootstrapProperties);
-            	bootstrapProcessor.bootstrap();	
-            } else {
-            	Log.debug("Bootstrap flag not set, ignoring automatic bootstrapping");
+            if(setupMode) {
+            	StartupProperties startupProperties = getStartupProperties();
+            	Log.debug("Startup properties parser : {}", startupProperties);
+            	if(startupProperties.isBootstrappable()) {
+            		BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(startupProperties);
+            		bootstrapProcessor.bootstrap();	
+            	} else {
+                	Log.debug("Required startup properties not set, ignoring automatic bootstrapping");
+                }
             }
         }
         catch (Exception e) {
@@ -534,7 +534,7 @@ public class XMPPServer {
             shutdownServer();
         }
     }
-
+    
     private void loadModules() {
         // Load boot modules
         loadModule(RoutingTableImpl.class.getName());
@@ -794,6 +794,81 @@ public class XMPPServer {
     }
 
     /**
+     * Make sure that the ports passed 
+     * through startup properties are what are used
+     * 
+     */
+    private void reconcileProperties() throws Exception {
+    	StartupProperties startupProperties = getStartupProperties();
+    	Log.debug("reconcilePortProperties : Parsed startup properties : {}", startupProperties);
+    	
+    	Map<String, String> globalSettings = new HashMap<String, String>();
+    	Map<String, String> xmlSettings = new HashMap<String, String>();
+    	
+    	String xmppPort = startupProperties.getXmppPort();	
+    	if(validatePort(xmppPort))
+    		globalSettings.put("xmpp.socket.plain.port", xmppPort);
+    	
+    	String xmppPortSecure = startupProperties.getXmppPortSecure();	
+    	if(validatePort(xmppPortSecure))
+    		globalSettings.put("xmpp.socket.ssl.port", xmppPort);
+    	
+    	String mmxAdminPort = startupProperties.getMmxAdminPort();
+    	if(validatePort(mmxAdminPort)) {
+    		globalSettings.put("mmx.admin.api.port", mmxAdminPort);
+    	}
+    	
+    	String mmxAdminPortSecure = startupProperties.getMmxAdminPortSecure();
+    	if(validatePort(mmxAdminPortSecure)) {
+    		globalSettings.put("mmx.admin.api.https.port", mmxAdminPortSecure);
+    	}
+    	
+    	String mmxPublicPort = startupProperties.getMmxPublicPort();
+    	if(validatePort(mmxPublicPort)) {
+    		globalSettings.put("mmx.rest.http.port", mmxPublicPort);
+    	}
+    	
+    	String mmxPublicPortSecure = startupProperties.getMmxPublicPortSecure();
+    	if(validatePort(mmxPublicPortSecure)) {
+    		globalSettings.put("mmx.rest.https.port", mmxPublicPortSecure);
+    	}
+    	
+    	String httpPort = startupProperties.getHttpPort();
+    	if(validatePort(httpPort)) {
+    		xmlSettings.put("adminConsole.port", httpPort);
+    	}
+    	
+    	String httpsPort = startupProperties.getHttpPortSecure();
+    	if(validatePort(httpsPort)) {
+    		globalSettings.put("adminConsole.securePort", httpsPort);	
+    	}
+    	
+    	for (String name : globalSettings.keySet()) {
+	        String value = globalSettings.get(name);
+	        Log.debug("reconcileProperties : setting global prop {}={}", name, value);
+	        JiveGlobals.setProperty(name, value);
+	    }
+	    for (String name : xmlSettings.keySet()) {
+	        String value = xmlSettings.get(name);
+	        Log.debug("reconcileProperties : setting xml prop {}={}", name, value);
+	        JiveGlobals.setXMLProperty(name, value);
+	    }
+    	
+    }
+    
+    private boolean validatePort(String port) {
+    	try {
+    		int p = Integer.parseInt(port);
+    		if(p > 0 && p <= 65535)
+    			return true;
+    		Log.error("validatePort : invalid port : {}", port);
+    		return false;
+    	} catch (NumberFormatException e) {
+    		Log.error("validatePort : invalid port : {}", port);
+    		return false;
+    	}
+    }
+    /**
      * Verifies that the given home guess is a real Openfire home directory.
      * We do the verification by checking for the Openfire config file in
      * the config dir of jiveHome.
@@ -906,8 +981,8 @@ public class XMPPServer {
         }
     }
 
-    private FileInputStream locateBootstrapFile()  throws FileNotFoundException {
-    	String bootstrapFilePath = "conf" + File.separator + "bootstrap.properties";
+    private FileInputStream locateStartupFile()  throws FileNotFoundException {
+    	String bootstrapFilePath = "conf" + File.separator + "startup.properties";
         File bootstrapFile = new File(openfireHome, bootstrapFilePath);
         if(!bootstrapFile.exists()) {
         	throw new FileNotFoundException();
@@ -915,6 +990,15 @@ public class XMPPServer {
         final FileInputStream fis = new FileInputStream(bootstrapFile);
         return fis;
     }
+    
+    public StartupProperties getStartupProperties() throws IOException {
+    	InputStream is = locateStartupFile();
+    	Properties props = new Properties();
+    	props.load(is);
+    	Log.debug("getStartupProperties : {}", props); 	
+    	return StartupProperties.parseAndGet(props);	
+    }
+    
     /**
      * This timer task is used to monitor the System input stream
      * for a "terminate" command from the launcher (or the console). 
@@ -1558,4 +1642,5 @@ public class XMPPServer {
     public boolean isStarted() {
         return started;
     }
+    
 }
