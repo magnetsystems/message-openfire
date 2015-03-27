@@ -64,7 +64,7 @@ exit /b
 		exit 1
 	)	
 	call :check_java_home
-	start %TITLE% "%JAVA_HOME%\bin\java" -server -DopenfireHome="%OPENFIRE_HOME%" -jar ..\lib\startup.jar
+	start %TITLE% "%JAVA_HOME%\bin\java" -DopenfireHome="%OPENFIRE_HOME%" -jar ..\lib\startup.jar
 	if 0 neq %ERRORLEVEL% (
 		echo Error starting with error code:%ERRORLEVEL%
 		exit 1
