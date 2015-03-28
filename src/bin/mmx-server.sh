@@ -274,6 +274,7 @@ case "$1" in
 		;;
 	restart)
 		stop
+                sleep 5
 		start
 		exit 0
 		;;
