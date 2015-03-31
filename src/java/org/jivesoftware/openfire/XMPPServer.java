@@ -375,6 +375,12 @@ public class XMPPServer {
         // Update server info
         xmppServerInfo = new XMPPServerInfoImpl(name, host, version, startDate);
 
+        try {
+			reconcileXmlProperties(getStartupProperties());
+		} catch (IOException e) {
+			Log.error("initialize : Error reading startup properties");
+			e.printStackTrace();
+		}
 
         initialized = true;
     }
@@ -802,16 +808,42 @@ public class XMPPServer {
     	StartupProperties startupProperties = getStartupProperties();
     	Log.debug("reconcilePortProperties : Parsed startup properties : {}", startupProperties);
     	
-    	Map<String, String> globalSettings = new HashMap<String, String>();
-    	Map<String, String> xmlSettings = new HashMap<String, String>();
+    	reconcileXmlProperties(startupProperties);
+    	reconcileDbProperties(startupProperties);
     	
+    }
+    
+    private void reconcileXmlProperties(StartupProperties startupProperties) {
+    	Log.debug("reconcileXmlProperties : startupProperties={}", startupProperties);
+    	Map<String, String> xmlSettings = new HashMap<String, String>();
+    	String httpPort = startupProperties.getHttpPort();
+    	if(validatePort(httpPort)) {
+    		xmlSettings.put("adminConsole.port", httpPort);
+    	}
+    	
+    	String httpsPort = startupProperties.getHttpPortSecure();
+    	if(validatePort(httpsPort)) {
+    		xmlSettings.put("adminConsole.securePort", httpsPort);	
+    	}
+    	
+    	for (String name : xmlSettings.keySet()) {
+ 	        String value = xmlSettings.get(name);
+ 	        Log.debug("reconcileProperties : setting xml prop {}={}", name, value);
+ 	        JiveGlobals.setXMLProperty(name, value);
+ 	    }
+    }
+    
+    private void reconcileDbProperties(StartupProperties startupProperties) {
+    	Log.debug("reconcileDbProperties : startupProperties={}", startupProperties);
+    	
+    	Map<String, String> globalSettings = new HashMap<String, String>();
     	String xmppPort = startupProperties.getXmppPort();	
     	if(validatePort(xmppPort))
     		globalSettings.put("xmpp.socket.plain.port", xmppPort);
     	
     	String xmppPortSecure = startupProperties.getXmppPortSecure();	
     	if(validatePort(xmppPortSecure))
-    		globalSettings.put("xmpp.socket.ssl.port", xmppPort);
+    		globalSettings.put("xmpp.socket.ssl.port", xmppPortSecure);
     	
     	String mmxAdminPort = startupProperties.getMmxAdminPort();
     	if(validatePort(mmxAdminPort)) {
@@ -833,27 +865,11 @@ public class XMPPServer {
     		globalSettings.put("mmx.rest.https.port", mmxPublicPortSecure);
     	}
     	
-    	String httpPort = startupProperties.getHttpPort();
-    	if(validatePort(httpPort)) {
-    		xmlSettings.put("adminConsole.port", httpPort);
-    	}
-    	
-    	String httpsPort = startupProperties.getHttpPortSecure();
-    	if(validatePort(httpsPort)) {
-    		globalSettings.put("adminConsole.securePort", httpsPort);	
-    	}
-    	
     	for (String name : globalSettings.keySet()) {
 	        String value = globalSettings.get(name);
 	        Log.debug("reconcileProperties : setting global prop {}={}", name, value);
 	        JiveGlobals.setProperty(name, value);
 	    }
-	    for (String name : xmlSettings.keySet()) {
-	        String value = xmlSettings.get(name);
-	        Log.debug("reconcileProperties : setting xml prop {}={}", name, value);
-	        JiveGlobals.setXMLProperty(name, value);
-	    }
-    	
     }
     
     private boolean validatePort(String port) {
