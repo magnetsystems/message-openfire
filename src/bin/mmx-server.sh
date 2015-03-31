@@ -16,6 +16,7 @@ source ../conf/startup.properties
 PROG="mmx"
 PID_PATH="./"
 pid=
+check_port=true
 
 openfire_start() {
 	cygwin=false;
@@ -212,7 +213,9 @@ start() {
 		echo "Error! $PROG is already running or you have a stale pid file. If $PROG is not running delete $PID_PATH/$PROG.pid file and restart" 1>&2
 		exit 1
 	else
-		check_port_list $xmppPort $xmppPortSecure $httpPort $httpPortSecure $mmxAdminPort $mmxAdminPortSecure $mmxPublicPort $mmxPublicPortSecure
+        if [ true == $check_port ]; then
+            check_port_list $xmppPort $xmppPortSecure $httpPort $httpPortSecure $mmxAdminPort $mmxAdminPortSecure $mmxPublicPort $mmxPublicPortSecure
+        fi
 		check_java
 		openfire_start
 		touch "$PID_PATH/$PROG.pid"
@@ -250,6 +253,9 @@ fi
 
 while getopts "p h" opt; do
 	case $opt in
+        p)
+            check_port=false
+            ;;
 		h)
 			print_usage
 			exit 1
