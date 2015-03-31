@@ -25,7 +25,7 @@ openfire_start() {
 		CYGWIN*) cygwin=true ;;
 		Darwin*) darwin=true
 			if [ -z "$JAVA_HOME" ] ; then
-				JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+				JAVA_HOME=`/usr/libexec/java_home`
 			fi
 			;;
 		Linux*) linux=true
