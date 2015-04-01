@@ -13,6 +13,8 @@
 # Change the following if it has been changed to use another port
 source ../conf/startup.properties
 
+find ../plugins/ -exec touch {} \;
+
 PROG="mmx"
 PID_PATH="./"
 pid=
@@ -274,7 +276,7 @@ case "$1" in
 		;;
 	restart)
 		stop
-                sleep 5
+		sleep 5
 		start
 		exit 0
 		;;
