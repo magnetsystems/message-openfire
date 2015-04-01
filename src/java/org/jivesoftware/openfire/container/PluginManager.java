@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -606,6 +607,8 @@ public class PluginManager {
                 for (String childPlugin : childPlugins) {
                     Log.debug("Unloading child plugin: " + childPlugin);
                     childPluginMap.remove(plugins.get(childPlugin));
+                    Log.debug("Unloading child plugin : pluginName={}, childPlugin={}", pluginName,
+                    		childPlugin);
                     unloadPlugin(childPlugin);
                 }
             }
@@ -1018,7 +1021,14 @@ public class PluginManager {
                             }
                         }
                         else {
-                            unloadPlugin(pluginName);
+                            long jarLastMod = jarFile.lastModified();
+                            long dirLastMod = dir.lastModified();
+                        	Log.trace("Unloading plugin : jarFilelastModifiedLong={},"
+                        			+ " dirlastModifiedLong={}, jarFilelastModifiedDate={},"
+                        			+ " dirlastModifiedDate={}", 
+                        			new Object[]{jarLastMod, dirLastMod, 
+                        			new Date(jarLastMod), new Date(dirLastMod)});
+                        	unloadPlugin(pluginName);
                         }
                         // If the delete operation was a success, unzip the plugin.
                         if (!dir.exists()) {
