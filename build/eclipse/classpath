@@ -3,12 +3,12 @@
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="src/plugins/broadcast/src/java"/>
 	<classpathentry kind="src" path="src/plugins/clientControl/src/java"/>
-	<classpathentry kind="src" path="src/plugins/clustering/src/java"/>
 	<classpathentry kind="src" path="src/plugins/contentFilter/src/java"/>
 	<classpathentry kind="src" path="src/plugins/dbaccess/src/java"/>
 	<classpathentry kind="src" path="src/plugins/emailListener/src/java"/>
 	<classpathentry kind="src" path="src/plugins/fastpath/src/java"/>
 	<classpathentry kind="src" path="src/plugins/gojara/src/java"/>
+	<classpathentry kind="src" path="src/plugins/hazelcast/src/java"/>
 	<classpathentry kind="src" path="src/plugins/jingleNodes/src/java"/>
 	<classpathentry kind="src" path="src/plugins/kraken/src/java"/>
 	<classpathentry kind="src" path="src/plugins/loadStats/src/java"/>
@@ -18,7 +18,6 @@
 	<classpathentry kind="src" path="src/plugins/presence/src/java"/>
 	<classpathentry kind="src" path="src/plugins/registration/src/java"/>
 	<classpathentry kind="src" path="src/plugins/search/src/java"/>
-	<classpathentry kind="src" path="src/plugins/sip/src/java"/>
 	<classpathentry kind="src" path="src/plugins/subscription/src/java"/>
 	<classpathentry kind="src" path="src/plugins/userCreation/src/java"/>
 	<classpathentry kind="src" path="src/plugins/userImportExport/src/java"/>
@@ -34,7 +33,9 @@
 	<classpathentry kind="lib" path="build/lib/cglib-nodep.jar"/>
 	<classpathentry kind="lib" path="build/lib/commons-el.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/activation.jar"/>
-	<classpathentry kind="lib" path="build/lib/dist/bouncycastle.jar"/>
+	<classpathentry kind="lib" path="build/lib/dist/bcprov-jdk15on.jar"/>
+	<classpathentry kind="lib" path="build/lib/dist/bcpg-jdk15on.jar"/>
+	<classpathentry kind="lib" path="build/lib/dist/bcpkix-jdk15on.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/hsqldb.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/jdic.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/jtds.jar"/>
@@ -62,6 +63,7 @@
 	<classpathentry kind="lib" path="build/lib/merge/jetty-continuation.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jetty-http.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jetty-io.jar"/>
+	<classpathentry kind="lib" path="build/lib/merge/jetty-jmx.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jetty-security.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jetty-server.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jetty-servlet.jar"/>
@@ -78,6 +80,7 @@
 	<classpathentry kind="lib" path="build/lib/merge/mina-core.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/mina-filter-compression.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/mina-filter-ssl.jar"/>
+	<classpathentry kind="lib" path="build/lib/merge/mina-integration-jmx.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/proxool.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/rome-fetcher.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/rome.jar"/>
@@ -103,6 +106,7 @@
 	<classpathentry kind="lib" path="src/plugins/fastpath/lib/lucene.jar"/>
 	<classpathentry kind="lib" path="src/plugins/fastpath/lib/xstream.jar"/>
 	<classpathentry kind="lib" path="src/plugins/gojara/lib/json.jar"/>
+	<classpathentry kind="lib" path="src/plugins/hazelcast/lib/hazelcast-3.1.7.jar"/>
 	<classpathentry kind="lib" path="src/plugins/jingleNodes/lib/jnsapi.jar"/>
 	<classpathentry kind="lib" path="src/plugins/kraken/lib/concurrent.jar"/>
 	<classpathentry kind="lib" path="src/plugins/kraken/lib/dwr.jar"/>
@@ -134,8 +138,6 @@
 	<classpathentry kind="lib" path="src/plugins/monitoring/lib/lucene.jar"/>
 	<classpathentry kind="lib" path="src/plugins/monitoring/lib/picocontainer.jar"/>
 	<classpathentry kind="lib" path="src/plugins/registration/lib/recaptcha4j.jar"/>
-	<classpathentry kind="lib" path="src/plugins/sip/lib/JainSipApi1.1.jar"/>
-	<classpathentry kind="lib" path="src/plugins/sip/lib/nist-sip-1.2.jar"/>
 	<classpathentry kind="lib" path="src/plugins/userImportExport/lib/commons-fileupload-1.0.jar"/>
 	<classpathentry kind="lib" path="src/plugins/userImportExport/lib/isorelax.jar"/>
 	<classpathentry kind="lib" path="src/plugins/userImportExport/lib/msv.jar"/>
