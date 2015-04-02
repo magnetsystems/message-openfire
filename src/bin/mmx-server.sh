@@ -259,16 +259,16 @@ fi
 while getopts "p h" opt; do
 	case $opt in
         	p)
-            		check_port=false
-            		;;
-		h)
-			print_usage
-			exit 1
-			;;
-		\?)
-			print_usage
-			exit 1
-			;;
+                check_port=false
+                ;;
+            h)
+                print_usage
+                exit 1
+                ;;
+            \?)
+                print_usage
+                exit 1
+                ;;
 	esac
 done
 
