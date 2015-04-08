@@ -1,21 +1,26 @@
 @echo off
 
+rem Please change ..\conf\startup.properties if you would like to use ports other than the default.
+rem For detail, please reference the troubleshooting guide.
+
 setlocal
-
-rem Change the following if it has been changed to use another port
-set PORT_TO_CHECK=9090
-
-set check_port=true
-set TITLE="MagnetMessage"
-set PROG=mmx-server
-set OPENFIRE_HOME=%CD%\..
-
 
 if "%selfWrapped%"=="" (
   SET selfWrapped=true
   %ComSpec% /s /c ""%~0" %*"
   GOTO :EOF
 )
+
+set check_port=true
+set TITLE="Messagingserver"
+set PROGNAME="Messaging server"
+set PROG=mmx-server
+
+
+
+call :check2Args %*
+
+call :loadPorts ..\conf\startup.properties
 
 if "-p"=="%1" (
 	set check_port=false
@@ -43,7 +48,7 @@ goto :end
 :print_usage
 	echo Usage: mmx-server.bat [-p] {start^|stop^|restart}
 	echo.
-	echo Start, stop, or restart the Magnet Message server.
+	echo Start, stop, or restart the %PROGNAME%.
 	echo. 
 	echo Options:
 	echo    -p    No port check when starting.
@@ -54,35 +59,94 @@ exit /b
 
 :start
 	if %check_port%==true (
-		call :check_ports
+		call :check_port_list %xmppPort% %xmppPortSecure% %httpPort% %httpPortSecure% %mmxAdminPort% %mmxAdminPortSecure% %mmxPublicPort% %mmxPublicPortSecure%
 	)
+
 	call :check_java
 
 	if exist %PROG%.pid (
 		echo.
-		echo Error! Magnet Message server is already running or you have a stale pid file. If Magnet Message server is not running, then please delete mmx-standalone-dist-win\messaging\bin\mmx-server.pid file and try again.
+		echo Error! %PROGNAME% is already running or you have a stale pid file. If %PROGNAME% is not running, then please delete mmx-standalone-dist-win\messaging\bin\mmx-server.pid file and try again.
 		exit 1
 	)	
+
 	call :check_java_home
-	start %TITLE% "%JAVA_HOME%\bin\java" -DopenfireHome="%OPENFIRE_HOME%" -jar ..\lib\startup.jar
+
+	start %TITLE% "%JAVA_HOME%\bin\java" -DopenfireHome=..\ -jar ..\lib\startup.jar
+
 	if 0 neq %ERRORLEVEL% (
 		echo Error starting with error code:%ERRORLEVEL%
 		exit 1
 	)
+
 	timeout /t 3 >nul
+
 	FOR /F "usebackq tokens=2" %%i IN (`tasklist /nh /fi "WINDOWTITLE eq %TITLE%"`) DO echo %%i > .\%PROG%.pid
+	set /p pid=<.\%PROG%.pid
+	if "No "=="%pid%" (
+		echo Error starting the server. It could be an environment issue. Please execute "%JAVA_HOME%\bin\java" -DopenfireHome=..\ -jar ..\lib\startup.jar and fix the environment accordingly.
+		del .\%PROG%.pid
+		exit 1
+	)
+
 goto :end
 
 
 
-:check_ports
-	netstat -aon | findstr "%PORT_TO_CHECK%" 1>NUL
-	if %ERRORLEVEL% equ 0 (
-		echo.
-		echo Error! TCP port "%PORT_TO_CHECK%" is already in use; thus, cannot start Magnet Message. Please refer to readme.htm on how to change the ports.
-		exit 1
+:check2Args
+	setlocal EnableDelayedExpansion
+	FOR %%A in (%*) DO (
+	        SET /A args_count+=1
+	        if !args_count! equ 3 (
+	                call :print_usage
+	                exit
+	        )
 	)
-	echo Using ports "%PORT_TO_CHECK%"
+
+	if !args_count! equ 0 (
+	        call :print_usage
+	        exit
+	)
+	endlocal
+goto :eof
+
+
+
+:loadPorts
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "dbHost=" %1') do SET dbHost=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "dbPort=" %1') do SET dbPort=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "dbName=" %1') do SET dbName=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "dbUser=" %1') do SET dbUser=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "dbPassword=" %1') do SET dbPassword=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "xmppDomain=" %1') do SET xmppDomain=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "xmppPort=" %1') do SET xmppPort=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "xmppPortSecure=" %1') do SET xmppPortSecure=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "httpPort=" %1') do SET httpPort=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "httpPortSecure=" %1') do SET httpPortSecure=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "mmxAdminPort=" %1') do SET mmxAdminPort=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "mmxAdminPortSecure=" %1') do SET mmxAdminPortSecure=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "mmxPublicPort=" %1') do SET mmxPublicPort=%%i
+	FOR /F "eol=; tokens=2 delims==" %%i IN ('findstr /i "mmxPublicPortSecure=" %1') do SET mmxPublicPortSecure=%%i
+goto :eof
+
+
+
+:check_port
+        netstat -aon | findstr "%1" 1>NUL
+        if %ERRORLEVEL% equ 0 (
+                echo.
+                echo Error! TCP port "%1" is already in use; thus, cannot start %PROGNAME%. Please refer to readme.htm on how to change the ports.
+                exit 1
+        )
+        echo Validated port "%1"
+goto :eof
+
+
+
+:check_port_list
+	for %%a in (%*) do (
+        	call :check_port %%a
+	)
 goto :eof
 
 
@@ -94,7 +158,7 @@ goto :eof
 		taskkill /f /pid !pid! /t >nul
 		del .\%PROG%.pid
 	) else (
-		echo Magnet Message console is not running
+		echo %PROGNAME% is not running
 	)
 	endlocal
 goto :end
@@ -139,7 +203,7 @@ goto :eof
 
 
 :javaerror
-	echo JAVA_HOME environment variable not set. Please set it and start Magnet Message again.
+	echo JAVA_HOME environment variable not set. Please set it and start %PROGNAME% again.
 	exit 1
 goto :eof
 
