@@ -192,6 +192,14 @@ public interface CacheFactoryStrategy {
     Lock getLock(Object key, Cache cache);
     
     /**
+     * Returns an existing lock on the specified key or creates a new one if none was found. This
+     * operation is thread safe.
+     * @param key the object that defines the visibility or scope of the lock.
+     * @return an existing lock on the specified key or creates a new one if none was found.
+     */
+    Lock getLock(String key);
+    
+    /**
      * Get the plugin name corresponding to this clustering implementation
      * 
      * @return the plugin name for this clustering implementation

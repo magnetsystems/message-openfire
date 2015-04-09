@@ -192,7 +192,8 @@ public class ClusteredCacheFactory implements CacheFactoryStrategy {
 
     public Cache createCache(String name) {
         // Check if cluster is being started up
-        while (state == State.starting) {
+        logger.debug("createCache : creating hazelcast cache : {}", name);
+    	while (state == State.starting) {
             // Wait until cluster is fully started (or failed)
             try {
                 Thread.sleep(250);
@@ -202,7 +203,8 @@ public class ClusteredCacheFactory implements CacheFactoryStrategy {
             }
         }
         if (state == State.stopped) {
-            throw new IllegalStateException("Cannot create clustered cache when not in a cluster");
+        	logger.error("createCache : Cannot create clustered cache when not in a cluster, cache : {}", name);
+        	throw new IllegalStateException("Cannot create clustered cache when not in a cluster");
         }
         return new ClusteredCache(name, hazelcast.getMap(name));
     }
@@ -426,40 +428,53 @@ public class ClusteredCacheFactory implements CacheFactoryStrategy {
 	}
 
 	public Lock getLock(Object key, Cache cache) {
-        if (cache instanceof CacheWrapper) {
+        logger.debug("getLock : key : {}, cache : {}", key, cache.getName());
+		if (cache instanceof CacheWrapper) {
             cache = ((CacheWrapper)cache).getWrappedCache();
         }
         return new ClusterLock(key, (ClusteredCache) cache);
     }
 
+	@Override
+	public Lock getLock(String key) {
+		logger.debug("getLock : key = {}", key);
+		return hazelcast.getLock(key);
+	}
+	
     private static class ClusterLock implements Lock {
 
         private Object key;
         private ClusteredCache cache;
 
         public ClusterLock(Object key, ClusteredCache cache) {
-            this.key = key;
+        	this.key = key;
             this.cache = cache;
         }
 
         public void lock() {
+        	logger.trace("lock : key={}, clusteredCache={}", key, cache.getName());
             cache.lock(key, -1);
         }
 
         public void lockInterruptibly() throws InterruptedException {
+        	logger.trace("lockInterruptibly : key={}, clusteredCache={}", key, cache.getName());
             cache.lock(key, -1);
         }
 
         public boolean tryLock() {
+        	logger.trace("tryLock : key={}, clusteredCache={}", key, cache.getName());
         	return cache.lock(key, 0);
         }
 
         public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        	logger.trace("tryLock : key={}, clusteredCache={}, time={}, unit={}", 
+        			new Object[]{key, cache.getName(), time, unit});
         	return cache.lock(key, unit.toMillis(time));
         }
 
         public void unlock() {
-            cache.unlock(key);
+            logger.trace("unlock : key={}, clusteredCache={}", key, cache.getName());
+        	cache.unlock(key);
         }
 
         public Condition newCondition() {

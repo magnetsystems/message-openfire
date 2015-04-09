@@ -51,6 +51,7 @@ public class HazelcastPlugin extends TimerTask implements Plugin {
     public void initializePlugin(PluginManager manager, File pluginDirectory) {
     	// start cluster using a separate thread after a short delay
     	// this will allow other plugins to initialize during startup
+    	logger.debug("initializePlugin : Hazelcast Clustering Plugin");
     	TaskEngine.getInstance().schedule(this, CLUSTER_STARTUP_DELAY_TIME*1000);
     }
 

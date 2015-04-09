@@ -83,6 +83,7 @@ public class ClusteredCache implements Cache {
     }
 
     public Object put(Object key, Object object) {
+    	logger.trace("put : key={}, value={}", key, object);
     	if (object == null) { return null; }
         return map.put(key, object);
     }
@@ -168,6 +169,7 @@ public class ClusteredCache implements Cache {
     }
 
     public boolean lock(Object key, long timeout) {
+    	logger.trace("lock : key={}, timeout={}", key, timeout);
     	boolean result = true;
     	if (timeout < 0) {
     		map.lock(key);
@@ -185,6 +187,7 @@ public class ClusteredCache implements Cache {
     }
 
     public boolean unlock(Object key) {
+    	logger.trace("unlock : key={}", key);
     	boolean result = true;
          try { map.unlock(key); }
          catch (IllegalMonitorStateException e) {
@@ -193,5 +196,5 @@ public class ClusteredCache implements Cache {
          }
          return result;
     }
-
+    
 }

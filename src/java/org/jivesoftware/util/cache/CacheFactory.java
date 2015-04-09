@@ -349,7 +349,8 @@ public class CacheFactory {
     public static synchronized <T extends Cache> T createCache(String name) {
         T cache = (T) caches.get(name);
         if (cache != null) {
-            return cache;
+            log.info("createCache : cache {} already exists, returning", name);
+        	return cache;
         }
         cache = (T) cacheFactoryStrategy.createCache(name);
         
@@ -415,6 +416,24 @@ public class CacheFactory {
         } else {
         	return cacheFactoryStrategy.getLock(key, cache);
         }
+    }
+    
+    /**
+     * Returns an existing {@link java.util.concurrent.locks.Lock} on the specified key or creates a new one
+     * if none was found. This operation is thread safe. Successive calls with the same key may or may not
+     * return the same {@link java.util.concurrent.locks.Lock}. However, different threads asking for the
+     * same Lock at the same time will get the same Lock object.<p>
+     *
+     * The supplied cache may or may not be used depending whether the server is running on cluster mode
+     * or not. When not running as part of a cluster then the lock will be unrelated to the cache and will
+     * only be visible in this JVM.
+     *
+     * @param key the object that defines the visibility or scope of the lock.
+     * @param cache the cache used for holding the lock.
+     * @return an existing lock on the specified key or creates a new one if none was found.
+     */
+    public static synchronized Lock getLock(String key) {
+    	return cacheFactoryStrategy.getLock(key);
     }
 
     @SuppressWarnings("unchecked")

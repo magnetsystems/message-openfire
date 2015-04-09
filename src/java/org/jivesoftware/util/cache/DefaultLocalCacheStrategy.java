@@ -121,6 +121,10 @@ public class DefaultLocalCacheStrategy implements CacheFactoryStrategy {
 
 		return new LocalLock(lockKey);
     }
+    
+    public Lock getLock(String key) {
+       return getLock(key, null);
+    }
 
 	private void acquireLock(Object key) {
 		ReentrantLock lock = lookupLockForAcquire(key);
