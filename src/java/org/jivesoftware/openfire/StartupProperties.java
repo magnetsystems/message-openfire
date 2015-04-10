@@ -75,7 +75,7 @@ public class StartupProperties {
 		for (String property : propertyList) {
 			String value = fileProperties.getProperty(property);	
 			if(!isNullOrEmpty(value)) {
-				Statement s = new Statement(properties, "set" + capitalizeFirstChar(property), new Object[]{value});
+				Statement s = new Statement(properties, "set" + capitalizeFirstChar(property), new Object[]{value.trim()});
 				try {
 					s.execute();
 				} catch (Exception e) {
