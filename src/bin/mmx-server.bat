@@ -18,6 +18,10 @@ set PROG=mmx-server
 
 
 
+cd ..\plugins
+copy /b "*.jar" +,,  1>NUL 2>NUL
+cd ..\bin
+
 call :check2Args %*
 
 call :loadPorts ..\conf\startup.properties
