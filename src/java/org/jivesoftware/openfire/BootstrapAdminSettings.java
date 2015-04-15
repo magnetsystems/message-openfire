@@ -30,6 +30,7 @@ public class BootstrapAdminSettings implements BootstrapSetupStage {
 		    adminUser.setModificationDate(now);
 		    JiveGlobals.setXMLProperty("setup","true");
 		} catch (UserNotFoundException e) {
+			Log.error("exec : default admin user not found");
 			e.printStackTrace();
 		}
 		return new BootstrapSetupFinished(bootstrapProps);

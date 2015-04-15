@@ -22,7 +22,8 @@ public class BootstrapLocale implements BootstrapSetupStage {
 		LOGGER.trace("exec : setting locale {}", localeCode);
 		Locale newLocale = LocaleUtils.localeCodeToLocale(localeCode.trim());
          if (newLocale == null) {
-             throw new IllegalArgumentException("Invalid locale code : " + localeCode);
+        	 LOGGER.error("BootstrapLocale.exec : Locale is not set");
+        	 throw new IllegalArgumentException("Invalid locale code : " + localeCode);
          }
          else {
              JiveGlobals.setLocale(newLocale);

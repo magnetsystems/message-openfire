@@ -52,6 +52,7 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 		if(testConnection()) {
 			Log.debug("DB Connection test succeeded");
 		} else {
+			Log.error("BootstrapDatasourceStandardSettings.exec() : DB connection test failed");
 			throw new RuntimeException("Error connecting to DB bootstrapProps = " + bootstrapProps);
 		}
 		return new BootstrapProfileSettings(bootstrapProps);

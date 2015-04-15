@@ -64,10 +64,13 @@ public class BootstrapServlet extends HttpServlet {
 			
 			Log.debug("doPost : bootsrapProperties={}", startupProperties);
 			BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(startupProperties);
-			if(bootstrapProcessor.bootstrap())
+			if(bootstrapProcessor.bootstrap()) {
+				Log.debug("doPost : Successfully bootstrapped server");
 				response.setStatus(HttpServletResponse.SC_CREATED);
-			else 
+			} else { 
+				Log.error("doPost : Error bootstrapping server");
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
 			return;
 		}
 		Log.debug("doPost : Server is already setup, ignoring...");
