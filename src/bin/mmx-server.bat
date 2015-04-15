@@ -3,6 +3,8 @@
 rem Please change ..\conf\startup.properties if you would like to use ports other than the default.
 rem For detail, please reference the troubleshooting guide.
 
+
+
 setlocal
 
 if "%selfWrapped%"=="" (
@@ -16,11 +18,9 @@ set TITLE="Messagingserver"
 set PROGNAME="Messaging server"
 set PROG=mmx-server
 
-
-
-cd ..\plugins
-copy /b "*.jar" +,,  1>NUL 2>NUL
-cd ..\bin
+cd ..
+call :touchPlugins 1>NUL 2>NUL
+cd .\bin
 
 call :check2Args %*
 
@@ -46,6 +46,29 @@ if "start"=="%1" (
 ) 
 endlocal
 goto :end
+
+
+
+:touchPlugins
+	setlocal
+
+	set ODIR=plugins
+	set NDIR=plugins_bak
+	rmdir /q /s %NDIR%
+	xcopy /e plugins %NDIR%\
+	pushd %NDIR%
+
+	for /d /r "." %%D in (.) do (
+		cd "%%D"
+		copy *+
+	)
+	popd
+
+	rmdir /q /s %ODIR%
+	rename %NDIR% %ODIR%
+
+	endlocal
+goto :eof
 
 
 
