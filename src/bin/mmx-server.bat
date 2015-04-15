@@ -80,6 +80,7 @@ goto :eof
 	echo Options:
 	echo    -p    No port check when starting.
 	echo. 
+	pause
 exit /b
 
 
