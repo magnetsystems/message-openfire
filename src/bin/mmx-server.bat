@@ -18,9 +18,6 @@ set TITLE="Messagingserver"
 set PROGNAME="Messaging server"
 set PROG=mmx-server
 
-cd ..
-call :touchPlugins 1>NUL 2>NUL
-cd .\bin
 
 call :check2Args %*
 
@@ -32,6 +29,9 @@ if "-p"=="%1" (
 )	
 
 if "start"=="%1" (
+	cd ..
+	call :touchPlugins 1>NUL 2>NUL
+	cd .\bin
 	call :start
 ) else (
 	if "stop"=="%1" (
