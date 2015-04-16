@@ -29,9 +29,6 @@ if "-p"=="%1" (
 )	
 
 if "start"=="%1" (
-	cd ..
-	call :touchPlugins 1>NUL 2>NUL
-	cd .\bin
 	call :start
 ) else (
 	if "stop"=="%1" (
@@ -99,6 +96,10 @@ exit /b
 	)	
 
 	call :check_java_home
+
+	cd ..
+	call :touchPlugins 1>NUL 2>NUL
+	cd .\bin
 
 	start %TITLE% "%JAVA_HOME%\bin\java" -DopenfireHome=..\ -jar ..\lib\startup.jar
 
