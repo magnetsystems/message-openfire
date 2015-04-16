@@ -26,7 +26,7 @@
         <logger name="org.jivesoftware">
                 <level value="debug" />
         </logger>
-        <logger name="com.magnet.mmx.server.plugin.mmxmgmt" additivity="false">
+        <logger name="com.magnet.mmx" additivity="false">
 		<level value="trace"/>
                 <appender-ref ref="mmxmgmt-out"/>
         </logger>
