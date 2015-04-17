@@ -407,7 +407,7 @@
         </jar>
         <!-- Copy application dependent files -->
         <copy todir="${jar.dest.dir}">
-            <fileset dir="${lib.dist.dir}" includes="*.*" excludes="activation.jar" />
+            <fileset dir="${lib.dist.dir}" includes="*.*" excludes="activation.jar,mail.jar,mysql.jar" />
         </copy>
 
         <!-- Copy in tag library support -->
