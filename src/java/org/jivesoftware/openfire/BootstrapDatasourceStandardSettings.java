@@ -1,15 +1,15 @@
 package org.jivesoftware.openfire;
 
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map;
-import java.sql.Connection;
-
 import org.jivesoftware.database.DbConnectionManager;
 import org.jivesoftware.database.DefaultConnectionProvider;
 import org.jivesoftware.util.JiveGlobals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Map;
 
 public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage {
 
@@ -25,7 +25,7 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 		JiveGlobals.setXMLProperty("connectionProvider.className", "org.jivesoftware.database.DefaultConnectionProvider");
 		DefaultConnectionProvider conProvider = new DefaultConnectionProvider();
 		try {
-			final String driver = "com.mysql.jdbc.Driver";
+			final String driver = "org.mariadb.jdbc.Driver";
 			final String dbServerUrl = getServerUrl();
 			conProvider.setDriver(driver);
 			conProvider.setConnectionTimeout(1.0);
