@@ -184,7 +184,7 @@ goto :eof
 	setlocal EnableDelayedExpansion
 	if exist .\%PROG%.pid (
 		set /p pid=<.\%PROG%.pid
-		taskkill /f /pid !pid! /t >nul
+		taskkill /pid !pid! /t >nul
 		del .\%PROG%.pid
 	) else (
 		echo %PROGNAME% is not running
