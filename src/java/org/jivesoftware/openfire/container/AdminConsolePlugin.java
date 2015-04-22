@@ -123,7 +123,7 @@ public class AdminConsolePlugin implements Plugin {
 
         // Create connector for http traffic if it's enabled.
         if (adminPort > 0) {
-            Connector httpConnector = new SelectChannelConnector();
+        	Connector httpConnector = new SelectChannelConnector();
             // Listen on a specific network interface if it has been set.
             String bindInterface = getBindInterface();
             httpConnector.setHost(bindInterface);
@@ -176,6 +176,8 @@ public class AdminConsolePlugin implements Plugin {
         HandlerCollection collection = new HandlerCollection();
         adminServer.setHandler(collection);
         collection.setHandlers(new Handler[] { contexts, new DefaultHandler() });
+        
+        refreshSocketLinger();
 
         try {
             adminServer.start();
@@ -199,13 +201,36 @@ public class AdminConsolePlugin implements Plugin {
         //noinspection ConstantConditions
         try {
             if (adminServer != null && adminServer.isRunning()) {
-                adminServer.stop();
+            	Log.debug("Shutting down http server");
+            	adminServer.stop();
             }
         }
         catch (Exception e) {
             Log.error("Error stopping admin console server", e);
         }
         adminServer = null;
+    }
+    
+    /**
+     * Set So linger explicitly
+     */
+    
+    public void setSoLinger(int time) {
+    	Connector[] connectors = adminServer.getConnectors();
+    	for(Connector connector : connectors) {
+    		if(connector instanceof SelectChannelConnector) {
+    			Log.debug("setSoLinger : Setting http socket linger to : {}", time);
+    			((SelectChannelConnector)connector).setSoLingerTime(time);
+    		} else if(connector instanceof SslSelectChannelConnector) {
+    			Log.debug("setSoLinger : Setting https linger to : {}", time);
+    			((SslSelectChannelConnector)connector).setSoLingerTime(time);
+    		}
+    	}
+    }
+    
+    public void refreshSocketLinger() {
+    	int value = JiveGlobals.getIntProperty("http.socket.linger", -1);
+    	setSoLinger(value);
     }
 
     public void initializePlugin(PluginManager manager, File pluginDir) {

@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="src/plugins/broadcast/src/java"/>
 	<classpathentry kind="src" path="src/plugins/clientControl/src/java"/>
-	<classpathentry kind="src" path="src/plugins/clustering/src/java"/>
 	<classpathentry kind="src" path="src/plugins/contentFilter/src/java"/>
 	<classpathentry kind="src" path="src/plugins/dbaccess/src/java"/>
 	<classpathentry kind="src" path="src/plugins/emailListener/src/java"/>
@@ -18,7 +17,6 @@
 	<classpathentry kind="src" path="src/plugins/presence/src/java"/>
 	<classpathentry kind="src" path="src/plugins/registration/src/java"/>
 	<classpathentry kind="src" path="src/plugins/search/src/java"/>
-	<classpathentry kind="src" path="src/plugins/sip/src/java"/>
 	<classpathentry kind="src" path="src/plugins/subscription/src/java"/>
 	<classpathentry kind="src" path="src/plugins/userCreation/src/java"/>
 	<classpathentry kind="src" path="src/plugins/userImportExport/src/java"/>
@@ -34,7 +32,8 @@
 	<classpathentry kind="lib" path="build/lib/cglib-nodep.jar"/>
 	<classpathentry kind="lib" path="build/lib/commons-el.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/activation.jar"/>
-	<classpathentry kind="lib" path="build/lib/dist/bouncycastle.jar"/>
+	<classpathentry kind="lib" path="build/lib/dist/bcprov-jdk15on.jar"/>
+	<classpathentry kind="lib" path="build/lib/dist/bcpkix-jdk15on.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/hsqldb.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/jdic.jar"/>
 	<classpathentry kind="lib" path="build/lib/dist/jtds.jar"/>
@@ -69,6 +68,7 @@
 	<classpathentry kind="lib" path="build/lib/merge/jetty-webapp.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jetty-websocket.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jetty-xml.jar"/>
+	<classpathentry kind="lib" path="build/lib/merge/jetty-jmx.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jmdns.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jsp-api.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/jstl.jar"/>
@@ -78,6 +78,7 @@
 	<classpathentry kind="lib" path="build/lib/merge/mina-core.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/mina-filter-compression.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/mina-filter-ssl.jar"/>
+	<classpathentry kind="lib" path="./build/lib/merge/mina-integration-jmx.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/proxool.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/rome-fetcher.jar"/>
 	<classpathentry kind="lib" path="build/lib/merge/rome.jar"/>

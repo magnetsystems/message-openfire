@@ -850,8 +850,9 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
             socketSessionConfig.setSendBufferSize(sendBuffer);
         }
         int linger = JiveGlobals.getIntProperty("xmpp.socket.linger", -1);
-        if (linger > 0 ) {
-            socketSessionConfig.setSoLinger(linger);
+        if (linger > -1 ) {
+            Log.debug("buildSocketAcceptor : Setting socket linger to {}", linger);
+        	socketSessionConfig.setSoLinger(linger);
         }
         socketSessionConfig.setTcpNoDelay(
                 JiveGlobals.getBooleanProperty("xmpp.socket.tcp-nodelay", socketSessionConfig.isTcpNoDelay()));
