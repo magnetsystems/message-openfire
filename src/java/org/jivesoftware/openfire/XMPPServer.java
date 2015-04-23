@@ -449,8 +449,10 @@ public class XMPPServer {
                         Log.debug("finishSetup.run() : verifying data source");	
                         verifyDataSource();
                         reconcileProperties();
-                        boolean isStandlone = JiveGlobals.getBooleanProperty("standalone.server", false);
-                        if(isStandlone) {
+                        
+                        StartupProperties startupProps = getStartupProperties();
+                        
+                        if("true".equals(startupProps.getStandaloneServer())) {
                         	Log.debug("Server is a standalone server, resetting setting socket linger");
                         	((AdminConsolePlugin) pluginManager.getPlugin("admin")).refreshSocketLinger();
                         }
