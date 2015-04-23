@@ -41,6 +41,7 @@ public class StartupProperties {
 	private static final String MMX_PUBLIC_PORT_SECURE = "mmxPublicPortSecure";
 	private static final String XMPP_SOCKET_LINGER = "xmppSocketLinger";
 	private static final String HTTP_SOCKET_LINGER = "httpSocketLinger";
+	private static final String STANDALONE_SERVER = "standaloneServer";
 	
 	private static List<String> propertyList = Arrays.asList(DB_HOST, DB_PORT, 
 													  DB_USER, DB_PASSWORD, 
@@ -50,7 +51,8 @@ public class StartupProperties {
 													  LOCALE, ENCRYPTION, ENCRYPTION_KEY, 
 													  MMX_ADMIN_PORT, MMX_ADMIN_PORT_SECURE, 
 													  MMX_PUBLIC_PORT, MMX_PUBLIC_PORT_SECURE,
-													  XMPP_SOCKET_LINGER, HTTP_SOCKET_LINGER);
+													  XMPP_SOCKET_LINGER, HTTP_SOCKET_LINGER,
+													  STANDALONE_SERVER);
 	
 	private String dbHost;
 	private String dbPort;
@@ -69,8 +71,9 @@ public class StartupProperties {
 	private String mmxAdminPortSecure;
 	private String mmxPublicPort;
 	private String mmxPublicPortSecure;
-	private String xmppSocketLinger;
-	private String httpSocketLinger;
+	private String xmppSocketLinger = "-1";
+	private String httpSocketLinger = "-1";
+	private String standaloneServer = "false";
 	
 	private boolean isBootstrappable = true;
 	
@@ -238,7 +241,14 @@ public class StartupProperties {
 		this.isBootstrappable = isBootstrappable;
 	}
 	
-	
+	public String getStandaloneServer() {
+		return standaloneServer;
+	}
+
+	public void setStandaloneServer(String standaloneServer) {
+		this.standaloneServer = standaloneServer;
+	}
+
 	@Override
 	public String toString() {
 		return "StartupProperties [dbHost=" + dbHost + ", dbPort=" + dbPort + ", dbName=" + dbName + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword
@@ -246,7 +256,7 @@ public class StartupProperties {
 				+ ", encryption=" + encryption + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + ", mmxAdminPort="
 				+ mmxAdminPort + ", mmxAdminPortSecure=" + mmxAdminPortSecure + ", mmxPublicPort=" + mmxPublicPort + ", mmxPublicPortSecure="
 				+ mmxPublicPortSecure + ", xmppSocketLinger=" + xmppSocketLinger + ", httpSocketLinger=" + httpSocketLinger + ", isBootstrappable="
-				+ isBootstrappable + "]";
+				+ isBootstrappable + ", standAloneServer=" + standaloneServer + "]";
 	}
 	
 	@Override
@@ -273,6 +283,7 @@ public class StartupProperties {
 		result = prime * result + ((xmppPort == null) ? 0 : xmppPort.hashCode());
 		result = prime * result + ((xmppPortSecure == null) ? 0 : xmppPortSecure.hashCode());
 		result = prime * result + ((xmppSocketLinger == null) ? 0 : xmppSocketLinger.hashCode());
+		result = prime * result + ((standaloneServer == null) ? 0 : standaloneServer.hashCode());
 		return result;
 	}
 
@@ -382,6 +393,11 @@ public class StartupProperties {
 				return false;
 		} else if (!xmppSocketLinger.equals(other.xmppSocketLinger))
 			return false;
+		if (standaloneServer == null) {
+			if (other.standaloneServer != null)
+				return false;
+		} else if (!standaloneServer.equals(other.standaloneServer))
+			return false;
 		return true;
 	}
 
@@ -392,7 +408,8 @@ public class StartupProperties {
 	private static boolean isMandatory(String property) {
 		return !ENCRYPTION.equals(property) && !ENCRYPTION_KEY.equals(property) &&
 			   !DB_PASSWORD.equals(property) && !LOCALE.equals(property) && 
-			   !XMPP_SOCKET_LINGER.equals(property) && !HTTP_SOCKET_LINGER.equals(property);
+			   !XMPP_SOCKET_LINGER.equals(property) && !HTTP_SOCKET_LINGER.equals(property) &&
+			   !STANDALONE_SERVER.equals(property);
 	}
 	
 	private static String capitalizeFirstChar(String property) {

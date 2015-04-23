@@ -449,8 +449,12 @@ public class XMPPServer {
                         Log.debug("finishSetup.run() : verifying data source");	
                         verifyDataSource();
                         reconcileProperties();
-                        ((AdminConsolePlugin) pluginManager.getPlugin("admin")).refreshSocketLinger();
-                        // First load all the modules so that modules may access other modules while
+                        boolean isStandlone = JiveGlobals.getBooleanProperty("standalone.server", false);
+                        if(isStandlone) {
+                        	Log.debug("Server is a standalone server, resetting setting socket linger");
+                        	((AdminConsolePlugin) pluginManager.getPlugin("admin")).refreshSocketLinger();
+                        }
+                    	// First load all the modules so that modules may access other modules while
                         // being initialized
                         Log.debug("finishSetup.run() : loading all modules {}");
                         
@@ -865,30 +869,33 @@ public class XMPPServer {
     	if(validatePort(mmxPublicPortSecure)) {
     		globalSettings.put("mmx.rest.https.port", mmxPublicPortSecure);
     	}
-    	
-    	String xmppSocketLinger = startupProperties.getXmppSocketLinger();
-    	try {
-    		int val =  Integer.parseInt(xmppSocketLinger);
-    		if(val < -1 || val > 120)
-    			val = -1;
-    		xmppSocketLinger = Integer.toString(val);
-    	} catch (NumberFormatException e) {
-    		xmppSocketLinger = "-1";
-    	}
-    	globalSettings.put("xmpp.socket.linger", xmppSocketLinger);
-    	
-    	String httpSocketLinger = startupProperties.getHttpSocketLinger();
-    	try {
-    		int val =  Integer.parseInt(httpSocketLinger);
-    		if(val < -1 || val > 120)
-    			val = -1;
-    		httpSocketLinger = Integer.toString(val);
-    	} catch (NumberFormatException e) {
-    		httpSocketLinger = "-1";
-    	}
-    	globalSettings.put("http.socket.linger", httpSocketLinger);
-    	
-    	for (String name : globalSettings.keySet()) {
+   	
+    	if ("true".equalsIgnoreCase(startupProperties.getStandaloneServer())) {
+    		globalSettings.put("xmpp.socket.linger", "0");
+			globalSettings.put("http.socket.linger", "0");
+		} else {
+			String xmppSocketLinger = startupProperties.getXmppSocketLinger();
+			try {
+				int val = Integer.parseInt(xmppSocketLinger);
+				if (val < -1)
+					val = -1;
+				xmppSocketLinger = Integer.toString(val);
+			} catch (NumberFormatException e) {
+				xmppSocketLinger = "-1";
+			}
+			globalSettings.put("xmpp.socket.linger", xmppSocketLinger);
+			String httpSocketLinger = startupProperties.getHttpSocketLinger();
+			try {
+				int val = Integer.parseInt(httpSocketLinger);
+				if (val < -1)
+					val = -1;
+				httpSocketLinger = Integer.toString(val);
+			} catch (NumberFormatException e) {
+				httpSocketLinger = "-1";
+			}
+			globalSettings.put("http.socket.linger", httpSocketLinger);
+		}
+		for (String name : globalSettings.keySet()) {
 	        String value = globalSettings.get(name);
 	        Log.debug("reconcileProperties : setting global prop {}={}", name, value);
 	        JiveGlobals.setProperty(name, value);
