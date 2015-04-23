@@ -851,7 +851,7 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
         }
         int linger = JiveGlobals.getIntProperty("xmpp.socket.linger", -1);
         if (linger > 0 ) {
-            socketSessionConfig.setSoLinger(linger);
+            socketSessionConfig.setSoLinger(0);
         }
         socketSessionConfig.setTcpNoDelay(
                 JiveGlobals.getBooleanProperty("xmpp.socket.tcp-nodelay", socketSessionConfig.isTcpNoDelay()));

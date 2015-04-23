@@ -123,7 +123,9 @@ public class AdminConsolePlugin implements Plugin {
 
         // Create connector for http traffic if it's enabled.
         if (adminPort > 0) {
-            Connector httpConnector = new SelectChannelConnector();
+        	SelectChannelConnector selectConnector = new SelectChannelConnector();
+        	selectConnector.setSoLingerTime(0);
+        	Connector httpConnector = selectConnector;
             // Listen on a specific network interface if it has been set.
             String bindInterface = getBindInterface();
             httpConnector.setHost(bindInterface);
@@ -152,6 +154,7 @@ public class AdminConsolePlugin implements Plugin {
                 sslContextFactory.setKeyStoreType(SSLConfig.getStoreType());
                 
                 final SslSelectChannelConnector httpsConnector = new SslSelectChannelConnector(sslContextFactory);
+                httpsConnector.setSoLingerTime(0);
                 String bindInterface = getBindInterface();
                 httpsConnector.setHost(bindInterface);
                 httpsConnector.setPort(adminSecurePort);
@@ -199,7 +202,8 @@ public class AdminConsolePlugin implements Plugin {
         //noinspection ConstantConditions
         try {
             if (adminServer != null && adminServer.isRunning()) {
-                adminServer.stop();
+            	Log.debug("Shutting down http server");
+            	adminServer.stop();
             }
         }
         catch (Exception e) {
