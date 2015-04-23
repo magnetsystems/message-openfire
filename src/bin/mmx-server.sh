@@ -48,18 +48,6 @@ openfire_start() {
     #if openfire home is not set or is not a directory
     if [ -z "$OPENFIRE_HOME" -o ! -d "$OPENFIRE_HOME" ]; then
 
-        if [ -d /opt/openfire ] ; then
-            OPENFIRE_HOME="/opt/openfire"
-        fi
-
-        if [ -d /usr/local/openfire ] ; then
-            OPENFIRE_HOME="/usr/local/openfire"
-        fi
-
-        if [ -d ${HOME}/opt/openfire ] ; then
-            OPENFIRE_HOME="${HOME}/opt/openfire"
-        fi
-
         #resolve links - $0 may be a link in openfire's home
         PRG="$0"
         progname=`basename "$0$"`
