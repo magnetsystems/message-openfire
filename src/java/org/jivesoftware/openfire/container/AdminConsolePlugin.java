@@ -124,7 +124,6 @@ public class AdminConsolePlugin implements Plugin {
         // Create connector for http traffic if it's enabled.
         if (adminPort > 0) {
         	SelectChannelConnector selectConnector = new SelectChannelConnector();
-        	selectConnector.setSoLingerTime(0);
         	Connector httpConnector = selectConnector;
             // Listen on a specific network interface if it has been set.
             String bindInterface = getBindInterface();
@@ -154,7 +153,6 @@ public class AdminConsolePlugin implements Plugin {
                 sslContextFactory.setKeyStoreType(SSLConfig.getStoreType());
                 
                 final SslSelectChannelConnector httpsConnector = new SslSelectChannelConnector(sslContextFactory);
-                httpsConnector.setSoLingerTime(0);
                 String bindInterface = getBindInterface();
                 httpsConnector.setHost(bindInterface);
                 httpsConnector.setPort(adminSecurePort);
@@ -210,6 +208,29 @@ public class AdminConsolePlugin implements Plugin {
             Log.error("Error stopping admin console server", e);
         }
         adminServer = null;
+    }
+    
+    /**
+     * Set So linger explicitly
+     */
+    
+    public void setSoLinger(int time) {
+    	Connector[] connectors = adminServer.getConnectors();
+    	for(Connector connector : connectors) {
+    		if(connector instanceof SelectChannelConnector) {
+    			Log.debug("setSoLinger : Setting http socket linger to : {}", time);
+    			((SelectChannelConnector)connector).setSoLingerTime(time);
+    		} else if(connector instanceof SslSelectChannelConnector) {
+    			Log.debug("setSoLinger : Setting https linger to : {}", time);
+    			((SslSelectChannelConnector)connector).setSoLingerTime(time);
+    		}
+    	}
+    }
+    
+    public void refreshSocketLinger() {
+    	Connector[] connectors = adminServer.getConnectors();
+    	int value = JiveGlobals.getIntProperty("http.socket.linger", -1);
+    	setSoLinger(value);
     }
 
     public void initializePlugin(PluginManager manager, File pluginDir) {

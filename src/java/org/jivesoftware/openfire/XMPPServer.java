@@ -449,6 +449,7 @@ public class XMPPServer {
                         Log.debug("finishSetup.run() : verifying data source");	
                         verifyDataSource();
                         reconcileProperties();
+                        ((AdminConsolePlugin) pluginManager.getPlugin("admin")).refreshSocketLinger();
                         // First load all the modules so that modules may access other modules while
                         // being initialized
                         Log.debug("finishSetup.run() : loading all modules {}");
@@ -864,6 +865,28 @@ public class XMPPServer {
     	if(validatePort(mmxPublicPortSecure)) {
     		globalSettings.put("mmx.rest.https.port", mmxPublicPortSecure);
     	}
+    	
+    	String xmppSocketLinger = startupProperties.getXmppSocketLinger();
+    	try {
+    		int val =  Integer.parseInt(xmppSocketLinger);
+    		if(val < -1 || val > 120)
+    			val = -1;
+    		xmppSocketLinger = Integer.toString(val);
+    	} catch (NumberFormatException e) {
+    		xmppSocketLinger = "-1";
+    	}
+    	globalSettings.put("xmpp.socket.linger", xmppSocketLinger);
+    	
+    	String httpSocketLinger = startupProperties.getHttpSocketLinger();
+    	try {
+    		int val =  Integer.parseInt(httpSocketLinger);
+    		if(val < -1 || val > 120)
+    			val = -1;
+    		httpSocketLinger = Integer.toString(val);
+    	} catch (NumberFormatException e) {
+    		httpSocketLinger = "-1";
+    	}
+    	globalSettings.put("http.socket.linger", httpSocketLinger);
     	
     	for (String name : globalSettings.keySet()) {
 	        String value = globalSettings.get(name);
