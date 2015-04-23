@@ -203,7 +203,7 @@ check_java() {
 start() {
 	if [ -e "$PID_PATH/$PROG.pid" ]; then
 		## Program is running, exit with error.
-		echo "Error! $PROG is already running or you have a stale pid file. If $PROG is not running delete $PID_PATH/$PROG.pid file and restart" 1>&2
+		echo "Error! $PROG is already running or you have a stale pid file. If $PROG is not running, then please delete $PROG.pid inside the messaging bin directory and try again." 1>&2
 		exit 1
 	else
         if [ true == $check_port ]; then
