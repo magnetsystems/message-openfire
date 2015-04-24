@@ -91,7 +91,7 @@ exit /b
 
 	if exist %PROG%.pid (
 		echo.
-		echo Error! %PROGNAME% is already running or you have a stale pid file. If %PROGNAME% is not running, then please delete %PROG%.pid inside the messaging bin directory and try again.
+		echo Error! %PROGNAME% is already running or you have a stale pid file. If %PROGNAME% is not running, then please delete mmx-standalone-dist-win\messaging\bin\mmx-server.pid file and try again.
 		exit 1
 	)	
 
