@@ -56,6 +56,7 @@ import org.jivesoftware.openfire.commands.AdHocCommandHandler;
 import org.jivesoftware.openfire.component.InternalComponentManager;
 import org.jivesoftware.openfire.container.AdminConsolePlugin;
 import org.jivesoftware.openfire.container.Module;
+import org.jivesoftware.openfire.container.Plugin;
 import org.jivesoftware.openfire.container.PluginManager;
 import org.jivesoftware.openfire.disco.IQDiscoInfoHandler;
 import org.jivesoftware.openfire.disco.IQDiscoItemsHandler;
@@ -452,7 +453,7 @@ public class XMPPServer {
                         
                         StartupProperties startupProps = getStartupProperties();
                         
-                        if("true".equals(startupProps.getStandaloneServer())) {
+                        if("true".equalsIgnoreCase(startupProps.getStandaloneServer())) {
                         	Log.debug("Server is a standalone server, resetting setting socket linger");
                         	((AdminConsolePlugin) pluginManager.getPlugin("admin")).refreshSocketLinger();
                         }
@@ -538,7 +539,7 @@ public class XMPPServer {
             	} else {
                 	Log.debug("Required startup properties not set, ignoring automatic bootstrapping");
                 }
-            }
+            }            
         }
         catch (Exception e) {
             e.printStackTrace();

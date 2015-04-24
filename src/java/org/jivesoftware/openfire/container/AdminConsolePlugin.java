@@ -123,8 +123,7 @@ public class AdminConsolePlugin implements Plugin {
 
         // Create connector for http traffic if it's enabled.
         if (adminPort > 0) {
-        	SelectChannelConnector selectConnector = new SelectChannelConnector();
-        	Connector httpConnector = selectConnector;
+        	Connector httpConnector = new SelectChannelConnector();
             // Listen on a specific network interface if it has been set.
             String bindInterface = getBindInterface();
             httpConnector.setHost(bindInterface);
@@ -184,7 +183,16 @@ public class AdminConsolePlugin implements Plugin {
         catch (Exception e) {
             Log.error("Could not start admin conosle server", e);
         }
-
+        
+        int linger = JiveGlobals.getIntProperty("http.socket.linger", -1);
+        
+        if(linger > -1) {
+        	for(Connector connector : adminServer.getConnectors()) {
+        		if(connector instanceof SelectChannelConnector) {
+        			((SelectChannelConnector) connector).setSoLingerTime(linger);
+        		}
+        	}
+        }
         // Log the ports that the admin server is listening on.
         logAdminConsolePorts();
     }
