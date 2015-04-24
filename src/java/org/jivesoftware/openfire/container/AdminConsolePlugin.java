@@ -229,6 +229,7 @@ public class AdminConsolePlugin implements Plugin {
     }
     
     public void refreshSocketLinger() {
+    	Connector[] connectors = adminServer.getConnectors();
     	int value = JiveGlobals.getIntProperty("http.socket.linger", -1);
     	setSoLinger(value);
     }
