@@ -28,7 +28,11 @@ public class BootstrapHostSettings implements BootstrapSetupStage {
          xmppSettings.put("mmx.rest.https.port", bootstrapProps.getMmxPublicPortSecure());
          xmlSettings.put("adminConsole.port", bootstrapProps.getHttpPort());
          xmlSettings.put("adminConsole.securePort", bootstrapProps.getHttpPortSecure());
-
+         if("true".equalsIgnoreCase(bootstrapProps.getStandaloneServer())) {
+        	 LOGGER.debug("exec : setting socket linger time props to 0");
+        	 xmlSettings.put("xmpp.socket.linger", "0");
+        	 xmlSettings.put("http.socket.linger", "0");
+         }
          JiveGlobals.setupPropertyEncryptionAlgorithm(bootstrapProps.getEncryptionKey());
 		 JiveGlobals.setupPropertyEncryptionKey(bootstrapProps.getEncryptionKey());
 		 

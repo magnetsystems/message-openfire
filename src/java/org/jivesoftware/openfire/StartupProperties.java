@@ -39,6 +39,7 @@ public class StartupProperties {
 	private static final String MMX_ADMIN_PORT_SECURE = "mmxAdminPortSecure";
 	private static final String MMX_PUBLIC_PORT = "mmxPublicPort";
 	private static final String MMX_PUBLIC_PORT_SECURE = "mmxPublicPortSecure";
+	private static final String STANDALONE_SERVER = "standaloneServer";
 	
 	private static List<String> propertyList = Arrays.asList(DB_HOST, DB_PORT, 
 													  DB_USER, DB_PASSWORD, 
@@ -47,7 +48,8 @@ public class StartupProperties {
 													  HTTP_PORT, HTTP_PORT_SECURE,
 													  LOCALE, ENCRYPTION, ENCRYPTION_KEY, 
 													  MMX_ADMIN_PORT, MMX_ADMIN_PORT_SECURE, 
-													  MMX_PUBLIC_PORT, MMX_PUBLIC_PORT_SECURE);
+													  MMX_PUBLIC_PORT, MMX_PUBLIC_PORT_SECURE,
+													  STANDALONE_SERVER);
 	
 	private String dbHost;
 	private String dbPort;
@@ -66,6 +68,7 @@ public class StartupProperties {
 	private String mmxAdminPortSecure;
 	private String mmxPublicPort;
 	private String mmxPublicPortSecure;
+	private String standaloneServer = "false";
 	
 	private boolean isBootstrappable = true;
 	
@@ -217,33 +220,50 @@ public class StartupProperties {
 		this.isBootstrappable = isBootstrappable;
 	}
 	
+	public String getStandaloneServer() {
+		return standaloneServer;
+	}
+
+	public void setStandaloneServer(String standaloneServer) {
+		this.standaloneServer = standaloneServer;
+	}
+
 	@Override
 	public String toString() {
-		return "BootstrapProperties [dbHost=" + dbHost + ", dbPort=" + dbPort + ", dbDb=" + dbName + ", dbUser=" + dbUser
-				+ ", dbPassword=" + dbPassword + ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppPortSecure="
-				+ xmppPortSecure + ", encryptionKey=" + encryptionKey + ", encryption=" + encryption + ", httpPort="
-				+ httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + "]";
+		return "StartupProperties [dbHost=" + dbHost + ", dbPort=" + dbPort + ", dbName=" + dbName + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword
+				+ ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppPortSecure=" + xmppPortSecure + ", encryptionKey=" + encryptionKey
+				+ ", encryption=" + encryption + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + ", mmxAdminPort="
+				+ mmxAdminPort + ", mmxAdminPortSecure=" + mmxAdminPortSecure + ", mmxPublicPort=" + mmxPublicPort + ", mmxPublicPortSecure="
+				+ mmxPublicPortSecure + ", isBootstrappable="
+				+ isBootstrappable + ", standAloneServer=" + standaloneServer + "]";
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((dbHost == null) ? 0 : dbHost.hashCode());
+		result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
+		result = prime * result + ((dbPassword == null) ? 0 : dbPassword.hashCode());
+		result = prime * result + ((dbPort == null) ? 0 : dbPort.hashCode());
+		result = prime * result + ((dbUser == null) ? 0 : dbUser.hashCode());
 		result = prime * result + ((encryption == null) ? 0 : encryption.hashCode());
 		result = prime * result + ((encryptionKey == null) ? 0 : encryptionKey.hashCode());
 		result = prime * result + ((httpPort == null) ? 0 : httpPort.hashCode());
 		result = prime * result + ((httpPortSecure == null) ? 0 : httpPortSecure.hashCode());
+		result = prime * result + (isBootstrappable ? 1231 : 1237);
 		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-		result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
-		result = prime * result + ((dbHost == null) ? 0 : dbHost.hashCode());
-		result = prime * result + ((dbPassword == null) ? 0 : dbPassword.hashCode());
-		result = prime * result + ((dbPort == null) ? 0 : dbPort.hashCode());
-		result = prime * result + ((dbUser == null) ? 0 : dbUser.hashCode());
+		result = prime * result + ((mmxAdminPort == null) ? 0 : mmxAdminPort.hashCode());
+		result = prime * result + ((mmxAdminPortSecure == null) ? 0 : mmxAdminPortSecure.hashCode());
+		result = prime * result + ((mmxPublicPort == null) ? 0 : mmxPublicPort.hashCode());
+		result = prime * result + ((mmxPublicPortSecure == null) ? 0 : mmxPublicPortSecure.hashCode());
 		result = prime * result + ((xmppDomain == null) ? 0 : xmppDomain.hashCode());
 		result = prime * result + ((xmppPort == null) ? 0 : xmppPort.hashCode());
 		result = prime * result + ((xmppPortSecure == null) ? 0 : xmppPortSecure.hashCode());
+		result = prime * result + ((standaloneServer == null) ? 0 : standaloneServer.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -253,6 +273,31 @@ public class StartupProperties {
 		if (getClass() != obj.getClass())
 			return false;
 		StartupProperties other = (StartupProperties) obj;
+		if (dbHost == null) {
+			if (other.dbHost != null)
+				return false;
+		} else if (!dbHost.equals(other.dbHost))
+			return false;
+		if (dbName == null) {
+			if (other.dbName != null)
+				return false;
+		} else if (!dbName.equals(other.dbName))
+			return false;
+		if (dbPassword == null) {
+			if (other.dbPassword != null)
+				return false;
+		} else if (!dbPassword.equals(other.dbPassword))
+			return false;
+		if (dbPort == null) {
+			if (other.dbPort != null)
+				return false;
+		} else if (!dbPort.equals(other.dbPort))
+			return false;
+		if (dbUser == null) {
+			if (other.dbUser != null)
+				return false;
+		} else if (!dbUser.equals(other.dbUser))
+			return false;
 		if (encryption == null) {
 			if (other.encryption != null)
 				return false;
@@ -273,35 +318,32 @@ public class StartupProperties {
 				return false;
 		} else if (!httpPortSecure.equals(other.httpPortSecure))
 			return false;
+		if (isBootstrappable != other.isBootstrappable)
+			return false;
 		if (locale == null) {
 			if (other.locale != null)
 				return false;
 		} else if (!locale.equals(other.locale))
 			return false;
-		if (dbName == null) {
-			if (other.dbName != null)
+		if (mmxAdminPort == null) {
+			if (other.mmxAdminPort != null)
 				return false;
-		} else if (!dbName.equals(other.dbName))
+		} else if (!mmxAdminPort.equals(other.mmxAdminPort))
 			return false;
-		if (dbHost == null) {
-			if (other.dbHost != null)
+		if (mmxAdminPortSecure == null) {
+			if (other.mmxAdminPortSecure != null)
 				return false;
-		} else if (!dbHost.equals(other.dbHost))
+		} else if (!mmxAdminPortSecure.equals(other.mmxAdminPortSecure))
 			return false;
-		if (dbPassword == null) {
-			if (other.dbPassword != null)
+		if (mmxPublicPort == null) {
+			if (other.mmxPublicPort != null)
 				return false;
-		} else if (!dbPassword.equals(other.dbPassword))
+		} else if (!mmxPublicPort.equals(other.mmxPublicPort))
 			return false;
-		if (dbPort == null) {
-			if (other.dbPort != null)
+		if (mmxPublicPortSecure == null) {
+			if (other.mmxPublicPortSecure != null)
 				return false;
-		} else if (!dbPort.equals(other.dbPort))
-			return false;
-		if (dbUser == null) {
-			if (other.dbUser != null)
-				return false;
-		} else if (!dbUser.equals(other.dbUser))
+		} else if (!mmxPublicPortSecure.equals(other.mmxPublicPortSecure))
 			return false;
 		if (xmppDomain == null) {
 			if (other.xmppDomain != null)
@@ -318,16 +360,22 @@ public class StartupProperties {
 				return false;
 		} else if (!xmppPortSecure.equals(other.xmppPortSecure))
 			return false;
+		if (standaloneServer == null) {
+			if (other.standaloneServer != null)
+				return false;
+		} else if (!standaloneServer.equals(other.standaloneServer))
+			return false;
 		return true;
 	}
-	
+
 	private static boolean isNullOrEmpty(String s) {
 		return s==null || s.isEmpty();
 	}
 	
 	private static boolean isMandatory(String property) {
 		return !ENCRYPTION.equals(property) && !ENCRYPTION_KEY.equals(property) &&
-			   !DB_PASSWORD.equals(property) && !LOCALE.equals(property);	
+			   !DB_PASSWORD.equals(property) && !LOCALE.equals(property) && 
+			   !STANDALONE_SERVER.equals(property);
 	}
 	
 	private static String capitalizeFirstChar(String property) {

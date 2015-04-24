@@ -56,6 +56,7 @@ import org.jivesoftware.openfire.commands.AdHocCommandHandler;
 import org.jivesoftware.openfire.component.InternalComponentManager;
 import org.jivesoftware.openfire.container.AdminConsolePlugin;
 import org.jivesoftware.openfire.container.Module;
+import org.jivesoftware.openfire.container.Plugin;
 import org.jivesoftware.openfire.container.PluginManager;
 import org.jivesoftware.openfire.disco.IQDiscoInfoHandler;
 import org.jivesoftware.openfire.disco.IQDiscoItemsHandler;
@@ -449,7 +450,16 @@ public class XMPPServer {
                         Log.debug("finishSetup.run() : verifying data source");	
                         verifyDataSource();
                         reconcileProperties();
-                        // First load all the modules so that modules may access other modules while
+                        
+                        StartupProperties startupProps = getStartupProperties();
+                        
+                        if("true".equalsIgnoreCase(startupProps.getStandaloneServer())) {
+                        	Log.debug("Server is a standalone server, resetting setting socket linger");
+                        	Plugin plugin = pluginManager.getPlugin("admin");
+                        	if(plugin instanceof AdminConsolePlugin)
+                        		((AdminConsolePlugin) pluginManager.getPlugin("admin")).refreshSocketLinger();
+                        }
+                    	// First load all the modules so that modules may access other modules while
                         // being initialized
                         Log.debug("finishSetup.run() : loading all modules {}");
                         
@@ -539,6 +549,7 @@ public class XMPPServer {
             System.out.println(LocaleUtils.getLocalizedString("startup.error"));
             shutdownServer();
         }
+        Log.debug("initialize : Server initialization complte");
     }
     
     private void loadModules() {
@@ -864,8 +875,13 @@ public class XMPPServer {
     	if(validatePort(mmxPublicPortSecure)) {
     		globalSettings.put("mmx.rest.https.port", mmxPublicPortSecure);
     	}
-    	
-    	for (String name : globalSettings.keySet()) {
+   	
+    	if ("true".equalsIgnoreCase(startupProperties.getStandaloneServer())) {
+    		Log.debug("reconcileDbProperties : setting socket linger props to 0");
+    		globalSettings.put("xmpp.socket.linger", "0");
+			globalSettings.put("http.socket.linger", "0");
+		} 
+		for (String name : globalSettings.keySet()) {
 	        String value = globalSettings.get(name);
 	        Log.debug("reconcileProperties : setting global prop {}={}", name, value);
 	        JiveGlobals.setProperty(name, value);
