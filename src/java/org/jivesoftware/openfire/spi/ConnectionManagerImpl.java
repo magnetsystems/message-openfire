@@ -370,7 +370,9 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
             // Add the XMPP codec filter
             socketAcceptor.getFilterChain().addFirst("xmpp", new ProtocolCodecFilter(new XMPPCodecFactory()));
             // Kill sessions whose outgoing queues keep growing and fail to send traffic
-            socketAcceptor.getFilterChain().addAfter("xmpp", "outCap", new StalledSessionsFilter());
+            boolean disableKillStalledSessions = JiveGlobals.getBooleanProperty("disable.kill.stalled.sessions", false);
+            if(!disableKillStalledSessions)
+            	socketAcceptor.getFilterChain().addAfter("xmpp", "outCap", new StalledSessionsFilter());
         }
     }
 
@@ -453,7 +455,9 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 sslSocketAcceptor.getFilterChain().addFirst("xmpp", new ProtocolCodecFilter(new XMPPCodecFactory()));
                 sslSocketAcceptor.getFilterChain().addFirst("threadModel", executorFilter);
                 // Kill sessions whose outgoing queues keep growing and fail to send traffic
-                sslSocketAcceptor.getFilterChain().addAfter("xmpp", "outCap", new StalledSessionsFilter());
+                boolean disableKillStalledSessions = JiveGlobals.getBooleanProperty("disable.kill.stalled.sessions", false);
+                if(!disableKillStalledSessions)
+                	sslSocketAcceptor.getFilterChain().addAfter("xmpp", "outCap", new StalledSessionsFilter());
 
                 // Add the SSL filter now since sockets are "borned" encrypted in the old ssl method
                 SSLContext sslContext = SSLContext.getInstance(algorithm);
