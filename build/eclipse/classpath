@@ -22,6 +22,7 @@
 	<classpathentry kind="src" path="src/plugins/userImportExport/src/java"/>
 	<classpathentry kind="src" path="src/plugins/userservice/src/java"/>
 	<classpathentry kind="src" path="src/plugins/xmldebugger/src/java"/>
+	<classpathentry kind="src" path="src/plugins/hazelcast/src/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/throttletest/src"/>
 	<classpathentry kind="src" path="src/tools/anttask"/>
@@ -150,5 +151,6 @@
 	<classpathentry kind="lib" path="build/lib/dist/gson-2.3.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="src/plugins/stunserver/lib/jstun-0.6.1.jar"/>
+	<classpathentry kind="lib" path="src/plugins/hazelcast/lib/hazelcast-3.1.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
