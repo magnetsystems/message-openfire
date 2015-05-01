@@ -5,7 +5,7 @@
         <appender name="cache-out" class="org.apache.log4j.RollingFileAppender">
                 <param name="File" value="/opt/mmx-server/logs/cache.log" />
                 <param name="MaxFileSize" value="512MB"/>
-                <param name="MaxBackupIndex" value="4"/>
+                <param name="MaxBackupIndex" value="2"/>
                 <layout class="org.apache.log4j.PatternLayout">
                         <param name="ConversionPattern" value="%d{yyyy.MM.dd HH:mm:ss} [%p] (%t) %c - %m%n" />
                 </layout>
@@ -13,8 +13,8 @@
 
         <appender name="openfire-out" class="org.apache.log4j.RollingFileAppender">
                 <param name="File" value="../logs/openfire.log" />
-                <param name="MaxFileSize" value="1024MB"/>
-                <param name="MaxBackupIndex" value="5"/>
+                <param name="MaxFileSize" value="512MB"/>
+                <param name="MaxBackupIndex" value="2"/>
                 <layout class="org.apache.log4j.PatternLayout">
                         <param name="ConversionPattern" value="%d{yyyy.MM.dd HH:mm:ss} [%p] (%t) %c - %m%n" />
                 </layout>
@@ -23,7 +23,7 @@
         <appender name="mmxmgmt-out" class="org.apache.log4j.RollingFileAppender">
                 <param name="File" value="../logs/mmxmgmt.log" />
                 <param name="MaxFileSize" value="512MB"/>
-                <param name="MaxBackupIndex" value="6"/>
+                <param name="MaxBackupIndex" value="2"/>
                 <layout class="org.apache.log4j.PatternLayout">
                         <param name="ConversionPattern" value="%d{yyyy.MM.dd HH:mm:ss} [%p] (%t) %c - %m%n" />
                 </layout>
