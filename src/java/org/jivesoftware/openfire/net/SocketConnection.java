@@ -443,6 +443,8 @@ public class SocketConnection implements Connection {
 
     public void close() {
         boolean wasClosed = false;
+        Exception test = new Exception();
+        Log.error("Closing connection stack trace", test);
         synchronized (this) {
             if (!isClosed()) {
                 try {

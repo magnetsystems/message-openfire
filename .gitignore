@@ -11,3 +11,4 @@ atlassian-ide-plugin.xml
 .settings
 .project
 .classpath
+/bin/

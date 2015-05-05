@@ -34,7 +34,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -97,14 +101,15 @@ import org.slf4j.LoggerFactory;
 public class ConnectionManagerImpl extends BasicModule implements ConnectionManager, CertificateEventListener {
 
 	private static final Logger Log = LoggerFactory.getLogger(ConnectionManagerImpl.class);
-
+	private ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+	
     private SocketAcceptor socketAcceptor;
     private SocketAcceptor sslSocketAcceptor;
     private SocketAcceptor componentAcceptor;
     private SocketAcceptThread serverSocketThread;
     private SocketAcceptor multiplexerSocketAcceptor;
     private ArrayList<ServerPort> ports;
-
+    ThreadPoolExecutor eventExecutorRef;
     private SessionManager sessionManager;
     private PacketDeliverer deliverer;
     private PacketRouter router;
@@ -235,6 +240,7 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
             ExecutorThreadModel threadModel = ExecutorThreadModel.getInstance("connectionManager");
             int eventThreads = JiveGlobals.getIntProperty("xmpp.multiplex.processing.threads", 16);
             ThreadPoolExecutor eventExecutor = (ThreadPoolExecutor) threadModel.getExecutor();
+            eventExecutorRef = eventExecutor;
             eventExecutor.setCorePoolSize(eventThreads + 1);
             eventExecutor.setMaximumPoolSize(eventThreads + 1);
             eventExecutor.setKeepAliveTime(60, TimeUnit.SECONDS);
@@ -918,6 +924,24 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
         startListeners();
         SocketSendingTracker.getInstance().start();
         CertificateManager.addListener(this);
+        scheduledExecutor.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				if(eventExecutorRef != null) {
+					int size = eventExecutorRef.getQueue().size();
+					eventExecutorRef.setRejectedExecutionHandler(new RejectedExecutionHandler() {						
+						@Override
+						public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+							Log.debug("task was rejected");
+						}
+					});
+					Log.warn("start : client pool size={}", size);
+				} else {
+					Log.warn("executor ref is null");
+				}
+			}
+        	
+        }, 0L, 10L, TimeUnit.SECONDS);
     }
 
     @Override
@@ -931,6 +955,9 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
         HttpBindManager.getInstance().stop();
         SocketSendingTracker.getInstance().shutdown();
         CertificateManager.removeListener(this);
+        if(scheduledExecutor != null) {
+        	scheduledExecutor.shutdownNow();
+        }
         serverName = null;
     }
 }
