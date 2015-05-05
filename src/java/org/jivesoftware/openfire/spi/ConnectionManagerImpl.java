@@ -929,12 +929,6 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
 			public void run() {
 				if(eventExecutorRef != null) {
 					int size = eventExecutorRef.getQueue().size();
-					eventExecutorRef.setRejectedExecutionHandler(new RejectedExecutionHandler() {						
-						@Override
-						public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-							Log.debug("task was rejected");
-						}
-					});
 					Log.warn("start : client pool size={}", size);
 				} else {
 					Log.warn("executor ref is null");
