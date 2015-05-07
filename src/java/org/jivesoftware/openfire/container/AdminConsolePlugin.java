@@ -20,22 +20,11 @@
 package org.jivesoftware.openfire.container;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.management.remote.JMXAuthenticator;
-import javax.management.remote.JMXPrincipal;
-import javax.management.remote.JMXServiceURL;
-import javax.security.auth.Subject;
 
 import org.eclipse.jetty.http.ssl.SslContextFactory;
-import org.eclipse.jetty.jmx.ConnectorServer;
-import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -49,8 +38,6 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jivesoftware.openfire.JMXManager;
 import org.jivesoftware.openfire.XMPPServer;
-import org.jivesoftware.openfire.admin.AdminManager;
-import org.jivesoftware.openfire.auth.AuthFactory;
 import org.jivesoftware.openfire.net.SSLConfig;
 import org.jivesoftware.util.CertificateEventListener;
 import org.jivesoftware.util.CertificateManager;
@@ -129,6 +116,7 @@ public class AdminConsolePlugin implements Plugin {
             httpConnector.setHost(bindInterface);
             httpConnector.setPort(adminPort);
             httpConnector.setStatsOn(JMXManager.isEnabled());
+            ((SelectChannelConnector) httpConnector).setSoLingerTime(0);
             adminServer.addConnector(httpConnector);
         }
 
@@ -156,6 +144,7 @@ public class AdminConsolePlugin implements Plugin {
                 httpsConnector.setHost(bindInterface);
                 httpsConnector.setPort(adminSecurePort);
                 httpsConnector.setStatsOn(JMXManager.isEnabled());
+                ((SslSelectChannelConnector) httpsConnector).setSoLingerTime(0);
                 adminServer.addConnector(httpsConnector);
 
                 sslEnabled = true;
@@ -176,8 +165,6 @@ public class AdminConsolePlugin implements Plugin {
         HandlerCollection collection = new HandlerCollection();
         adminServer.setHandler(collection);
         collection.setHandlers(new Handler[] { contexts, new DefaultHandler() });
-        
-        refreshSocketLinger();
 
         try {
             adminServer.start();
@@ -211,29 +198,6 @@ public class AdminConsolePlugin implements Plugin {
         adminServer = null;
     }
     
-    /**
-     * Set So linger explicitly
-     */
-    
-    public void setSoLinger(int time) {
-    	Connector[] connectors = adminServer.getConnectors();
-    	for(Connector connector : connectors) {
-    		if(connector instanceof SelectChannelConnector) {
-    			Log.debug("setSoLinger : Setting http socket linger to : {}", time);
-    			((SelectChannelConnector)connector).setSoLingerTime(time);
-    		} else if(connector instanceof SslSelectChannelConnector) {
-    			Log.debug("setSoLinger : Setting https linger to : {}", time);
-    			((SslSelectChannelConnector)connector).setSoLingerTime(time);
-    		}
-    	}
-    }
-    
-    public void refreshSocketLinger() {
-    	Connector[] connectors = adminServer.getConnectors();
-    	int value = JiveGlobals.getIntProperty("http.socket.linger", -1);
-    	setSoLinger(value);
-    }
-
     public void initializePlugin(PluginManager manager, File pluginDir) {
         this.pluginDir = pluginDir;
 

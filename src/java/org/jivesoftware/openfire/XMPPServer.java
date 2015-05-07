@@ -456,8 +456,6 @@ public class XMPPServer {
                         if("true".equalsIgnoreCase(startupProps.getStandaloneServer())) {
                         	Log.debug("Server is a standalone server, resetting setting socket linger");
                         	Plugin plugin = pluginManager.getPlugin("admin");
-                        	if(plugin instanceof AdminConsolePlugin)
-                        		((AdminConsolePlugin) pluginManager.getPlugin("admin")).refreshSocketLinger();
                         }
                     	// First load all the modules so that modules may access other modules while
                         // being initialized
