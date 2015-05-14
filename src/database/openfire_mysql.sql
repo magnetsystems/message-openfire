@@ -380,3 +380,5 @@ insert into ofProperty values('xmpp.routing.strict', 'true');
 insert into ofProperty values('xmpp.client.idle', '-1');
 
 insert into ofProperty values('xmpp.client.idle.ping', 'false');
+
+insert into ofProperty values('xmpp.pubsub.flush.max', '-1');
