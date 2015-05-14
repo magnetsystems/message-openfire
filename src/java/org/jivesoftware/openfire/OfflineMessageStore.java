@@ -25,13 +25,11 @@ import org.dom4j.Element;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 import org.jivesoftware.database.DbConnectionManager;
-import org.jivesoftware.database.SequenceManager;
 import org.jivesoftware.openfire.container.BasicModule;
 import org.jivesoftware.openfire.event.UserEventDispatcher;
 import org.jivesoftware.openfire.event.UserEventListener;
 import org.jivesoftware.openfire.user.User;
 import org.jivesoftware.openfire.user.UserManager;
-import org.jivesoftware.util.JiveConstants;
 import org.jivesoftware.util.LocaleUtils;
 import org.jivesoftware.util.StringUtils;
 import org.jivesoftware.util.XMPPDateTimeFormat;
@@ -46,7 +44,12 @@ import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
@@ -66,8 +69,8 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
 	private static final Logger Log = LoggerFactory.getLogger(OfflineMessageStore.class);
 
     private static final String INSERT_OFFLINE =
-        "INSERT INTO ofOffline (username, messageID, creationDate, messageSize, stanza) " +
-        "VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO ofOffline (username, creationDate, messageSize, stanza) " +
+        "VALUES (?, ?, ?, ?)";
     private static final String LOAD_OFFLINE =
         "SELECT stanza, creationDate FROM ofOffline WHERE username=?";
     private static final String LOAD_OFFLINE_MESSAGE =
@@ -80,8 +83,8 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         "DELETE FROM ofOffline WHERE username=?";
     private static final String DELETE_OFFLINE_MESSAGE =
         "DELETE FROM ofOffline WHERE username=? AND creationDate=?";
-    private static final String INSERT_WITH_PACKET_ID = "INSERT INTO ofOffline (username, messageID, creationDate, messageSize, packetId, stanza) " +
-        "VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_WITH_PACKET_ID = "INSERT INTO ofOffline (username, creationDate, messageSize, packetId, stanza) " +
+        "VALUES (?, ?, ?, ?, ?)";
     private static final String DELETE_WITH_PACKET_ID =
     	"DELETE FROM ofOffline WHERE username = ? AND packetId = ?";
     
@@ -143,7 +146,7 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
             return;
         }
 
-        long messageID = SequenceManager.nextID(JiveConstants.OFFLINE);
+       // long messageID = SequenceManager.nextID(JiveConstants.OFFLINE);
 
         // Get the message in XML format.
         String msgXML = message.getElement().asXML();
@@ -159,11 +162,10 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
                  * Store the offline message using the complete JID of the recipient
                  */
                 pstmt.setString(1, recipient.toString());
-                pstmt.setLong(2, messageID);
-                pstmt.setString(3, StringUtils.dateToMillis(new java.util.Date()));
-                pstmt.setInt(4, msgXML.length());
-                pstmt.setString(5, message.getID());
-                pstmt.setString(6, msgXML);
+                pstmt.setString(2, StringUtils.dateToMillis(new java.util.Date()));
+                pstmt.setInt(3, msgXML.length());
+                pstmt.setString(4, message.getID());
+                pstmt.setString(5, msgXML);
             }
             else {
             	pstmt = con.prepareStatement(INSERT_OFFLINE);
@@ -172,10 +174,10 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
                  * Store the offline message using the complete JID of the recipient
                  */
                 pstmt.setString(1, recipient.toString());
-                pstmt.setLong(2, messageID);
-                pstmt.setString(3, StringUtils.dateToMillis(new java.util.Date()));
-                pstmt.setInt(4, msgXML.length());
-                pstmt.setString(5, msgXML);
+                //pstmt.setLong(2, messageID);
+                pstmt.setString(2, StringUtils.dateToMillis(new java.util.Date()));
+                pstmt.setInt(3, msgXML.length());
+                pstmt.setString(4, msgXML);
             }
             pstmt.executeUpdate();
         }

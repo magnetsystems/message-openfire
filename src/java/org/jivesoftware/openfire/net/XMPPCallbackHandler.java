@@ -19,7 +19,13 @@
 
 package org.jivesoftware.openfire.net;
 
-import java.io.IOException;
+import org.jivesoftware.openfire.auth.AuthFactory;
+import org.jivesoftware.openfire.auth.AuthToken;
+import org.jivesoftware.openfire.auth.AuthorizationManager;
+import org.jivesoftware.openfire.sasl.VerifyPasswordCallback;
+import org.jivesoftware.openfire.user.UserNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -28,14 +34,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.AuthorizeCallback;
 import javax.security.sasl.RealmCallback;
-
-import org.jivesoftware.openfire.auth.AuthFactory;
-import org.jivesoftware.openfire.auth.AuthToken;
-import org.jivesoftware.openfire.auth.AuthorizationManager;
-import org.jivesoftware.openfire.sasl.VerifyPasswordCallback;
-import org.jivesoftware.openfire.user.UserNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 /**
  * Callback handler that may be used when doing SASL authentication. A CallbackHandler
@@ -88,6 +87,7 @@ public class XMPPCallbackHandler implements CallbackHandler {
                     //Log.debug("XMPPCallbackHandler: PasswordCallback");
                 }
                 catch (UserNotFoundException e) {
+                  Log.warn("UserNotFoundException for {}", name, e);
                     throw new IOException(e.toString());
                 }
                 catch (UnsupportedOperationException uoe) {

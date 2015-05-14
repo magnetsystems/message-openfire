@@ -20,23 +20,8 @@
 
 package org.jivesoftware.openfire.net;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.nio.channels.Channels;
-import java.security.cert.Certificate;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-
+import com.jcraft.jzlib.JZlib;
+import com.jcraft.jzlib.ZOutputStream;
 import org.jivesoftware.openfire.Connection;
 import org.jivesoftware.openfire.ConnectionCloseListener;
 import org.jivesoftware.openfire.PacketDeliverer;
@@ -51,8 +36,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmpp.packet.Packet;
 
-import com.jcraft.jzlib.JZlib;
-import com.jcraft.jzlib.ZOutputStream;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.channels.Channels;
+import java.security.cert.Certificate;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * An object to track the state of a XMPP client-server session.
@@ -443,8 +441,8 @@ public class SocketConnection implements Connection {
 
     public void close() {
         boolean wasClosed = false;
-        Exception test = new Exception();
-        Log.error("Closing connection stack trace", test);
+        //Exception test = new Exception();
+        //Log.error("Closing connection stack trace", test);
         synchronized (this) {
             if (!isClosed()) {
                 try {

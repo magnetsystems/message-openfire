@@ -20,16 +20,16 @@
 
 package org.jivesoftware.database;
 
+import org.jivesoftware.util.JiveConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.jivesoftware.util.JiveConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Manages sequences of unique ID's that get stored in the database. Database support for sequences
@@ -81,15 +81,17 @@ public class SequenceManager {
      * @return the next unique ID of the specified type.
      */
     public static long nextID(int type) {
-        if (managers.containsKey(type)) {
-            return managers.get(type).nextUniqueID();
-        }
-        else {
-            // Verify type is valid from the db, if so create an instance for the type
-            // And return the next unique id
-            SequenceManager manager = new SequenceManager(type, 1);
-            return manager.nextUniqueID();
-        }
+      if (type == JiveConstants.OFFLINE) {
+        throw new IllegalArgumentException(String.format("nextID for type:%d is not supported", type));
+      }
+      if (managers.containsKey(type)) {
+        return managers.get(type).nextUniqueID();
+      } else {
+        // Verify type is valid from the db, if so create an instance for the type
+        // And return the next unique id
+        SequenceManager manager = new SequenceManager(type, 1);
+        return manager.nextUniqueID();
+      }
     }
 
     /**
