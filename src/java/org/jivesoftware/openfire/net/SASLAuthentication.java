@@ -20,25 +20,8 @@
 
 package org.jivesoftware.openfire.net;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
-import java.security.KeyStoreException;
-import java.security.Security;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-
-import javax.security.sasl.Sasl;
-import javax.security.sasl.SaslException;
-import javax.security.sasl.SaslServer;
-
+import com.magnet.mmx.sasl.MMXBFOAuthSaslProvider;
+import com.magnet.mmx.sasl.MMXSaslServerFactoryImpl;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -60,6 +43,24 @@ import org.jivesoftware.util.JiveGlobals;
 import org.jivesoftware.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.security.sasl.Sasl;
+import javax.security.sasl.SaslException;
+import javax.security.sasl.SaslServer;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
+import java.security.KeyStoreException;
+import java.security.Security;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 /**
  * SASLAuthentication is responsible for returning the available SASL mechanisms to use and for
@@ -253,6 +254,7 @@ public class SASLAuthentication {
      * @throws UnsupportedEncodingException If UTF-8 charset is not supported.
      */
     public static Status handle(LocalSession session, Element doc) throws UnsupportedEncodingException {
+        Log.debug("Entering handle in SASALAuthentication");
         Status status;
         String mechanism;
         if (doc.getNamespace().asXML().equals(SASL_NAMESPACE)) {
@@ -263,6 +265,7 @@ public class SASLAuthentication {
                     status = Status.failed;
                     break;
                 case AUTH:
+                    Log.debug("type:{}", type);
                     mechanism = doc.attributeValue("mechanism");
                     // http://xmpp.org/rfcs/rfc6120.html#sasl-errors-invalid-mechanism
                     // The initiating entity did not specify a mechanism
@@ -310,7 +313,7 @@ public class SASLAuthentication {
                             }
                             if (mechanism.equals("DIGEST-MD5")) {
                                 // RFC2831 (DIGEST-MD5) says the client MAY provide an initial response on subsequent
-                                // authentication. Java SASL does not (currently) support this and thows an exception
+                                // authentication. Java SASL does not (currently) support this and throws an exception
                                 // if we try.  This violates the RFC, so we just strip any initial token.
                                 token = new byte[0];
                             }
@@ -322,6 +325,7 @@ public class SASLAuthentication {
                             }
                             else {
                                 // Send the challenge
+                                Log.debug("Sending challenge:{}", challenge);
                                 sendChallenge(session, challenge);
                                 status = Status.needResponse;
                             }
@@ -343,6 +347,7 @@ public class SASLAuthentication {
                 case RESPONSE:
                     // Store the requested SASL mechanism by the client
                     mechanism = (String) session.getSessionData("SaslMechanism");
+                    Log.debug("type:{} mechanism:{}", type, mechanism);
                     if (mechanism.equalsIgnoreCase("EXTERNAL")) {
                         status = doExternalAuthentication(session, doc);
                     }
@@ -361,12 +366,14 @@ public class SASLAuthentication {
                                     status = Status.authenticated;
                                 }
                                 else {
+                                    Log.debug("Decoding:{}", response);
                                     byte[] data = StringUtils.decodeBase64(response);
                                     if (data == null) {
                                         data = new byte[0];
                                     }
                                     byte[] challenge = ss.evaluateResponse(data);
                                     if (ss.isComplete()) {
+                                        Log.debug("Auth successful");
                                         authenticationSuccessful(session, ss.getAuthorizationID(),
                                                 challenge);
                                         status = Status.authenticated;
@@ -663,6 +670,7 @@ public class SASLAuthentication {
                 "<challenge xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
         reply.append(challenge_b64);
         reply.append("</challenge>");
+        Log.debug("Challenge text:{}",  challenge_b64);
         session.deliverRawText(reply.toString());
     }
 
@@ -791,6 +799,8 @@ public class SASLAuthentication {
             mechanisms.add("DIGEST-MD5");
             mechanisms.add("CRAM-MD5");
             mechanisms.add("JIVE-SHAREDSECRET");
+            Log.debug("Adding MMX_OAUTH");
+            mechanisms.add(MMXSaslServerFactoryImpl.MMX_BF_OUATH);
         }
         else {
             StringTokenizer st = new StringTokenizer(available, " ,\t\n\r\f");
@@ -828,5 +838,7 @@ public class SASLAuthentication {
         }
         //Add our providers to the Security class
         Security.addProvider(new org.jivesoftware.openfire.sasl.SaslProvider());
+        //Add custom magnet SASL provider.
+        Security.addProvider(new MMXBFOAuthSaslProvider());
     }
 }
