@@ -19,7 +19,13 @@
 
 package org.jivesoftware.openfire.net;
 
-import java.io.IOException;
+import org.jivesoftware.openfire.auth.AuthFactory;
+import org.jivesoftware.openfire.auth.AuthToken;
+import org.jivesoftware.openfire.auth.AuthorizationManager;
+import org.jivesoftware.openfire.sasl.VerifyPasswordCallback;
+import org.jivesoftware.openfire.user.UserNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -28,14 +34,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.AuthorizeCallback;
 import javax.security.sasl.RealmCallback;
-
-import org.jivesoftware.openfire.auth.AuthFactory;
-import org.jivesoftware.openfire.auth.AuthToken;
-import org.jivesoftware.openfire.auth.AuthorizationManager;
-import org.jivesoftware.openfire.sasl.VerifyPasswordCallback;
-import org.jivesoftware.openfire.user.UserNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 /**
  * Callback handler that may be used when doing SASL authentication. A CallbackHandler
@@ -58,7 +57,7 @@ public class XMPPCallbackHandler implements CallbackHandler {
 
     public void handle(final Callback[] callbacks)
             throws IOException, UnsupportedCallbackException {
-
+        Log.debug("handle");
 
         String realm;
         String name = null;
@@ -69,14 +68,14 @@ public class XMPPCallbackHandler implements CallbackHandler {
                 if (realm == null) {
                     realm = ((RealmCallback) callback).getDefaultText();
                 }
-                //Log.debug("XMPPCallbackHandler: RealmCallback: " + realm);
+                Log.debug("XMPPCallbackHandler: RealmCallback: " + realm);
             }
             else if (callback instanceof NameCallback) {
                 name = ((NameCallback) callback).getName();
                 if (name == null) {
                     name = ((NameCallback) callback).getDefaultName();
                 }
-                //Log.debug("XMPPCallbackHandler: NameCallback: " + name);
+                Log.debug("XMPPCallbackHandler: NameCallback: " + name);
             }
             else if (callback instanceof PasswordCallback) {
                 try {
@@ -85,7 +84,7 @@ public class XMPPCallbackHandler implements CallbackHandler {
                     ((PasswordCallback) callback)
                             .setPassword(AuthFactory.getPassword(name).toCharArray());
 
-                    //Log.debug("XMPPCallbackHandler: PasswordCallback");
+                    Log.debug("XMPPCallbackHandler: PasswordCallback");
                 }
                 catch (UserNotFoundException e) {
                     throw new IOException(e.toString());
@@ -96,7 +95,7 @@ public class XMPPCallbackHandler implements CallbackHandler {
 
             }
             else if (callback instanceof VerifyPasswordCallback) {
-                //Log.debug("XMPPCallbackHandler: VerifyPasswordCallback");
+                Log.debug("XMPPCallbackHandler: VerifyPasswordCallback");
                 VerifyPasswordCallback vpcb = (VerifyPasswordCallback) callback;
                 try {
                     AuthToken at = AuthFactory.authenticate(name, new String(vpcb.getPassword()));
@@ -107,7 +106,7 @@ public class XMPPCallbackHandler implements CallbackHandler {
                 }
             }
             else if (callback instanceof AuthorizeCallback) {
-                //Log.debug("XMPPCallbackHandler: AuthorizeCallback");
+                Log.debug("XMPPCallbackHandler: AuthorizeCallback");
                 AuthorizeCallback authCallback = ((AuthorizeCallback) callback);
                 // Principal that authenticated
                 String principal = authCallback.getAuthenticationID();
@@ -122,12 +121,12 @@ public class XMPPCallbackHandler implements CallbackHandler {
                     //client perhaps made no request, get default username
                     username = AuthorizationManager.map(principal);
                     if (Log.isDebugEnabled()) {
-                        //Log.debug("XMPPCallbackHandler: no username requested, using " + username);
+                        Log.debug("XMPPCallbackHandler: no username requested, using " + username);
                     }
                 }
                 if (AuthorizationManager.authorize(username, principal)) {
                     if (Log.isDebugEnabled()) {
-                        //Log.debug("XMPPCallbackHandler: " + principal + " authorized to " + username);
+                        Log.debug("XMPPCallbackHandler: " + principal + " authorized to " + username);
                     }
                     authCallback.setAuthorized(true);
                     authCallback.setAuthorizedID(username);
