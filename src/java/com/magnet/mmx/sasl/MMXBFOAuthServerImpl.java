@@ -53,7 +53,7 @@ public class MMXBFOAuthServerImpl implements SaslServer {
 
   @Override
   public String getMechanismName() {
-    return MMXSaslServerFactoryImpl.MMX_BF_OUATH;
+    return MMXSaslServerFactoryImpl.MMX_OAUTH2;
   }
 
   @Override

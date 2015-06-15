@@ -16,6 +16,7 @@ package com.magnet.mmx.sasl;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import org.jivesoftware.util.JiveGlobals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +34,7 @@ import java.util.List;
 public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
   private static Logger LOGGER = LoggerFactory.getLogger(BFOAuthTokenValidatorImpl.class);
 
-
-  private final static String oAuthServerEndpoint = "http://localhost:8443/api/tokens/token";
+  private final static String DEFAULT_OAUTH_SERVER_ENDPOINT = "http://localhost:8443/api/tokens/token";
   private final static String METHOD = "GET";
   private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
 
@@ -92,8 +92,9 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
 
 
   private static HttpURLConnection makeGetRequest(String token) throws IOException {
-    LOGGER.debug("Sending GET to " + oAuthServerEndpoint);
-    HttpURLConnection conn = getConnection(oAuthServerEndpoint);
+    String oAuthServerEndPoint = JiveGlobals.getProperty("mmx.auth.endpoint.url", DEFAULT_OAUTH_SERVER_ENDPOINT);
+    LOGGER.debug("Sending GET to " + oAuthServerEndPoint);
+    HttpURLConnection conn = getConnection(oAuthServerEndPoint);
     conn.setDoOutput(true);
     conn.setUseCaches(false);
     conn.setRequestMethod(METHOD);
