@@ -31,15 +31,15 @@ import java.util.Map;
 public class MMXSaslServerFactoryImpl implements SaslServerFactory {
   private static Logger LOGGER = LoggerFactory.getLogger(MMXSaslServerFactoryImpl.class);
 
-  public static final String MMX_BF_OUATH = "X-MMX_BF_OAUTH2";
-  private static final String myMechs[] = {MMX_BF_OUATH};
-  private static final int mechPolicies[] = { PolicyUtils.NOANONYMOUS};
+  public static final String MMX_OAUTH2 = "X-MMX_OAUTH2";
+  private static final String myMechs[] = {MMX_OAUTH2};
+  private static final int mechPolicies[] = {PolicyUtils.NOANONYMOUS};
 
   @Override
   public SaslServer createSaslServer(String mechanism, String protocol, String serverName, Map<String, ?> props, CallbackHandler cbh)
       throws SaslException {
     LOGGER.trace("entered createSaslServer");
-    if (mechanism.equals(MMX_BF_OUATH) && PolicyUtils.checkPolicy(PolicyUtils.NOANONYMOUS, props)) {
+    if (mechanism.equals(MMX_OAUTH2) && PolicyUtils.checkPolicy(PolicyUtils.NOANONYMOUS, props)) {
       if (cbh == null) {
         throw new SaslException("CallbackHandler with support for Password, Name, and AuthorizeCallback required");
       }

@@ -20,6 +20,6 @@ public class MMXBFOAuthSaslProvider extends Provider{
 
   public MMXBFOAuthSaslProvider() {
     super("MagnetSotftware", 1.0, "Magnet SASL provider v1.0, implementing server mechanisms for: X-MMX_BF_OAUTH2");
-    put("SaslServerFactory." + MMXSaslServerFactoryImpl.MMX_BF_OUATH, "com.magnet.mmx.sasl.MMXSaslServerFactoryImpl");
+    put("SaslServerFactory." + MMXSaslServerFactoryImpl.MMX_OAUTH2, "com.magnet.mmx.sasl.MMXSaslServerFactoryImpl");
   }
 }

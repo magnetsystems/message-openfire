@@ -298,7 +298,7 @@ public class SASLAuthentication {
                                 props.put(Sasl.SERVER_AUTH, "TRUE");
                             }
                             CallbackHandler handler = null;
-                            if (mechanism.equals(MMXSaslServerFactoryImpl.MMX_BF_OUATH)) {
+                            if (mechanism.equals(MMXSaslServerFactoryImpl.MMX_OAUTH2)) {
                                 handler = new MMXOAuthCallbackHandler();
                             } else {
                                 handler = new XMPPCallbackHandler();
@@ -814,8 +814,12 @@ public class SASLAuthentication {
             mechanisms.add("DIGEST-MD5");
             mechanisms.add("CRAM-MD5");
             mechanisms.add("JIVE-SHAREDSECRET");
-            Log.debug("Adding MMX_OAUTH");
-            mechanisms.add(MMXSaslServerFactoryImpl.MMX_BF_OUATH);
+            if (JiveGlobals.getBooleanProperty("mmx.auth.integration.enabled", false)) {
+                Log.debug("Adding MMX_OAUTH2");
+                mechanisms.add(MMXSaslServerFactoryImpl.MMX_OAUTH2);
+            } else {
+                Log.debug("NOT Adding MMX_OAUTH2");
+            }
         }
         else {
             StringTokenizer st = new StringTokenizer(available, " ,\t\n\r\f");
