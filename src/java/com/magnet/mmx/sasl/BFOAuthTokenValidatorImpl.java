@@ -14,20 +14,110 @@
  */
 package com.magnet.mmx.sasl;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.sasl.SaslException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
 
+/**
+ * Implementation that uses the MMS server endpoint for token validation.
+ */
 public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
   private static Logger LOGGER = LoggerFactory.getLogger(BFOAuthTokenValidatorImpl.class);
 
-  private final String VALID_TOKEN = "78647oUtyre";
 
-  @Override
+  private final static String oAuthServerEndpoint = "http://localhost:8443/api/tokens/token";
+  private final static String METHOD = "GET";
+  private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
+
+
   public boolean isValid(String userId, String oauthToken) throws SaslException {
-    LOGGER.trace("entered isValid");
-    boolean rv = VALID_TOKEN.equalsIgnoreCase(oauthToken);
-    return rv;
+    HttpURLConnection connection = null;
+    InputStream inputStream = null;
+    boolean rv = false;
+    try {
+      connection = makeGetRequest(oauthToken);
+      int responseCode = connection.getResponseCode();
+      if (responseCode == 200) {
+        inputStream = connection.getInputStream();
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "utf-8"));
+        TokenInfo tkInfo = gson.fromJson(reader, TokenInfo.class);
+        LOGGER.info("TokenInfo : {}", tkInfo);
+        if (tkInfo != null) {
+          if (!tkInfo.isAnonymous() && tkInfo.isAuthenticated()) {
+            rv = true;
+            String appId = tkInfo.getClientId();
+            String userName = tkInfo.getUserName();
+            List<String> roles = tkInfo.getRoles();
+            String xid = userName + "%" + appId;
+            UserRoleCache.cacheRoles(xid, roles);
+            /*
+             * update the roles for the user in user cache.
+             */
+          } else {
+            LOGGER.debug("Token:{} is either unauthenticated or is for anonymous. Token Info:{}", oauthToken, tkInfo);
+          }
+        }
+      } else {
+        String message = String.format("Unexpected Response code:%d from endpoint", responseCode);
+        LOGGER.warn(message);
+      }
+      connection.disconnect();
+      connection = null;
+      return rv;
+    } catch (IOException e) {
+      LOGGER.warn("IO exception", e);
+      throw new SaslException(e.getMessage());
+    } finally {
+      if (inputStream != null) {
+        try {
+          inputStream.close();
+        } catch (IOException e) {
+        }
+      }
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+
+  private static HttpURLConnection makeGetRequest(String token) throws IOException {
+    LOGGER.debug("Sending GET to " + oAuthServerEndpoint);
+    HttpURLConnection conn = getConnection(oAuthServerEndpoint);
+    conn.setDoOutput(true);
+    conn.setUseCaches(false);
+    conn.setRequestMethod(METHOD);
+    conn.setRequestProperty("Content-Type", CONTENT_TYPE);
+    conn.setRequestProperty("Authorization", "Bearer: " + token);
+    return conn;
+  }
+
+  /**
+   * Gets an {@link HttpURLConnection} given an URL.
+   */
+  protected static HttpURLConnection getConnection(String url) throws IOException {
+    HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+    return conn;
+  }
+
+  public static void main (String[] args ){
+    String token = "A_pb_FSB6mi4V-K3kMcXEoLJCr_D0qem-sf_uOdSmCy_4ACyyv7vMJ5BbAwF8WQ9JGRG6wwPOXtgcUEqy-dviDtVNWpxy6RY-Tlr0FBMpl3GioXyBkRUM_nNhl5ynbr0UzbS3ppcwJo5bgaDzHKMjkg0bjsHVryE0Ef2cDHh7dNT8WSBKiTGVTabhvj3AqluV4MqQp4YQKu1TIws4rwWh9Wry6ERecvKPB9JB0f6weHMfcxg8hj2cBC9khCMN35SIdJ001EkTvE4DLIdFUImq52yDqjB7B8EvpfGhx0LoIQ";
+    BFOAuthTokenValidator validator = new BFOAuthTokenValidatorImpl();
+    try {
+      boolean valid = validator.isValid("user", token);
+      LOGGER.info("token:{} is {}", token, valid ? "valid" : "invalid");
+    } catch (SaslException e) {
+      LOGGER.warn("SaslException", e);
+    }
   }
 }

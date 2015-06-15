@@ -21,7 +21,9 @@
 package org.jivesoftware.openfire.net;
 
 import com.magnet.mmx.sasl.MMXBFOAuthSaslProvider;
+import com.magnet.mmx.sasl.MMXOAuthCallbackHandler;
 import com.magnet.mmx.sasl.MMXSaslServerFactoryImpl;
+import com.magnet.mmx.sasl.UserRoleCache;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -44,6 +46,7 @@ import org.jivesoftware.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
 import javax.security.sasl.SaslServer;
@@ -55,6 +58,7 @@ import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -293,9 +297,15 @@ public class SASLAuthentication {
                             if (mechanism.equals("GSSAPI")) {
                                 props.put(Sasl.SERVER_AUTH, "TRUE");
                             }
+                            CallbackHandler handler = null;
+                            if (mechanism.equals(MMXSaslServerFactoryImpl.MMX_BF_OUATH)) {
+                                handler = new MMXOAuthCallbackHandler();
+                            } else {
+                                handler = new XMPPCallbackHandler();
+                            }
                             SaslServer ss = Sasl.createSaslServer(mechanism, "xmpp",
                                     JiveGlobals.getProperty("xmpp.fqdn", session.getServerName()), props,
-                                    new XMPPCallbackHandler());
+                                handler);
 
                             if (ss == null) {
                                 authenticationFailed(session, Failure.INVALID_MECHANISM);
@@ -377,6 +387,11 @@ public class SASLAuthentication {
                                         authenticationSuccessful(session, ss.getAuthorizationID(),
                                                 challenge);
                                         status = Status.authenticated;
+                                        //TODO: Remove this
+                                        if (mechanism.equals("DIGEST-MD5")) {
+                                            Log.debug("Adding bogus roles to user cache");
+                                            UserRoleCache.cacheRoles(ss.getAuthorizationID(), Arrays.asList("developer", "contractor"));
+                                        }
                                     }
                                     else {
                                         // Send the challenge
