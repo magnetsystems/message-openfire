@@ -14,12 +14,19 @@
  */
 package com.magnet.mmx.sasl;
 
-import java.security.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MMXBFOAuthSaslProvider extends Provider{
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import java.io.IOException;
 
-  public MMXBFOAuthSaslProvider() {
-    super("MagnetSotftware", 1.0, "Magnet SASL provider v1.0, implementing server mechanisms for: X-MMX_BF_OAUTH2");
-    put("SaslServerFactory." + MMXSaslServerFactoryImpl.MMX_OAUTH2, "com.magnet.mmx.sasl.MMXSaslServerFactoryImpl");
+public class MMXOAuthCallbackHandler implements CallbackHandler {
+  private static Logger LOGGER = LoggerFactory.getLogger(BFOAuthTokenValidatorImpl.class);
+
+  @Override
+  public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+    LOGGER.trace("No op callback handler used");
   }
 }
