@@ -46,6 +46,7 @@ PROG="mmx"
 PID_PATH="$OPENFIRE_HOME/"
 pid=
 check_port=true
+foreground=false
 
 openfire_start() {
 	cygwin=false;
@@ -166,6 +167,9 @@ openfire_start() {
 	# JMX_CONFIG="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
 	# openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS $REMOTE_DEBUG $JMX_CONFIG  -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1 &"
 	openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1 &"
+	if [ true == $foreground ] ; then
+	   openfire_exec_command="exec nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1"
+	fi
 	eval $openfire_exec_command
 	pid=$!
 }
@@ -231,24 +235,28 @@ stop() {
 }
 
 print_usage() {
-	echo "Usage: mmx-server.sh [-p] {start|stop|restart}" >&2
+	echo "Usage: mmx-server.sh [-p] [-f] {start|stop|restart}" >&2
 	echo >&2
 	echo "Start, stop, or restart the Magnet Messaging server." >&2
 	echo >&2
 	echo "Options:" >&2
 	echo "    [-p]    No port check when starting" >&2
+	echo "    [-f]    Run in foreground mode for Docker" >&2
 	echo >&2
 }
 
-if [ "$#" == 0 ] || [ "$#" -gt 2 ] ; then
+if [ "$#" == 0 ] || [ "$#" -gt 3 ] ; then
 	print_usage
 	exit 1
 fi
 
-while getopts "p h" opt; do
+while getopts "p f h" opt; do
 	case $opt in
 		p)
 			check_port=false
+			;;
+		f)
+			foreground=true
 			;;
 		h)
 			print_usage
