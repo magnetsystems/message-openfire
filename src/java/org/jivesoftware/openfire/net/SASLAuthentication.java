@@ -23,7 +23,6 @@ package org.jivesoftware.openfire.net;
 import com.magnet.mmx.sasl.MMXBFOAuthSaslProvider;
 import com.magnet.mmx.sasl.MMXOAuthCallbackHandler;
 import com.magnet.mmx.sasl.MMXSaslServerFactoryImpl;
-import com.magnet.mmx.sasl.UserRoleCache;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -58,7 +57,6 @@ import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -387,10 +385,8 @@ public class SASLAuthentication {
                                         authenticationSuccessful(session, ss.getAuthorizationID(),
                                                 challenge);
                                         status = Status.authenticated;
-                                        //TODO: Remove this
                                         if (mechanism.equals("DIGEST-MD5")) {
-                                            Log.debug("Adding bogus roles to user cache");
-                                            UserRoleCache.cacheRoles(ss.getAuthorizationID(), Arrays.asList("developer", "contractor"));
+                                            //TODO: Add any default roles if required to UserRole cache.
                                         }
                                     }
                                     else {
