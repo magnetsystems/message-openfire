@@ -53,12 +53,10 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
         TokenInfo tkInfo = gson.fromJson(reader, TokenInfo.class);
         LOGGER.info("TokenInfo : {}", tkInfo);
         if (tkInfo != null) {
-          if (!tkInfo.isAnonymous() && tkInfo.isAuthenticated()) {
+          if (tkInfo.isAuthenticated()) {
             rv = true;
-            String appId = tkInfo.getClientId();
-            String userName = tkInfo.getUserName();
             List<String> roles = tkInfo.getRoles();
-            String xid = userName + "%" + appId;
+            String xid = userId;
             UserRoleCache.cacheRoles(xid, roles);
             /*
              * update the roles for the user in user cache.
