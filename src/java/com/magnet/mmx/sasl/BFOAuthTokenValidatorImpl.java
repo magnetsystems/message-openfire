@@ -62,7 +62,7 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
              * update the roles for the user in user cache.
              */
           } else {
-            LOGGER.debug("Token:{} is either unauthenticated or is for anonymous. Token Info:{}", oauthToken, tkInfo);
+            LOGGER.debug("Token:{} is unauthenticated. Token Info:{}", oauthToken, tkInfo);
           }
         }
       } else {
