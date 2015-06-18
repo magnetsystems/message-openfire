@@ -37,7 +37,7 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
   private final static String DEFAULT_OAUTH_SERVER_ENDPOINT = "http://localhost:8443/api/tokens/token";
   private final static String METHOD = "GET";
   private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
-
+  private final static int  HTTP_STATUS_OK = 200;
 
   public boolean isValid(String userId, String oauthToken) throws SaslException {
     HttpURLConnection connection = null;
@@ -46,7 +46,7 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
     try {
       connection = makeGetRequest(oauthToken);
       int responseCode = connection.getResponseCode();
-      if (responseCode == 200) {
+      if (responseCode == HTTP_STATUS_OK) {
         inputStream = connection.getInputStream();
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "utf-8"));
@@ -57,10 +57,10 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
             rv = true;
             List<String> roles = tkInfo.getRoles();
             String xid = userId;
-            UserRoleCache.cacheRoles(xid, roles);
             /*
              * update the roles for the user in user cache.
              */
+            UserRoleCache.cacheRoles(xid, roles);
           } else {
             LOGGER.debug("Token:{} is unauthenticated. Token Info:{}", oauthToken, tkInfo);
           }
