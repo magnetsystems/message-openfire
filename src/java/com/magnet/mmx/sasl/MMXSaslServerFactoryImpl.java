@@ -31,7 +31,7 @@ import java.util.Map;
 public class MMXSaslServerFactoryImpl implements SaslServerFactory {
   private static Logger LOGGER = LoggerFactory.getLogger(MMXSaslServerFactoryImpl.class);
 
-  public static final String MMX_OAUTH2 = "X-MMX_OAUTH2";
+  public static final String MMX_OAUTH2 = "X-MMX_BF_OAUTH2";
   private static final String myMechs[] = {MMX_OAUTH2};
   private static final int mechPolicies[] = {PolicyUtils.NOANONYMOUS};
 
