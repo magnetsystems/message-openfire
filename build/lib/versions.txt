@@ -37,11 +37,11 @@ jmock.jar                           | 2.1.0                                     
 jmock-junit4.jar                    | 2.1.0                                                        |
 jmock-legacy.jar                    | 2.1.0                                                        |
 jsp-api.jar                         | Jetty 6.0.1 (2.0)                                            |
-jtds.jar                            | 1.2.2                                                        | LGPL
+jtds.jar                            | 1.2.3                                                        | LGPL
 junit.jar                           | 4.3.1                                                        |
 jzlib.jar                           | 1.0.7                                                        | GPL
 libidn.jar                          | 1.15                                                         | GNU Lesser General Public License version 2.1 or later (http://www.gnu.org/licenses/licenses.html)
-log4j.jar                           | 1.2.25                                                       | Apache 2.0 (http://logging.apache.org/log4j/1.2/license.html)
+log4j.jar                           | 1.2.35                                                       | Apache 2.0 (http://logging.apache.org/log4j/1.2/license.html)
 mail.jar                            | 1.4.1 (JavaMail)                                             |
 mina-core.jar                       | 1.1.8 (https://svn.apache.org/repos/asf/mina/branches/1.1)   | Apache 2.0
 mina-filter-compression.jar         | 1.1.8 (https://svn.apache.org/repos/asf/mina/branches/1.1)   | Apache 2.0
