@@ -5,7 +5,7 @@
 
   <groupId>com.magnet.mmx.ext</groupId>
   <artifactId>openfire</artifactId>
-  <version>1.5.1-SNAPSHOT</version>	
+  <version>1.8.1-SNAPSHOT</version>	
 
   <packaging>pom</packaging>
   <name>Magnet Customized Openfire</name>
