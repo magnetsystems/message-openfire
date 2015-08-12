@@ -24,8 +24,7 @@ repository for instructions to build the plugin.
 - JDK 1.6 or above.
 - Maven 3 or above.
 
+#### Build
 1. `git clone https://github.com/magnetsystems/message-openfire`
 2. `mvn clean install`
-
-The build will generate a zip file named `mmx-openfire.zip` which contains all the artifacts necessary for the openfire runtime and install it in local maven repository.
 
