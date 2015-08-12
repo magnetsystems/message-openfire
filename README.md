@@ -3,7 +3,7 @@ Magnet Message Openfire
 
 About
 -----
-Message Openfire is a customized version of [Openfire](https://github.com/igniterealtime/Openfire) an XMPP server supported by Ignite Realitime community
+Message Openfire is a customized version of [Openfire](https://github.com/igniterealtime/Openfire) an XMPP server supported by Ignite Realitime community.
 It is based on Openfire version 3.9.3. Following is a list of some of the customizations:
 
 - Store offline messages using complete JIDs
