@@ -15,7 +15,7 @@ Please refer to Openfire [Readme.md](https://github.com/igniterealtime/Openfire/
 
 ### Note
 To avail of all Magnet Message server features, you would also need to build Magnet's openfire plugin. Please refer to [message-server](https://github.com/magnetsystems/message-server)
-repository for instructions to build the plugin as well as complete Magnet Message server installation packages.
+repository for instructions to build the plugin and Magnet Message server installation packages.
 
 ### Build Instructions
 ----------------------
