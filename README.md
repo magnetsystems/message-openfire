@@ -12,3 +12,20 @@ It is based on Openfire version 3.9.3. Following is a list of some of the custom
 - Fix SQL syntax error related to Pub/Sub implementation
 
 Please refer to Openfire [Readme.md](https://github.com/igniterealtime/Openfire/blob/master/README.md) for information about Openfire.
+
+### Note
+To avail of all Magnet Message server features, you would also need to build Magnet's openfire plugin. Please refer to [message-server](https://github.com/magnetsystems/message-server)
+repository for instructions to build the plugin.
+
+### Build Instructions
+----------------------
+
+#### Pre-requisites
+- JDK 1.6 or above.
+- Maven 3 or above.
+
+1. `git clone https://github.com/magnetsystems/message-openfire`
+2. `mvn clean install`
+
+The build will generate a zip file named `mmx-openfire.zip` which contains all the artifacts necessary for the openfire runtime and install it in local maven repository.
+
