@@ -1,41 +1,32 @@
-Openfire
+Magnet Message Openfire
 ========
 
 About
 -----
+Message Openfire is a customized version of [Openfire](https://github.com/igniterealtime/Openfire) an open source XMPP server.
+Message Openfire has been forked from Openfire version 3.9.3. 
+</br>
+Following is a list of some of the customizations:
 
-[Openfire] is a XMPP server licensed under the Open Source Apache License.
+- Store offline messages using complete JIDs
+- Add support for headless installation
+- Customize the console look and feel
+- Fix SQL syntax error related to Pub/Sub implementation
 
+Please refer to Openfire [Readme.md](https://github.com/igniterealtime/Openfire/blob/master/README.md) for information about Openfire.
 
-[Openfire] - an [Ignite Realtime] community project.
+### Note
+To avail of all Magnet Message server features, you would also need to build Magnet's openfire plugin. Please refer to [message-server](https://github.com/magnetsystems/message-server)
+repository for instructions to build the plugin and Magnet Message server installation packages.
 
-Bug Reporting
--------------
+### Build Instructions
+----------------------
 
-Only a few users have access for for filling bugs in the tracker. New
-users should:
+#### Pre-requisites
+- JDK 1.6 or above.
+- Maven 3 or above.
 
-1. Create a forums account (only e-mail is a requirement, you can skip all the other fields).
-2. Login to a forum account
-3. Press New in your toolbar and choose Discussion
-4. Choose the [Openfire Dev forum](http://community.igniterealtime.org/community/developers/openfire) of Openfire and add the tag 'bug_report' to your new post
+#### Build
+1. `git clone https://github.com/magnetsystems/message-openfire`
+2. `mvn clean install`
 
-Please search for your issues in the bug tracker before reporting.
-
-Resources
----------
-
-- Bug Tracker: http://issues.igniterealtime.org/browse/OF
-- Nightly Builds: http://www.igniterealtime.org/downloads/nightly_openfire.jsp
-
-Ignite Realtime
-===============
-
-[Ignite Realtime] is an Open Source community composed of end-users and developers around the world who 
-are interested in applying innovative, open-standards-based Real Time Collaboration to their businesses and organizations. 
-We're aimed at disrupting proprietary, non-open standards-based systems and invite you to participate in what's already one 
-of the biggest and most active Open Source communities.
-
-[Openfire]: http://www.igniterealtime.org/projects/openfire/index.jsp
-[Ignite Realtime]: http://www.igniterealtime.org
-[XMPP (Jabber)]: http://xmpp.org/
