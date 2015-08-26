@@ -362,7 +362,7 @@ INSERT INTO ofID (idType, id) VALUES (19, 1);
 INSERT INTO ofID (idType, id) VALUES (23, 1);
 INSERT INTO ofID (idType, id) VALUES (26, 2);
 
-INSERT INTO ofVersion (name, version) VALUES ('openfire', 23);
+INSERT INTO ofVersion (name, version) VALUES ('openfire', 25);
 
 # Entry for admin user
 INSERT INTO ofUser (username, plainPassword, name, email, creationDate, modificationDate)
@@ -381,7 +381,7 @@ insert into ofProperty values('xmpp.client.idle', '-1');
 
 insert into ofProperty values('xmpp.client.idle.ping', 'false');
 
-insert into ofProperty values('xmpp.pubsub.flush.max', '-1');
+insert into ofProperty values('xmpp.pubsub.flush.max', '0');
 
 insert into ofProperty values('xmpp.auth.anonymous', 'false');
 
