@@ -68,7 +68,7 @@ public class SchemaManager {
     /**
      * Current Openfire database schema version.
      */
-    private static final int DATABASE_VERSION = 24;
+    private static final int DATABASE_VERSION = 25;
 
     /**
      * Creates a new Schema manager.
