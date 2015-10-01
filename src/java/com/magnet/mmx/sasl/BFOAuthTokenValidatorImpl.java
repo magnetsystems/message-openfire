@@ -34,7 +34,7 @@ import java.util.List;
 public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
   private static Logger LOGGER = LoggerFactory.getLogger(BFOAuthTokenValidatorImpl.class);
 
-  private final static String DEFAULT_OAUTH_SERVER_ENDPOINT = "http://localhost:8443/api/tokens/token";
+  private final static String DEFAULT_OAUTH_SERVER_ENDPOINT = "http://localhost:8443/api/com.magnet.server/tokens/token";
   private final static String METHOD = "GET";
   private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
   private final static int  HTTP_STATUS_OK = 200;
