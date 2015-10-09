@@ -14,16 +14,17 @@
  */
 package com.magnet.mmx.sasl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
-import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MMXOAuthCallbackHandler implements CallbackHandler {
-  private static Logger LOGGER = LoggerFactory.getLogger(BFOAuthTokenValidatorImpl.class);
+  private static Logger LOGGER = LoggerFactory.getLogger(MMXOAuthCallbackHandler.class);
 
   @Override
   public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
