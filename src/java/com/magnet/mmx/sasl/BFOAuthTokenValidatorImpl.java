@@ -24,6 +24,7 @@ import javax.security.sasl.SaslException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -39,6 +40,12 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
   private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
   private final static int  HTTP_STATUS_OK = 200;
 
+  private final Gson gson;
+
+  public BFOAuthTokenValidatorImpl() {
+    gson = new Gson();
+  }
+
   public boolean isValid(String userId, String oauthToken) throws SaslException {
     HttpURLConnection connection = null;
     InputStream inputStream = null;
@@ -48,8 +55,10 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
       int responseCode = connection.getResponseCode();
       if (responseCode == HTTP_STATUS_OK) {
         inputStream = connection.getInputStream();
-        Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "utf-8"));
+        String responseBody = new java.util.Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();;
+        LOGGER.debug("Token validation response : {}", responseBody);
+        JsonReader reader = new JsonReader(new StringReader(responseBody));
+        //JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "utf-8"));
         TokenInfo tkInfo = gson.fromJson(reader, TokenInfo.class);
         LOGGER.info("TokenInfo : {}", tkInfo);
         if (tkInfo != null) {
@@ -69,11 +78,9 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
         String message = String.format("Unexpected Response code:%d from endpoint", responseCode);
         LOGGER.warn(message);
       }
-      connection.disconnect();
-      connection = null;
       return rv;
-    } catch (IOException e) {
-      LOGGER.warn("IO exception", e);
+    } catch (Exception e) {
+      LOGGER.warn("Exception", e);
       throw new SaslException(e.getMessage());
     } finally {
       if (inputStream != null) {
