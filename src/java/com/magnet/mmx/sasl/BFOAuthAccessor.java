@@ -49,7 +49,10 @@ public class BFOAuthAccessor {
       if (responseCode == HTTP_STATUS_OK) {
         inputStream = connection.getInputStream();
         Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "utf-8"));
+        String responseBody = new java.util.Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();;
+        LOGGER.debug("Token validation response : {}", responseBody);
+        JsonReader reader = new JsonReader(new StringReader(responseBody));
+        //JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "utf-8"));
         tkInfo = gson.fromJson(reader, TokenInfo.class);
       } else {
         String message = String.format("Unexpected Response code:%d from endpoint", responseCode);
@@ -84,7 +87,7 @@ public class BFOAuthAccessor {
   /**
    * Gets an {@link HttpURLConnection} given an URL.
    */
-  protected static HttpURLConnection getConnection(String url) throws IOException {
+  private static HttpURLConnection getConnection(String url) throws IOException {
     HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
     return conn;
   }
