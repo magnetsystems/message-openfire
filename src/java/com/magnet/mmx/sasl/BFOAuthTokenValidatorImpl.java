@@ -14,19 +14,12 @@
  */
 package com.magnet.mmx.sasl;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import org.jivesoftware.util.JiveGlobals;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import javax.security.sasl.SaslException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation that uses the MMS server endpoint for token validation.
@@ -34,79 +27,37 @@ import java.util.List;
 public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
   private static Logger LOGGER = LoggerFactory.getLogger(BFOAuthTokenValidatorImpl.class);
 
-  private final static String DEFAULT_OAUTH_SERVER_ENDPOINT = "http://localhost:8443/api/com.magnet.server/tokens/token";
-  private final static String METHOD = "GET";
-  private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
-  private final static int  HTTP_STATUS_OK = 200;
-
-  public boolean isValid(String userId, String oauthToken) throws SaslException {
-    HttpURLConnection connection = null;
-    InputStream inputStream = null;
+  /**
+   * @param userName In the form of "userID%appID".
+   * @param oauthToken An OAUTH token.
+   */
+  public boolean isValid(String userName, String oauthToken) throws SaslException {
     boolean rv = false;
     try {
-      connection = makeGetRequest(oauthToken);
-      int responseCode = connection.getResponseCode();
-      if (responseCode == HTTP_STATUS_OK) {
-        inputStream = connection.getInputStream();
-        Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "utf-8"));
-        TokenInfo tkInfo = gson.fromJson(reader, TokenInfo.class);
-        LOGGER.info("TokenInfo : {}", tkInfo);
-        if (tkInfo != null) {
-          if (tkInfo.isAuthenticated()) {
-            rv = true;
-            List<String> roles = tkInfo.getRoles();
-            String xid = userId;
-            /*
-             * update the roles for the user in user cache.
-             */
-            UserRoleCache.cacheRoles(xid, roles);
-          } else {
-            LOGGER.debug("Token:{} is unauthenticated. Token Info:{}", oauthToken, tkInfo);
-          }
+      TokenInfo tkInfo = BFOAuthAccessor.getTokenInfo(oauthToken);
+      LOGGER.info("UserName : {}, TokenInfo : {}", userName, tkInfo);
+      if (tkInfo != null) {
+        if (tkInfo.isAuthenticated() && userName.equalsIgnoreCase(
+            makeNode(tkInfo.getUserName(), tkInfo.getMmxAppId()))) {
+          rv = true;
+          List<String> roles = tkInfo.getRoles();
+          String xid = userName;
+          // update the roles for the user in user cache.
+          UserRoleCache.cacheRoles(xid, roles);
+        } else {
+          LOGGER.debug("Token:{} is unauthenticated or invalid. Token Info:{}", oauthToken, tkInfo);
         }
-      } else {
-        String message = String.format("Unexpected Response code:%d from endpoint", responseCode);
-        LOGGER.warn(message);
       }
-      connection.disconnect();
-      connection = null;
       return rv;
-    } catch (IOException e) {
-      LOGGER.warn("IO exception", e);
+    } catch (Throwable e) {
+      LOGGER.warn("Caught exception", e);
       throw new SaslException(e.getMessage());
-    } finally {
-      if (inputStream != null) {
-        try {
-          inputStream.close();
-        } catch (IOException e) {
-        }
-      }
-      if (connection != null) {
-        connection.disconnect();
-      }
     }
   }
 
-
-  private static HttpURLConnection makeGetRequest(String token) throws IOException {
-    String oAuthServerEndPoint = JiveGlobals.getProperty("mmx.auth.endpoint.url", DEFAULT_OAUTH_SERVER_ENDPOINT);
-    LOGGER.debug("Sending GET to " + oAuthServerEndPoint);
-    HttpURLConnection conn = getConnection(oAuthServerEndPoint);
-    conn.setDoOutput(true);
-    conn.setUseCaches(false);
-    conn.setRequestMethod(METHOD);
-    conn.setRequestProperty("Content-Type", CONTENT_TYPE);
-    conn.setRequestProperty("Authorization", "Bearer: " + token);
-    return conn;
-  }
-
-  /**
-   * Gets an {@link HttpURLConnection} given an URL.
-   */
-  protected static HttpURLConnection getConnection(String url) throws IOException {
-    HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-    return conn;
+  // TODO: should use JIDUtil.makeNode().
+  private String makeNode(String userId, String appId) {
+    return userId+'%'+appId;
   }
 
   public static void main (String[] args ){

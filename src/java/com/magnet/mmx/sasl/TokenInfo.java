@@ -44,6 +44,9 @@ public class TokenInfo {
   private Integer tokenExpiresIn;
   private String userId;
   private String userName;
+  private String mmxAppId;
+  private String firstName;
+  private String lastName;
 
   public boolean isAnonymous() {
     return anonymous;
@@ -117,6 +120,29 @@ public class TokenInfo {
     this.userName = userName;
   }
 
+  public String getMmxAppId() {
+    return mmxAppId;
+  }
+
+  public void setMmxAppId(String mmxAppId) {
+    this.mmxAppId = mmxAppId;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
   @Override
   public String toString() {
@@ -130,6 +156,9 @@ public class TokenInfo {
     sb.append(", tokenExpiresIn=").append(tokenExpiresIn);
     sb.append(", userId='").append(userId).append('\'');
     sb.append(", userName='").append(userName).append('\'');
+    sb.append(", mmxAppId='").append(mmxAppId).append('\'');
+    sb.append(", firstName='").append(firstName).append('\'');
+    sb.append(", lastName='").append(lastName).append('\'');
     sb.append('}');
     return sb.toString();
   }
