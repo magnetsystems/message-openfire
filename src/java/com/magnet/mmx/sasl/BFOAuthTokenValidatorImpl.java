@@ -38,7 +38,7 @@ public class BFOAuthTokenValidatorImpl implements BFOAuthTokenValidator {
       LOGGER.info("UserName : {}, TokenInfo : {}", userName, tkInfo);
       if (tkInfo != null) {
         if (tkInfo.isAuthenticated() && userName.equalsIgnoreCase(
-            makeNode(tkInfo.getUserName(), tkInfo.getMmxAppId()))) {
+            makeNode(tkInfo.getUserId(), tkInfo.getMmxAppId()))) {
           rv = true;
           List<String> roles = tkInfo.getRoles();
           String xid = userName;
