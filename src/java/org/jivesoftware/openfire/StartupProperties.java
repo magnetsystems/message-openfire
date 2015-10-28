@@ -41,7 +41,7 @@ public class StartupProperties {
 	private static final String MMX_PUBLIC_PORT_SECURE = "mmxPublicPortSecure";
 	private static final String STANDALONE_SERVER = "standaloneServer";
 	private static final String MMX_AUTH_INTEGRATION_ENABLED = "mmxAuthIntegrationEnabled";
-	private static final String MMX_AUTH_ENDPOINT_URL = "mmxAuthEndpointUrl";
+  private static final String MMX_SERVER_BASE_URL = "mmxServerBaseUrl";
 	
 	private static List<String> propertyList = Arrays.asList(DB_HOST, DB_PORT, 
 													  DB_USER, DB_PASSWORD, 
@@ -52,7 +52,7 @@ public class StartupProperties {
 													  MMX_ADMIN_PORT, MMX_ADMIN_PORT_SECURE, 
 													  MMX_PUBLIC_PORT, MMX_PUBLIC_PORT_SECURE,
 													  STANDALONE_SERVER, MMX_AUTH_INTEGRATION_ENABLED,
-													  MMX_AUTH_ENDPOINT_URL) ;
+                            MMX_SERVER_BASE_URL) ;
 	
 	private String dbHost;
 	private String dbPort;
@@ -73,7 +73,7 @@ public class StartupProperties {
 	private String mmxPublicPortSecure;
 	private String standaloneServer = "false";
 	private String mmxAuthIntegrationEnabled = "false";
-	private String mmxAuthEndpointUrl;
+  private String mmxServerBaseUrl;
 	private boolean isBootstrappable = true;
 	
 	
@@ -224,13 +224,13 @@ public class StartupProperties {
 		this.mmxAuthIntegrationEnabled = mmxAuthIntegrationEnabled;
 	}
 
-	public String getMmxAuthEndpointUrl() {
-		return mmxAuthEndpointUrl;
-	}
+  public String getMmxServerBaseUrl() {
+    return mmxServerBaseUrl;
+  }
 
-	public void setMmxAuthEndpointUrl(String mmxAuthEndpointUrl) {
-		this.mmxAuthEndpointUrl = mmxAuthEndpointUrl;
-	}
+  public void setMmxServerBaseUrl(String mmxServerBaseUrl) {
+    this.mmxServerBaseUrl = mmxServerBaseUrl;
+  }
 
 	public boolean isBootstrappable() {
 		return isBootstrappable;
@@ -279,7 +279,7 @@ public class StartupProperties {
 		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
 		result = prime * result + ((mmxAdminPort == null) ? 0 : mmxAdminPort.hashCode());
 		result = prime * result + ((mmxAdminPortSecure == null) ? 0 : mmxAdminPortSecure.hashCode());
-		result = prime * result + ((mmxAuthEndpointUrl == null) ? 0 : mmxAuthEndpointUrl.hashCode());
+		result = prime * result + ((mmxServerBaseUrl == null) ? 0 : mmxServerBaseUrl.hashCode());
 		result = prime * result + ((mmxAuthIntegrationEnabled == null) ? 0 : mmxAuthIntegrationEnabled.hashCode());
 		result = prime * result + ((mmxPublicPort == null) ? 0 : mmxPublicPort.hashCode());
 		result = prime * result + ((mmxPublicPortSecure == null) ? 0 : mmxPublicPortSecure.hashCode());
@@ -361,10 +361,10 @@ public class StartupProperties {
 				return false;
 		} else if (!mmxAdminPortSecure.equals(other.mmxAdminPortSecure))
 			return false;
-		if (mmxAuthEndpointUrl == null) {
-			if (other.mmxAuthEndpointUrl != null)
+		if (mmxServerBaseUrl == null) {
+			if (other.mmxServerBaseUrl != null)
 				return false;
-		} else if (!mmxAuthEndpointUrl.equals(other.mmxAuthEndpointUrl))
+		} else if (!mmxServerBaseUrl.equals(other.mmxServerBaseUrl))
 			return false;
 		if (mmxAuthIntegrationEnabled == null) {
 			if (other.mmxAuthIntegrationEnabled != null)
@@ -411,6 +411,6 @@ public class StartupProperties {
 				+ ", encryption=" + encryption + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + ", mmxAdminPort="
 				+ mmxAdminPort + ", mmxAdminPortSecure=" + mmxAdminPortSecure + ", mmxPublicPort=" + mmxPublicPort + ", mmxPublicPortSecure="
 				+ mmxPublicPortSecure + ", standaloneServer=" + standaloneServer + ", mmxAuthIntegrationEnabled=" + mmxAuthIntegrationEnabled
-				+ ", mmxAuthEndpointUrl=" + mmxAuthEndpointUrl + ", isBootstrappable=" + isBootstrappable + "]";
+        + ", mmxServerBaseUrl=" + mmxServerBaseUrl + ", isBootstrappable=" + isBootstrappable + "]";
 	}
 }
