@@ -34,7 +34,8 @@ import com.google.gson.stream.JsonReader;
 public class BFOAuthAccessor {
   private static Logger LOGGER = LoggerFactory.getLogger(BFOAuthAccessor.class);
 
-  private final static String DEFAULT_OAUTH_SERVER_BASE_URL = "http://localhost:8443/api/com.magnet.server";
+  public final static String SERVER_BASE_URL_KEY = "mmx.server.base.url";
+  public final static String DEFAULT_OAUTH_SERVER_BASE_URL = "http://localhost:8443/api/com.magnet.server";
   private final static String AUTH_PATH = "/tokens/token";
   private final static String METHOD = "GET";
   private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -74,7 +75,8 @@ public class BFOAuthAccessor {
   }
 
   private static HttpURLConnection makeGetRequest(String token) throws IOException {
-    String oAuthServerBaseUrl = JiveGlobals.getProperty("mmx.auth.server.base.url", DEFAULT_OAUTH_SERVER_BASE_URL);
+    String oAuthServerBaseUrl = JiveGlobals.getProperty(
+        SERVER_BASE_URL_KEY, DEFAULT_OAUTH_SERVER_BASE_URL);
     LOGGER.debug("Sending GET to " + oAuthServerBaseUrl+AUTH_PATH);
     HttpURLConnection conn = getConnection(oAuthServerBaseUrl+AUTH_PATH);
     conn.setDoOutput(true);
