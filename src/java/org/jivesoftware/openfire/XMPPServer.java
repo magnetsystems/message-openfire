@@ -873,7 +873,17 @@ public class XMPPServer {
     	if(validatePort(mmxPublicPortSecure)) {
     		globalSettings.put("mmx.rest.https.port", mmxPublicPortSecure);
     	}
-   	
+
+    	String mmxAuthIntegrationEnabled = startupProperties.getMmxAuthIntegrationEnabled();
+    	if (mmxAuthIntegrationEnabled != null && !mmxAuthIntegrationEnabled.isEmpty()) {
+    	  globalSettings.put("mmx.auth.integration.enabled", mmxAuthIntegrationEnabled);
+    	}
+
+    	String mmxServerBaseUrl = startupProperties.getMmxServerBaseUrl();
+    	if (mmxServerBaseUrl != null && !mmxServerBaseUrl.isEmpty()) {
+    	  globalSettings.put("mmx.server.base.url", mmxServerBaseUrl);
+    	}
+
     	if ("true".equalsIgnoreCase(startupProperties.getStandaloneServer())) {
     		Log.debug("reconcileDbProperties : setting socket linger props to 0");
     		globalSettings.put("xmpp.socket.linger", "0");
