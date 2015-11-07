@@ -26,6 +26,8 @@ public class BootstrapHostSettings implements BootstrapSetupStage {
          xmppSettings.put("mmx.admin.api.https.port", bootstrapProps.getMmxAdminPortSecure());
          xmppSettings.put("mmx.rest.http.port", bootstrapProps.getMmxPublicPort());
          xmppSettings.put("mmx.rest.https.port", bootstrapProps.getMmxPublicPortSecure());
+         xmppSettings.put("mmx.auth.integration.enabled", bootstrapProps.getMmxAuthIntegrationEnabled());
+         xmppSettings.put("mmx.server.base.url", bootstrapProps.getMmxServerBaseUrl());
          xmlSettings.put("adminConsole.port", bootstrapProps.getHttpPort());
          xmlSettings.put("adminConsole.securePort", bootstrapProps.getHttpPortSecure());
          if("true".equalsIgnoreCase(bootstrapProps.getStandaloneServer())) {

@@ -40,6 +40,8 @@ public class StartupProperties {
 	private static final String MMX_PUBLIC_PORT = "mmxPublicPort";
 	private static final String MMX_PUBLIC_PORT_SECURE = "mmxPublicPortSecure";
 	private static final String STANDALONE_SERVER = "standaloneServer";
+	private static final String MMX_AUTH_INTEGRATION_ENABLED = "mmxAuthIntegrationEnabled";
+  private static final String MMX_SERVER_BASE_URL = "mmxServerBaseUrl";
 	
 	private static List<String> propertyList = Arrays.asList(DB_HOST, DB_PORT, 
 													  DB_USER, DB_PASSWORD, 
@@ -49,7 +51,8 @@ public class StartupProperties {
 													  LOCALE, ENCRYPTION, ENCRYPTION_KEY, 
 													  MMX_ADMIN_PORT, MMX_ADMIN_PORT_SECURE, 
 													  MMX_PUBLIC_PORT, MMX_PUBLIC_PORT_SECURE,
-													  STANDALONE_SERVER);
+													  STANDALONE_SERVER, MMX_AUTH_INTEGRATION_ENABLED,
+                            MMX_SERVER_BASE_URL) ;
 	
 	private String dbHost;
 	private String dbPort;
@@ -69,7 +72,8 @@ public class StartupProperties {
 	private String mmxPublicPort;
 	private String mmxPublicPortSecure;
 	private String standaloneServer = "false";
-	
+	private String mmxAuthIntegrationEnabled = "false";
+  private String mmxServerBaseUrl;
 	private boolean isBootstrappable = true;
 	
 	
@@ -212,6 +216,22 @@ public class StartupProperties {
 		this.mmxPublicPortSecure = mmxPublicPortSecure;
 	}
 
+	public String getMmxAuthIntegrationEnabled() {
+		return mmxAuthIntegrationEnabled;
+	}
+
+	public void setMmxAuthIntegrationEnabled(String mmxAuthIntegrationEnabled) {
+		this.mmxAuthIntegrationEnabled = mmxAuthIntegrationEnabled;
+	}
+
+  public String getMmxServerBaseUrl() {
+    return mmxServerBaseUrl;
+  }
+
+  public void setMmxServerBaseUrl(String mmxServerBaseUrl) {
+    this.mmxServerBaseUrl = mmxServerBaseUrl;
+  }
+
 	public boolean isBootstrappable() {
 		return isBootstrappable;
 	}
@@ -228,16 +248,20 @@ public class StartupProperties {
 		this.standaloneServer = standaloneServer;
 	}
 
-	@Override
-	public String toString() {
-		return "StartupProperties [dbHost=" + dbHost + ", dbPort=" + dbPort + ", dbName=" + dbName + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword
-				+ ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppPortSecure=" + xmppPortSecure + ", encryptionKey=" + encryptionKey
-				+ ", encryption=" + encryption + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + ", mmxAdminPort="
-				+ mmxAdminPort + ", mmxAdminPortSecure=" + mmxAdminPortSecure + ", mmxPublicPort=" + mmxPublicPort + ", mmxPublicPortSecure="
-				+ mmxPublicPortSecure + ", isBootstrappable="
-				+ isBootstrappable + ", standAloneServer=" + standaloneServer + "]";
+	private static boolean isNullOrEmpty(String s) {
+		return s==null || s.isEmpty();
 	}
 	
+	private static boolean isMandatory(String property) {
+		return !ENCRYPTION.equals(property) && !ENCRYPTION_KEY.equals(property) &&
+			   !DB_PASSWORD.equals(property) && !LOCALE.equals(property) && 
+			   !STANDALONE_SERVER.equals(property);
+	}
+	
+	private static String capitalizeFirstChar(String property) {
+		return Character.toString(property.charAt(0)).toUpperCase()+property.substring(1);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -255,12 +279,14 @@ public class StartupProperties {
 		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
 		result = prime * result + ((mmxAdminPort == null) ? 0 : mmxAdminPort.hashCode());
 		result = prime * result + ((mmxAdminPortSecure == null) ? 0 : mmxAdminPortSecure.hashCode());
+		result = prime * result + ((mmxServerBaseUrl == null) ? 0 : mmxServerBaseUrl.hashCode());
+		result = prime * result + ((mmxAuthIntegrationEnabled == null) ? 0 : mmxAuthIntegrationEnabled.hashCode());
 		result = prime * result + ((mmxPublicPort == null) ? 0 : mmxPublicPort.hashCode());
 		result = prime * result + ((mmxPublicPortSecure == null) ? 0 : mmxPublicPortSecure.hashCode());
+		result = prime * result + ((standaloneServer == null) ? 0 : standaloneServer.hashCode());
 		result = prime * result + ((xmppDomain == null) ? 0 : xmppDomain.hashCode());
 		result = prime * result + ((xmppPort == null) ? 0 : xmppPort.hashCode());
 		result = prime * result + ((xmppPortSecure == null) ? 0 : xmppPortSecure.hashCode());
-		result = prime * result + ((standaloneServer == null) ? 0 : standaloneServer.hashCode());
 		return result;
 	}
 
@@ -335,6 +361,16 @@ public class StartupProperties {
 				return false;
 		} else if (!mmxAdminPortSecure.equals(other.mmxAdminPortSecure))
 			return false;
+		if (mmxServerBaseUrl == null) {
+			if (other.mmxServerBaseUrl != null)
+				return false;
+		} else if (!mmxServerBaseUrl.equals(other.mmxServerBaseUrl))
+			return false;
+		if (mmxAuthIntegrationEnabled == null) {
+			if (other.mmxAuthIntegrationEnabled != null)
+				return false;
+		} else if (!mmxAuthIntegrationEnabled.equals(other.mmxAuthIntegrationEnabled))
+			return false;
 		if (mmxPublicPort == null) {
 			if (other.mmxPublicPort != null)
 				return false;
@@ -344,6 +380,11 @@ public class StartupProperties {
 			if (other.mmxPublicPortSecure != null)
 				return false;
 		} else if (!mmxPublicPortSecure.equals(other.mmxPublicPortSecure))
+			return false;
+		if (standaloneServer == null) {
+			if (other.standaloneServer != null)
+				return false;
+		} else if (!standaloneServer.equals(other.standaloneServer))
 			return false;
 		if (xmppDomain == null) {
 			if (other.xmppDomain != null)
@@ -360,25 +401,16 @@ public class StartupProperties {
 				return false;
 		} else if (!xmppPortSecure.equals(other.xmppPortSecure))
 			return false;
-		if (standaloneServer == null) {
-			if (other.standaloneServer != null)
-				return false;
-		} else if (!standaloneServer.equals(other.standaloneServer))
-			return false;
 		return true;
 	}
 
-	private static boolean isNullOrEmpty(String s) {
-		return s==null || s.isEmpty();
-	}
-	
-	private static boolean isMandatory(String property) {
-		return !ENCRYPTION.equals(property) && !ENCRYPTION_KEY.equals(property) &&
-			   !DB_PASSWORD.equals(property) && !LOCALE.equals(property) && 
-			   !STANDALONE_SERVER.equals(property);
-	}
-	
-	private static String capitalizeFirstChar(String property) {
-		return Character.toString(property.charAt(0)).toUpperCase()+property.substring(1);
+	@Override
+	public String toString() {
+		return "StartupProperties [dbHost=" + dbHost + ", dbPort=" + dbPort + ", dbName=" + dbName + ", dbUser=" + dbUser + ", dbPassword=" + dbPassword
+				+ ", xmppDomain=" + xmppDomain + ", xmppPort=" + xmppPort + ", xmppPortSecure=" + xmppPortSecure + ", encryptionKey=" + encryptionKey
+				+ ", encryption=" + encryption + ", httpPort=" + httpPort + ", httpPortSecure=" + httpPortSecure + ", locale=" + locale + ", mmxAdminPort="
+				+ mmxAdminPort + ", mmxAdminPortSecure=" + mmxAdminPortSecure + ", mmxPublicPort=" + mmxPublicPort + ", mmxPublicPortSecure="
+				+ mmxPublicPortSecure + ", standaloneServer=" + standaloneServer + ", mmxAuthIntegrationEnabled=" + mmxAuthIntegrationEnabled
+        + ", mmxServerBaseUrl=" + mmxServerBaseUrl + ", isBootstrappable=" + isBootstrappable + "]";
 	}
 }
