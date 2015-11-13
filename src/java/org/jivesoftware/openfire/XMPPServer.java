@@ -593,7 +593,7 @@ public class XMPPServer {
         loadModule(AdHocCommandHandler.class.getName());
         loadModule(IQPrivacyHandler.class.getName());
         loadModule(DefaultFileTransferManager.class.getName());
-        loadModule(FileTransferProxy.class.getName());
+        //loadModule(FileTransferProxy.class.getName());
         loadModule(MediaProxyService.class.getName());
         loadModule(PubSubModule.class.getName());
         loadModule(IQDiscoInfoHandler.class.getName());
