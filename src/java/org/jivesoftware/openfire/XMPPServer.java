@@ -94,6 +94,7 @@ import org.jivesoftware.openfire.vcard.VCardManager;
 import org.jivesoftware.util.CertificateManager;
 import org.jivesoftware.util.InitializationException;
 import org.jivesoftware.util.JiveGlobals;
+import org.jivesoftware.util.JiveProperties;
 import org.jivesoftware.util.LocaleUtils;
 import org.jivesoftware.util.TaskEngine;
 import org.jivesoftware.util.Version;
@@ -536,6 +537,9 @@ public class XMPPServer {
             	if(startupProperties.isBootstrappable()) {
             		BootstrapProcessor bootstrapProcessor = new BootstrapProcessor(startupProperties);
             		bootstrapProcessor.bootstrap();	
+
+                  //[Magnet] the values were stale; reload the properties from DB
+                  JiveProperties.getInstance().init();
             	} else {
                 	Log.debug("Required startup properties not set, ignoring automatic bootstrapping");
                 }
