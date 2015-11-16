@@ -558,7 +558,7 @@
     </tr>
     <% } %>
     <%
-        if (fileTransferProxy.isProxyEnabled()) {
+        if (fileTransferProxy != null && fileTransferProxy.isProxyEnabled()) {
     %>
     <tr>
         <td><%= interfaceName == null ? LocaleUtils.getLocalizedString("ports.all_ports") : interfaceName %></td>
