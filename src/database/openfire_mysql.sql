@@ -392,3 +392,5 @@ insert into ofProperty values('xmpp.server.socket.active', 'false');
 INSERT INTO ofProperty VALUES ('flash.crossdomain.enabled', 'false');
 
 INSERT INTO ofProperty VALUES ('xmpp.proxy.enabled', 'false');
+
+INSERT INTO ofProperty VALUES ('xmpp.proxy.port', 7778);
