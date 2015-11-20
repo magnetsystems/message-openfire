@@ -152,6 +152,11 @@ public class PubSubModule extends BasicModule implements ServerItemsProvider, Di
      */
     private boolean serviceEnabled = true;
 
+    /**
+     * The wakeup provider for disconnected subscribers.
+     */
+    private WakeupProvider wakeupProvider = null;
+    
     public PubSubModule() {
         super("Publish Subscribe Service");
         
@@ -769,6 +774,14 @@ public class PubSubModule extends BasicModule implements ServerItemsProvider, Di
 
     public AdHocCommandManager getManager() {
         return manager;
+    }
+
+    public void setWakeupProvider(WakeupProvider provider) {
+        this.wakeupProvider = provider;
+    }
+
+    public WakeupProvider getWakeupProvider() {
+        return wakeupProvider;
     }
 
     public void propertySet(String property, Map<String, Object> params) {

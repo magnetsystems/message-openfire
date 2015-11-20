@@ -45,6 +45,7 @@ import org.jivesoftware.openfire.pubsub.PubSubEngine;
 import org.jivesoftware.openfire.pubsub.PubSubPersistenceManager;
 import org.jivesoftware.openfire.pubsub.PubSubService;
 import org.jivesoftware.openfire.pubsub.PublishedItem;
+import org.jivesoftware.openfire.pubsub.WakeupProvider;
 import org.jivesoftware.openfire.pubsub.models.AccessModel;
 import org.jivesoftware.openfire.pubsub.models.PublisherModel;
 import org.jivesoftware.openfire.roster.Roster;
@@ -511,4 +512,12 @@ public class PEPService implements PubSubService, Cacheable {
 		return 600;
 	}
 
+  public void setWakeupProvider(WakeupProvider resolver) {
+    // [Magnet] Not supported.
+  }
+
+  public WakeupProvider getWakeupProvider() {
+    // [Magnet]
+    return null;
+  }
 }

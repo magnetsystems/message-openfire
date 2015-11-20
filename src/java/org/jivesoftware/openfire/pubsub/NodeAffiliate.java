@@ -22,11 +22,13 @@ package org.jivesoftware.openfire.pubsub;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Element;
+import org.jivesoftware.openfire.XMPPServer;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 
@@ -95,6 +97,9 @@ public class NodeAffiliate {
             Map<List<NodeSubscription>, List<PublishedItem>> itemsBySubs =
                     getItemsBySubscriptions(leafNode, publishedItems);
 
+            // [Magnet] pubsub wakeup
+            Date pubDate = publishedItems.get(0).getCreationDate();
+
             // Send one notification for published items that affect the same subscriptions
             for (List<NodeSubscription> nodeSubscriptions : itemsBySubs.keySet()) {
                 // Add items information
@@ -124,7 +129,7 @@ public class NodeAffiliate {
                     }
                 }
                 // Send the event notification
-                sendEventNotification(notification, nodeSubscriptions);
+                sendEventNotification(notification, nodeSubscriptions, pubDate);
                 // Remove the added items information
                 event.remove(items);
             }
@@ -141,7 +146,7 @@ public class NodeAffiliate {
             Element items = event.addElement("items");
             items.addAttribute("node", leafNode.getNodeID());
             // Send the event notification
-            sendEventNotification(notification, affectedSubscriptions);
+            sendEventNotification(notification, affectedSubscriptions, null);
             // Remove the added items information
             event.remove(items);
         }
@@ -181,7 +186,7 @@ public class NodeAffiliate {
                     }
                 }
                 // Send the event notification
-                sendEventNotification(notification, nodeSubscriptions);
+                sendEventNotification(notification, nodeSubscriptions, null);
                 // Remove the added items information
                 event.remove(items);
             }
@@ -205,7 +210,9 @@ public class NodeAffiliate {
      *        included in the notification message. The list should not be empty.
      */
     private void sendEventNotification(Message notification,
-            List<NodeSubscription> notifySubscriptions) {
+            List<NodeSubscription> notifySubscriptions, Date pubDate) {
+      WakeupProvider provider = XMPPServer.getInstance().getPubSubModule().getWakeupProvider();
+
         if (node.isMultipleSubscriptionsEnabled()) {
             // Group subscriptions with the same subscriber JID
             Map<JID, Collection<String>> groupedSubs = new HashMap<JID, Collection<String>>();
@@ -223,6 +230,12 @@ public class NodeAffiliate {
                 Collection<String> subIDs = groupedSubs.get(subscriberJID);
                 // Send the notification to the subscriber
                 node.sendEventNotification(subscriberJID, notification, subIDs);
+                // [Magnet] add pubsub wakeup
+                if (pubDate != null && provider != null) {
+                  // TODO: the scope should come from subscription option
+                  provider.wakeup(WakeupProvider.Scope.all_devices,
+                      subscriberJID, node, pubDate);
+                }
             }
         }
         else {
@@ -233,6 +246,12 @@ public class NodeAffiliate {
             		JID sub = subscription.getJID();
             		if (!subs.contains(sub)) {
             			node.sendEventNotification(sub, notification, null);
+                    // [Magnet] add pubsub wakeup
+                    if (pubDate != null) {
+                      // TODO: the scope should come from subscription option
+                        provider.wakeup(WakeupProvider.Scope.all_devices, sub,
+                                      node, pubDate);
+                    }
             			subs.add(sub);
             		}
             	}
