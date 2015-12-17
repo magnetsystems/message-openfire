@@ -15,7 +15,7 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 
 	private static final Logger Log = LoggerFactory.getLogger(BootstrapDatasourceStandardSettings.class);
 	private StartupProperties bootstrapProps;
-	private static final String dbServerUrl = "jdbc:mysql://%s:%s/%s?rewriteBatchedStatements=true&amp;useUnicode=true&amp;characterEncoding=utf8";
+	private static final String dbServerUrl = "jdbc:mysql://%s:%s/%s?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8mb4&connectionCollation=utf8mb4_unicode_ci";
 
 	public BootstrapDatasourceStandardSettings(StartupProperties bootstrapProps) {
 		this.bootstrapProps = bootstrapProps;
