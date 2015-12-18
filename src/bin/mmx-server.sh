@@ -170,17 +170,6 @@ openfire_start() {
 	if [ true == $foreground ] ; then
 	   openfire_exec_command="exec nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1"
 	fi
-  # Use the openfire_mysql.sql (utf8mb4) from plugin instead of the openfire one (utf8)
-  if [[ -f $OPENFIRE_HOME/plugins/mmxmgmt/database/openfire_mysql.sql ]]; then
-    if [[ -f $OPENFIRE_HOME/resources/database/openfire_mysql.sql ]]; then
-      mv -f $OPENFIRE_HOME/resources/database/openfire_mysql.sql \
-            $OPENFIRE_HOME/resources/database/openfire_mysql_utf8.sql
-    fi
-    ln $OPENFIRE_HOME/plugins/mmxmgmt/database/openfire_mysql.sql \
-       $OPENFIRE_HOME/resources/database
-    mv -f $OPENFIRE_HOME/plugins/mmxmgmt/database/openfire_mysql.sql \
-          $OPENFIRE_HOME/plugins/mmxmgmt/database/openfire_mysql_utf8mb4.sql
-  fi
 	eval $openfire_exec_command
 	pid=$!
 }
