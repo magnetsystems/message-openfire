@@ -172,7 +172,7 @@ openfire_start() {
 	fi
   # Use the openfire_mysql.sql (utf8mb4) from plugin instead of the openfire one (utf8)
   if [[ -f $OPENFIRE_HOME/plugins/mmxmgmt/database/openfire_mysql.sql ]]; then
-    if [[ $OPENFIRE_HOME/resources/database/openfire_mysql.sql ]]; then
+    if [[ -f $OPENFIRE_HOME/resources/database/openfire_mysql.sql ]]; then
       mv -f $OPENFIRE_HOME/resources/database/openfire_mysql.sql \
             $OPENFIRE_HOME/resources/database/openfire_mysql_utf8.sql
     fi
