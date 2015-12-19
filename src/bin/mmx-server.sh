@@ -232,7 +232,7 @@ stop() {
         echo "Warning: MMX takes too long to stop; abort waiting"
         break;
       fi
-      echo -n .
+      /bin/echo -n .
       kill -0 $pid 2> /dev/null
     done
 		rm "$PID_PATH/$PROG.pid"
