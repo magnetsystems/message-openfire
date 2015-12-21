@@ -14,15 +14,16 @@ import java.util.Map;
 public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage {
 
 	private static final Logger Log = LoggerFactory.getLogger(BootstrapDatasourceStandardSettings.class);
-	private StartupProperties bootstrapProps;
-//	private static final String dbServerUrl = "jdbc:mysql://%s:%s/%s?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8mb4&connectionCollation=utf8mb4_unicode_ci";
-	private static final String dbServerUrl = "jdbc:mysql://%s:%s/%s?rewriteBatchedStatements=true&useUnicode=true";
+	private final StartupProperties bootstrapProps;
+	private static final String dbServerUrl = "jdbc:mysql://%s:%s/%s?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8mb4&connectionCollation=utf8mb4_unicode_ci";
+//	private static final String dbServerUrl = "jdbc:mysql://%s:%s/%s?rewriteBatchedStatements=true&useUnicode=true";
 
 	public BootstrapDatasourceStandardSettings(StartupProperties bootstrapProps) {
 		this.bootstrapProps = bootstrapProps;
 	}
 
-	public BootstrapSetupStage exec(Map<String, String> xmppSettings, Map<String, String> xmlSettings) {
+	@Override
+  public BootstrapSetupStage exec(Map<String, String> xmppSettings, Map<String, String> xmlSettings) {
 		JiveGlobals.setXMLProperty("connectionProvider.className", "org.jivesoftware.database.DefaultConnectionProvider");
 		DefaultConnectionProvider conProvider = new DefaultConnectionProvider();
 		try {
@@ -91,7 +92,7 @@ public class BootstrapDatasourceStandardSettings implements BootstrapSetupStage 
 			try {
 				con.close();
 			} catch (Exception ignored) {
-			
+
 			}
 		}
 		return success;
