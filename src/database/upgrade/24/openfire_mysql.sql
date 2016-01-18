@@ -4,3 +4,4 @@ INSERT INTO ofProperty (name, propValue) VALUES( 'flash.crossdomain.enabled', 'f
 
 INSERT INTO ofProperty (name, propValue) VALUES( 'xmpp.proxy.enabled', 'false') ON DUPLICATE KEY UPDATE name=VALUES(name), propValue=VALUES(propValue);
 
+INSERT INTO ofProperty (name, propValue) VALUES( 'xmpp.proxy.port', 7778) ON DUPLICATE KEY UPDATE name=VALUES(name), propValue=VALUES(propValue);

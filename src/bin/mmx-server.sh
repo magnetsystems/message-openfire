@@ -223,8 +223,18 @@ start() {
 stop() {
 	if [ -e "$PID_PATH/$PROG.pid" ]; then
 		pid=$(<$PID_PATH/$PROG.pid)
-		kill -9 $pid
-
+    retry=30
+		kill $pid 2> /dev/null
+    until [[ $? -ne 0 ]]; do
+      sleep 1
+      retry=$((retry-1))
+      if [[ $retry -eq 0 ]]; then
+        echo "Warning: MMX takes too long to stop; abort waiting"
+        break;
+      fi
+      /bin/echo -n .
+      kill -0 $pid 2> /dev/null
+    done
 		rm "$PID_PATH/$PROG.pid"
 
 		echo "$PROG stopped"
@@ -250,7 +260,7 @@ if [ "$#" == 0 ] || [ "$#" -gt 3 ] ; then
 	exit 1
 fi
 
-while getopts "p f h" opt; do
+while getopts "pfh" opt; do
 	case $opt in
 		p)
 			check_port=false
@@ -282,7 +292,6 @@ case "$1" in
 		;;
 	restart)
 		stop
-		sleep 5
 		start
 		exit 0
 		;;

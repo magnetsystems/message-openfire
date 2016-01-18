@@ -28,24 +28,37 @@
                         <param name="ConversionPattern" value="%d{yyyy.MM.dd HH:mm:ss} [%p] (%t) %c - %m%n" />
                 </layout>
         </appender>
+
+        <appender name="general-out" class="org.apache.log4j.RollingFileAppender">
+                <param name="File" value="../logs/all.log" />
+                <param name="MaxFileSize" value="512MB"/>
+                <param name="MaxBackupIndex" value="2"/>
+                <layout class="org.apache.log4j.PatternLayout">
+                        <param name="ConversionPattern" value="%d{yyyy.MM.dd HH:mm:ss} [%p] (%t) %c - %m%n" />
+                </layout>
+        </appender>
+
+
         <!-- OF-506: Jetty INFO messages are generally not useful. Ignore them by default. -->
-        <logger name="org.eclipse.jetty">
-                <level value="debug" />	
-        </logger>
+        <!--<logger name="org.eclipse.jetty">-->
+                <!--<level value="debug" />	-->
+        <!--</logger>-->
         <logger name="org.jivesoftware">
-                <level value="debug" />
+                <level value="info" />
+                <appender-ref ref="openfire-out"/>
         </logger>
-        <logger name="com.magnet.mmx" additivity="false">
-		<level value="trace"/>
+        <logger name="com.magnet">
+		        <level value="info"/>
                 <appender-ref ref="mmxmgmt-out"/>
         </logger>
-        <logger name="com.hazelcast" additivity="false">
-                <level value="debug"/>
+        <logger name="com.hazelcast">
+                <level value="info"/>
                 <appender-ref ref="cache-out"/>
         </logger>
+
         <root>
-                <level value="trace" />
-                <appender-ref ref="openfire-out" />
+                <level value="info" />
+                <appender-ref ref="general-out" />
         </root>
 
 </log4j:configuration>

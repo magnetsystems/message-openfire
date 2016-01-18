@@ -127,12 +127,11 @@ public class DbConnectionManager {
                     // Usually profiling is not enabled. So we return a normal 
                     // connection unless profiling is enabled. If yes, wrap the
                     // connection with a profiled connection.
-                    if (!profilingEnabled) {
-                        return con;
+                    if (profilingEnabled) {
+                        con = new ProfiledConnection(con);
                     }
-                    else {
-                        return new ProfiledConnection(con); 
-                    }
+                    ensureUtfSupport(con);
+                    return con;
                 }
             } catch (SQLException e) {
             	// TODO distinguish recoverable from non-recoverable exceptions.
@@ -151,6 +150,10 @@ public class DbConnectionManager {
         throw new SQLException("ConnectionManager.getConnection() " +
                 "failed to obtain a connection after " + retryCnt +" retries. " +
                 "The exception from the last attempt is as follows: "+lastException);
+    }
+
+    private static void ensureUtfSupport(Connection connection) throws SQLException {
+        connection.createStatement().execute("SET NAMES utf8mb4");
     }
 
     /**
