@@ -166,7 +166,7 @@ openfire_start() {
 	# REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
 	# JMX_CONFIG="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
 	# openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS $REMOTE_DEBUG $JMX_CONFIG  -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1 &"
-	openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1 &"
+	openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" > $OPENFIRE_HOME/logs/mmx-server.out  2>&1 &"
 	if [ true == $foreground ] ; then
 	   openfire_exec_command="exec nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1"
 	fi
