@@ -11,7 +11,7 @@
 # OS specific support.  $var _must_ be set to either true or false.
 
 #if openfire home is not set or is not a directory
-if [ -z "$OPENFIRE_HOME" -o ! -d "$OPENFIRE_HOME" ]; then
+if [[ -z "$OPENFIRE_HOME" || ! -d "$OPENFIRE_HOME" ]]; then
 
 	#resolve links - $0 may be a link in openfire's home
 	PRG="$0"
@@ -20,7 +20,7 @@ if [ -z "$OPENFIRE_HOME" -o ! -d "$OPENFIRE_HOME" ]; then
 	# need this for relative symlinks
 
 	# need this for relative symlinks
-	while [ -h "$PRG" ] ; do
+	while [[ -h "$PRG" ]] ; do
 		ls=`ls -ld "$PRG"`
 		link=`expr "$ls" : '.*-> \(.*\)$'`
 		if expr "$link" : '/.*' > /dev/null; then
@@ -55,16 +55,16 @@ openfire_start() {
 	case "`uname`" in
 		CYGWIN*) cygwin=true ;;
 		Darwin*) darwin=true
-			if [ -z "$JAVA_HOME" ] ; then
+			if [[ -z "$JAVA_HOME" ]] ; then
 				JAVA_HOME=`/usr/libexec/java_home`
 			fi
 			;;
 		Linux*) linux=true
-			if [ -z "$JAVA_HOME" ]; then
+			if [[ -z "$JAVA_HOME" ]]; then
 				shopt -s nullglob
 				jdks=`ls -r1d /usr/java/j* /usr/lib/jvm/* /usr/bin/j* 2>/dev/null`
 				for jdk in $jdks; do
-					if [ -f "$jdk/bin/java" ]; then
+					if [[ -f "$jdk/bin/java" ]]; then
 						JAVA_HOME="$jdk"
 						break
 					fi
@@ -89,14 +89,14 @@ openfire_start() {
 	OPENFIRE_OPTS="${OPENFIRE_OPTS} -Dopenfire.lib.dir=\"${OPENFIRE_LIB}\""
 
 	# Override with bundled jre if it exists.
-	if [ -f "$OPENFIRE_HOME/jre/bin/java" ]; then
+	if [[ -f "$OPENFIRE_HOME/jre/bin/java" ]]; then
 		JAVA_HOME="$OPENFIRE_HOME/jre"
 		JAVACMD="$OPENFIRE_HOME/jre/bin/java"
 	fi
 
-	if [ -z "$JAVACMD" ] ; then
-		if [ -n "$JAVA_HOME"  ] ; then
-			if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+	if [[ -z "$JAVACMD" ]] ; then
+		if [[ -n "$JAVA_HOME"  ]] ; then
+			if [[ -x "$JAVA_HOME/jre/sh/java" ]] ; then
 				# IBM's JDK on AIX uses strange locations for the executables
 				JAVACMD="$JAVA_HOME/jre/sh/java"
 			else
@@ -104,19 +104,19 @@ openfire_start() {
 			fi
 		else
 			JAVACMD=`which java 2> /dev/null `
-			if [ -z "$JAVACMD" ] ; then
+			if [[ -z "$JAVACMD" ]] ; then
 				JAVACMD=java
 			fi
 		fi
 	fi
 
-	if [ ! -x "$JAVACMD" ] ; then
+	if [[ ! -x "$JAVACMD" ]] ; then
 		echo "Error: JAVA_HOME is not defined correctly."
 		echo "  We cannot execute $JAVACMD"
 		exit 1
 	fi
 
-	if [ -z "$LOCALCLASSPATH" ] ; then
+	if [[ -z "$LOCALCLASSPATH" ]] ; then
 		LOCALCLASSPATH=$OPENFIRE_LIB/startup.jar
 	else
 		LOCALCLASSPATH=$OPENFIRE_LIB/startup.jar:$LOCALCLASSPATH
@@ -133,7 +133,7 @@ openfire_start() {
 		OPENFIRE_LIB=`cygpath --$format "$OPENFIRE_LIB"`
 		JAVA_HOME=`cygpath --$format "$JAVA_HOME"`
 		LOCALCLASSPATH=`cygpath --path --$format "$LOCALCLASSPATH"`
-		if [ -n "$CLASSPATH" ] ; then
+		if [[ -n "$CLASSPATH" ]] ; then
 			CLASSPATH=`cygpath --path --$format "$CLASSPATH"`
 		fi
 		CYGHOME=`cygpath --$format "$HOME"`
@@ -162,12 +162,8 @@ openfire_start() {
 				;;
 		esac
 	fi
-	## Uncomment the next few line to enable remote debug
-	# REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
-	# JMX_CONFIG="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
-	# openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS $REMOTE_DEBUG $JMX_CONFIG  -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1 &"
-	openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" > $OPENFIRE_HOME/logs/mmx-server.out  2>&1 &"
-	if [ true == $foreground ] ; then
+	openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS $REMOTE_DEBUG $JMX_CONFIG -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" > $OPENFIRE_HOME/logs/mmx-server.out  2>&1 &"
+	if [[ true == $foreground ]] ; then
 	   openfire_exec_command="exec nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1"
 	fi
 	eval $openfire_exec_command
@@ -206,12 +202,12 @@ check_java() {
 }
 
 start() {
-	if [ -e "$PID_PATH/$PROG.pid" ]; then
+	if [[ -e "$PID_PATH/$PROG.pid" ]]; then
 		## Program is running, exit with error.
 		echo "Error! $PROG is already running or you have a stale pid file. If $PROG is not running, then please delete $PROG.pid inside the messaging directory and try again." 1>&2
 		exit 1
 	else
-		if [ true == $check_port ]; then
+		if [[ true == $check_port ]]; then
 			check_port_list $xmppPort $xmppPortSecure $httpPort $httpPortSecure $mmxAdminPort $mmxAdminPortSecure $mmxPublicPort $mmxPublicPortSecure
 		fi
 		check_java
@@ -221,7 +217,7 @@ start() {
 	fi
 }
 stop() {
-	if [ -e "$PID_PATH/$PROG.pid" ]; then
+	if [[ -e "$PID_PATH/$PROG.pid" ]]; then
 		pid=$(<$PID_PATH/$PROG.pid)
     retry=30
 		kill $pid 2> /dev/null
@@ -245,23 +241,31 @@ stop() {
 }
 
 print_usage() {
-	echo "Usage: mmx-server.sh [-p] [-f] {start|stop|restart}" >&2
-	echo >&2
-	echo "Start, stop, or restart the Magnet Messaging server." >&2
-	echo >&2
-	echo "Options:" >&2
-	echo "    [-p]    No port check when starting" >&2
-	echo "    [-f]    Run in foreground mode for Docker" >&2
-	echo >&2
+  cat >&2 <<EOF
+Usage: mmx-server.sh [-d][-p][-f] {start|stop|restart}
+
+Start, stop, or restart the Magnet Messaging server.
+
+Options:
+    [-p]    No port check when starting
+    [-f]    Run in foreground mode for Docker
+    [-d]    Enable remote debugging
+EOF
 }
 
-if [ "$#" == 0 ] || [ "$#" -gt 3 ] ; then
+if [[ "$#" == 0 || "$#" -gt 3 ]] ; then
 	print_usage
 	exit 1
 fi
 
-while getopts "pfh" opt; do
+REMOTE_DEBUG=
+JMX_CONFIG=
+while getopts "dpfh" opt; do
 	case $opt in
+    d)
+	    REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+	    JMX_CONFIG="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
+      ;;
 		p)
 			check_port=false
 			;;
@@ -300,5 +304,3 @@ case "$1" in
 		exit 1
 		;;
 esac
-
-
