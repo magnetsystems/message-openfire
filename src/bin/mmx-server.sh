@@ -162,9 +162,11 @@ openfire_start() {
 				;;
 		esac
 	fi
-	openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS $REMOTE_DEBUG $JMX_CONFIG -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" > $OPENFIRE_HOME/logs/mmx-server.out  2>&1 &"
+	openfire_exec_command="nohup $JAVACMD $OPENFIRE_OPTS $REMOTE_DEBUG $JMX_CONFIG -DopenfireHome=$OPENFIRE_HOME -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" > $OPENFIRE_HOME/logs/mmx-server.out  2>&1"
 	if [[ true == $foreground ]] ; then
-	   openfire_exec_command="exec nohup $JAVACMD $OPENFIRE_OPTS -classpath \"$LOCALCLASSPATH\" -jar \"$OPENFIRE_LIB/startup.jar\" >mmx-server.out  2>&1"
+	  openfire_exec_command="exec $openfire_exec_command"
+  else
+	  openfire_exec_command="$openfire_exec_command &"
 	fi
 	eval $openfire_exec_command
 	pid=$!
