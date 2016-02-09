@@ -33,8 +33,8 @@ if [[ -z "$OPENFIRE_HOME" || ! -d "$OPENFIRE_HOME" ]]; then
 	#assumes we are in the bin directory
 	OPENFIRE_HOME=`dirname "$PRG"`/..
 
-	#make it fully qualified
-	OPENFIRE_HOME=`cd "$OPENFIRE_HOME" && pwd`
+	#make it fully qualified and ignore cd output
+	OPENFIRE_HOME=`cd "$OPENFIRE_HOME" >/dev/null && pwd`
 fi
 
 # Change the following if it has been changed to use another port
