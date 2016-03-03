@@ -3,7 +3,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
         <appender name="cache-out" class="org.apache.log4j.RollingFileAppender">
-                <param name="File" value="../logs/cache.log" />
+                <param name="File" value="${openfireHome}/logs/cache.log" />
                 <param name="MaxFileSize" value="512MB"/>
                 <param name="MaxBackupIndex" value="2"/>
                 <layout class="org.apache.log4j.PatternLayout">
@@ -12,7 +12,7 @@
         </appender>
 
         <appender name="openfire-out" class="org.apache.log4j.RollingFileAppender">
-                <param name="File" value="../logs/openfire.log" />
+                <param name="File" value="${openfireHome}/logs/openfire.log" />
                 <param name="MaxFileSize" value="512MB"/>
                 <param name="MaxBackupIndex" value="2"/>
                 <layout class="org.apache.log4j.PatternLayout">
@@ -21,7 +21,7 @@
         </appender>
 
         <appender name="mmxmgmt-out" class="org.apache.log4j.RollingFileAppender">
-                <param name="File" value="../logs/mmxmgmt.log" />
+                <param name="File" value="${openfireHome}/logs/mmxmgmt.log" />
                 <param name="MaxFileSize" value="512MB"/>
                 <param name="MaxBackupIndex" value="2"/>
                 <layout class="org.apache.log4j.PatternLayout">
@@ -30,7 +30,7 @@
         </appender>
 
         <appender name="general-out" class="org.apache.log4j.RollingFileAppender">
-                <param name="File" value="../logs/all.log" />
+                <param name="File" value="${openfireHome}/logs/all.log" />
                 <param name="MaxFileSize" value="512MB"/>
                 <param name="MaxBackupIndex" value="2"/>
                 <layout class="org.apache.log4j.PatternLayout">
@@ -48,7 +48,7 @@
                 <appender-ref ref="openfire-out"/>
         </logger>
         <logger name="com.magnet">
-		        <level value="info"/>
+		        <level value="trace"/>
                 <appender-ref ref="mmxmgmt-out"/>
         </logger>
         <logger name="com.hazelcast">
