@@ -114,6 +114,10 @@ class PrivacyItem implements Cacheable, Comparable {
         return type == Type.group || type == Type.subscription;
     }
 
+    public JID getJidValue() {
+        return jidValue;
+    }
+
     public int compareTo(Object object) {
         if (object instanceof PrivacyItem) {
             return this.order - ((PrivacyItem) object).order;
