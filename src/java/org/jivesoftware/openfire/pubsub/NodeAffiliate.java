@@ -22,7 +22,6 @@ package org.jivesoftware.openfire.pubsub;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -234,11 +233,10 @@ public class NodeAffiliate {
             for (JID subscriberJID : groupedSubs.keySet()) {
                 // [Magnet] add user blocking
                 PrivacyList defPriList = PrivacyListManager.getInstance()
-                    .getPrivacyList(subscriberJID.getNode(), "default");
+                    .getDefaultPrivacyList(subscriberJID.getNode());
                 PrivacyList nodePriList = PrivacyListManager.getInstance()
                     .getPrivacyList(subscriberJID.getNode(), node.getNodeID());
-                if ((defPriList != null && defPriList.isDefault() &&
-                     defPriList.shouldBlockPacket(blockMsg)) ||
+                if ((defPriList != null && defPriList.shouldBlockPacket(blockMsg)) ||
                     (nodePriList != null && nodePriList.shouldBlockPacket(blockMsg))) {
                     continue;
                 }
@@ -263,11 +261,10 @@ public class NodeAffiliate {
             		if (!subs.contains(sub)) {
                     // [Magnet] add user blocking
                     PrivacyList defPriList = PrivacyListManager.getInstance()
-                        .getPrivacyList(sub.getNode(), "default");
+                        .getDefaultPrivacyList(sub.getNode());
                     PrivacyList nodePriList = PrivacyListManager.getInstance()
                         .getPrivacyList(sub.getNode(), node.getNodeID());
-                    if ((defPriList != null && defPriList.isDefault() &&
-                         defPriList.shouldBlockPacket(blockMsg)) ||
+                    if ((defPriList != null && defPriList.shouldBlockPacket(blockMsg)) ||
                         (nodePriList != null && nodePriList.shouldBlockPacket(blockMsg))) {
                         continue;
                     }
