@@ -29,6 +29,8 @@ import java.util.Map;
 
 import org.dom4j.Element;
 import org.jivesoftware.openfire.XMPPServer;
+import org.jivesoftware.openfire.privacy.PrivacyList;
+import org.jivesoftware.openfire.privacy.PrivacyListManager;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 
@@ -98,7 +100,7 @@ public class NodeAffiliate {
                     getItemsBySubscriptions(leafNode, publishedItems);
 
             // [Magnet] pubsub wakeup
-            Date pubDate = publishedItems.get(0).getCreationDate();
+            PublishedItem pubItem0 = publishedItems.get(0);
 
             // Send one notification for published items that affect the same subscriptions
             for (List<NodeSubscription> nodeSubscriptions : itemsBySubs.keySet()) {
@@ -111,7 +113,7 @@ public class NodeAffiliate {
                     //
                     // If the node ID looks like a JID, replace it with the published item's node ID.
                     if (getNode().getNodeID().indexOf("@") >= 0) {
-                        items.addAttribute("node", publishedItem.getNodeID());                        
+                        items.addAttribute("node", publishedItem.getNodeID());
                     }
 
                     // Add item information to the event notification
@@ -129,7 +131,7 @@ public class NodeAffiliate {
                     }
                 }
                 // Send the event notification
-                sendEventNotification(notification, nodeSubscriptions, pubDate);
+                sendEventNotification(notification, nodeSubscriptions, pubItem0);
                 // Remove the added items information
                 event.remove(items);
             }
@@ -210,8 +212,12 @@ public class NodeAffiliate {
      *        included in the notification message. The list should not be empty.
      */
     private void sendEventNotification(Message notification,
-            List<NodeSubscription> notifySubscriptions, Date pubDate) {
+            List<NodeSubscription> notifySubscriptions, PublishedItem pubItem) {
       WakeupProvider provider = XMPPServer.getInstance().getPubSubModule().getWakeupProvider();
+
+        // [Magnet] user blocking
+        Message blockMsg = new Message();
+        blockMsg.setFrom(pubItem.getPublisher());
 
         if (node.isMultipleSubscriptionsEnabled()) {
             // Group subscriptions with the same subscriber JID
@@ -226,15 +232,25 @@ public class NodeAffiliate {
             }
             // Send an event notification to each subscriber with a different JID
             for (JID subscriberJID : groupedSubs.keySet()) {
+                // [Magnet] add user blocking
+                PrivacyList defPriList = PrivacyListManager.getInstance()
+                    .getPrivacyList(subscriberJID.getNode(), "default");
+                PrivacyList nodePriList = PrivacyListManager.getInstance()
+                    .getPrivacyList(subscriberJID.getNode(), node.getNodeID());
+                if ((defPriList != null && defPriList.isDefault() &&
+                     defPriList.shouldBlockPacket(blockMsg)) ||
+                    (nodePriList != null && nodePriList.shouldBlockPacket(blockMsg))) {
+                    continue;
+                }
                 // Get ID of affected subscriptions
                 Collection<String> subIDs = groupedSubs.get(subscriberJID);
                 // Send the notification to the subscriber
                 node.sendEventNotification(subscriberJID, notification, subIDs);
                 // [Magnet] add pubsub wakeup
-                if (pubDate != null && provider != null) {
-                  // TODO: the scope should come from subscription option
-                  provider.wakeup(WakeupProvider.Scope.all_devices,
-                      subscriberJID, node, pubDate);
+                if (pubItem != null && provider != null) {
+                    // TODO: the scope should come from subscription option
+                    provider.wakeup(WakeupProvider.Scope.all_devices,
+                      subscriberJID, node, notification, pubItem);
                 }
             }
         }
@@ -245,14 +261,24 @@ public class NodeAffiliate {
             	for(NodeSubscription subscription: notifySubscriptions) {
             		JID sub = subscription.getJID();
             		if (!subs.contains(sub)) {
-            			node.sendEventNotification(sub, notification, null);
-                    // [Magnet] add pubsub wakeup
-                    if (pubDate != null) {
-                      // TODO: the scope should come from subscription option
-                        provider.wakeup(WakeupProvider.Scope.all_devices, sub,
-                                      node, pubDate);
+                    // [Magnet] add user blocking
+                    PrivacyList defPriList = PrivacyListManager.getInstance()
+                        .getPrivacyList(sub.getNode(), "default");
+                    PrivacyList nodePriList = PrivacyListManager.getInstance()
+                        .getPrivacyList(sub.getNode(), node.getNodeID());
+                    if ((defPriList != null && defPriList.isDefault() &&
+                         defPriList.shouldBlockPacket(blockMsg)) ||
+                        (nodePriList != null && nodePriList.shouldBlockPacket(blockMsg))) {
+                        continue;
                     }
-            			subs.add(sub);
+                    node.sendEventNotification(sub, notification, null);
+                    // [Magnet] add pubsub wakeup
+                    if (pubItem != null) {
+                        // TODO: the scope should come from subscription option
+                        provider.wakeup(WakeupProvider.Scope.all_devices, sub,
+                                      node, notification, pubItem);
+                    }
+                    subs.add(sub);
             		}
             	}
             }

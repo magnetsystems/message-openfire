@@ -19,9 +19,8 @@
  */
 package org.jivesoftware.openfire.pubsub;
 
-import java.util.Date;
-
 import org.xmpp.packet.JID;
+import org.xmpp.packet.Message;
 
 /**
  * A provider to wake up devices for a subscriber.  This Magnet enhancement
@@ -46,7 +45,8 @@ public interface WakeupProvider {
    * @param scope
    * @param userOrDev A bare JID as user or full JID as the disconnected device.
    * @param node
-   * @param pubDate The oldest publish date in the itemIds
+   * @param notification A notification message which may contain a payload
+   * @param pubItem The oldest published item in the item list
    */
-  public void wakeup(Scope scope, JID userOrDev, Node node, Date pubDate);
+  public void wakeup(Scope scope, JID userOrDev, Node node, Message notification, PublishedItem pubItem);
 }
