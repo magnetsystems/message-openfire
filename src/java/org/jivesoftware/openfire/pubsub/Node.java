@@ -287,6 +287,16 @@ public abstract class Node {
 
     /**
      * Adds a new affiliation or updates an existing affiliation of the specified entity JID
+     * to become a member affiliate.  Affiliates of type member are allowed to subscribe to
+     * the node and retrieve items.
+     * @param jid
+     * @return
+     */
+    public NodeAffiliate addMemberAffiliation(JID jid) {
+      return addAffiliation(jid, NodeAffiliate.Affiliation.member);
+    }
+    /**
+     * Adds a new affiliation or updates an existing affiliation of the specified entity JID
      * to become a none affiliate. Affiliates of type none are allowed to subscribe to the node.
      *
      * @param jid the JID of the user with affiliation "none".

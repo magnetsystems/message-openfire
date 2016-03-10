@@ -341,6 +341,10 @@ public class NodeAffiliate {
          */
         publisher,
         /**
+         * A member can subscribe items to the node.
+         */
+        member,
+        /**
          * A user with no affiliation can susbcribe to the node.
          */
         none,

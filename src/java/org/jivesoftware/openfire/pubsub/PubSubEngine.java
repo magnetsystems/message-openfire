@@ -1556,6 +1556,9 @@ public class PubSubEngine {
             else if ("none".equals(newAffiliation)) {
                 node.addNoneAffiliation(owner);
             }
+            else if ("member".equals(newAffiliation)) {
+                node.addMemberAffiliation(owner);
+            }
             else  {
                 node.addOutcast(owner);
             }
