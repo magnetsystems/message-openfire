@@ -341,7 +341,7 @@ public class NodeAffiliate {
          */
         publisher,
         /**
-         * A member can subscribe items to the node.
+         * A member can subscribe to the node and retrieve items.
          */
         member,
         /**
