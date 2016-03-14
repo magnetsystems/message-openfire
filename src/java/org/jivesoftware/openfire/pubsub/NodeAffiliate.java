@@ -207,7 +207,7 @@ public class NodeAffiliate {
      *        included in the notification message. The list should not be empty.
      */
     private void sendEventNotification(Message notification,
-            List<NodeSubscription> notifySubscriptionspubItem) {
+            List<NodeSubscription> notifySubscriptions) {
 
         if (node.isMultipleSubscriptionsEnabled()) {
             // Group subscriptions with the same subscriber JID
