@@ -245,17 +245,4 @@ public interface PubSubService {
      * @return the ad-hoc commands manager used for this service.
      */
     AdHocCommandManager getManager();
-
-    /**
-     * Specify a wakeup provider for disconnected subscribers.  This is a
-     * Magnet enhancement.
-     * @param provider A wakeup provider or null.
-     */
-    void setWakeupProvider(WakeupProvider provider);
-
-    /**
-     * Get the wakeup provider.  This is a Magnet enhancement.
-     * @return The wakeup provider or null.
-     */
-    WakeupProvider getWakeupProvider();
 }
