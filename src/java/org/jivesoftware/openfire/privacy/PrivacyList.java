@@ -196,16 +196,6 @@ public class PrivacyList implements Cacheable, Externalizable {
         return listElement;
     }
 
-
-    public List<JID> getBlockedUsers() {
-        ArrayList<JID> list = new ArrayList<JID>();
-        // Add the list items to the result
-        for (PrivacyItem item : items) {
-            list.add(item.getJidValue());
-        }
-        return list;
-    }
-
     /**
      * Sets the new list items based on the specified Element. The Element must contain
      * a list of item elements.
