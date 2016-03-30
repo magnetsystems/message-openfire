@@ -292,9 +292,28 @@ public abstract class Node {
      * @param jid the JID of the user with affiliation "member".
      * @return the newly created or modified affiliation to the node.
      */
-    public NodeAffiliate addMemberAffiliation(JID jid) {
-      return addAffiliation(jid, NodeAffiliate.Affiliation.member);
+    public NodeAffiliate addMember(JID jid) {
+        return addAffiliation(jid, NodeAffiliate.Affiliation.member);
     }
+
+    /**
+     * Removes the member affiliation of the specified entity JID. If the user that is
+     * no longer a member was subscribed to the node then his affiliation will be of
+     * type {@link NodeAffiliate.Affiliation#none}.
+     *
+     * @param jid the JID of the user being removed as a node member.
+     */
+    public void removeMember(JID jid) {
+        NodeAffiliate affiliate = getAffiliate(jid);
+        if (affiliate.getSubscriptions().isEmpty()) {
+            removeAffiliation(jid, NodeAffiliate.Affiliation.member);
+            removeSubscriptions(jid);
+        } else {
+            // The user has subscriptions so change affiliation to NONE
+            addNoneAffiliation(jid);
+        }
+    }
+
     /**
      * Adds a new affiliation or updates an existing affiliation of the specified entity JID
      * to become a none affiliate. Affiliates of type none are allowed to subscribe to the node.
