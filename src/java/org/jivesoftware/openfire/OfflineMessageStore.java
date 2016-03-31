@@ -80,10 +80,11 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         "DELETE FROM ofOffline WHERE username=?";
     private static final String DELETE_OFFLINE_MESSAGE =
         "DELETE FROM ofOffline WHERE username=? AND creationDate=?";
-    private static final String INSERT_WITH_PACKET_ID = "INSERT INTO ofOffline (username, messageID, creationDate, messageSize, packetId, stanza) " +
+    private static final String INSERT_WITH_PACKET_ID =
+        "INSERT INTO ofOffline (username, messageID, creationDate, messageSize, packetId, stanza) " +
         "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_WITH_PACKET_ID =
-    	"DELETE FROM ofOffline WHERE username = ? AND packetId = ?";
+        "DELETE FROM ofOffline WHERE username in (?,?) AND packetId=?;";
     
 
     private static final int POOL_SIZE = 10;
@@ -188,10 +189,11 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
         }
 
         // Update the cached size if it exists.
-        if (sizeCache.containsKey(username)) {
-            int size = sizeCache.get(username);
+        // Magnet modification here to change from username to recipient JID.
+        if (sizeCache.containsKey(recipient.toString())) {
+            int size = sizeCache.get(recipient.toString());
             size += msgXML.length();
-            sizeCache.put(username, size);
+            sizeCache.put(recipient.toString(), size);
         }
     }
 
@@ -389,29 +391,40 @@ public class OfflineMessageStore extends BasicModule implements UserEventListene
     
     /**
      * Deletes the specified offline message in the store for a user. The way to identify the
-     * message to delete is based on the messageId and username.
+     * message to delete is based on the packet ID and username.  A message
+     * tied to a full JID and bare JID will be deleted.
      *
-     * @param username the username of the user who's message is going to be deleted.
-     * @param packetId the date when the offline message was stored in the database.
+     * @param username the username of the user whose message is going to be deleted.
+     * @param packetId the packet ID of the message.
      */
     public void deleteMessage(String username, String packetId) {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
+            int slash = username.lastIndexOf('/');
+            String usernameBareJid = (slash > 0) ? username.substring(0, slash) : username;
             con = DbConnectionManager.getConnection();
             pstmt = con.prepareStatement(DELETE_WITH_PACKET_ID);
             pstmt.setString(1, username);
-            pstmt.setString(2, packetId);
-            pstmt.executeUpdate();
+            pstmt.setString(2, usernameBareJid);
+            pstmt.setString(3, packetId);
+            int count = pstmt.executeUpdate();
+            if (count == 0) {
+              // It may happen if the addMessage() was run asynchronously in
+              // different thread; it will be a bug!
+              Log.warn("Offline message not found: username="+username+
+                       ", packetId="+packetId);
+            }
             
             // Force a refresh for next call to getSize(username),
             // it's easier than loading the message to be deleted just
             // to update the cache.
             removeUsernameFromSizeCache(username);
+            removeUsernameFromSizeCache(usernameBareJid);
         }
         catch (Exception e) {
-            Log.error("Error deleting offline messages of username: " + username +
-                    " creationDate: " + packetId, e);
+            Log.error("Error deleting offline message of username: " + username +
+                    ", packetId: " + packetId, e);
         }
         finally {
             DbConnectionManager.closeConnection(pstmt, con);
