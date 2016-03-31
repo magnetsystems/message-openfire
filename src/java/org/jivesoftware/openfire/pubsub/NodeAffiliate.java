@@ -244,8 +244,9 @@ public class NodeAffiliate {
                 Collection<String> subIDs = groupedSubs.get(subscriberJID);
                 // Send the notification to the subscriber
                 node.sendEventNotification(subscriberJID, notification, subIDs);
-                // [Magnet] add pubsub wakeup
-                if (pubItem != null && provider != null) {
+                // [Magnet] add pubsub wakeup excluding the publisher
+                if (pubItem != null && provider != null &&
+                    !pubItem.getPublisher().getNode().equals(subscriberJID.getNode())) {
                     // TODO: the scope should come from subscription option
                     provider.wakeup(WakeupProvider.Scope.all_devices,
                       subscriberJID, node, notification, pubItem);
@@ -269,8 +270,9 @@ public class NodeAffiliate {
                         continue;
                     }
                     node.sendEventNotification(sub, notification, null);
-                    // [Magnet] add pubsub wakeup
-                    if (pubItem != null) {
+                    // [Magnet] add pubsub wakeup excluding the publisher
+                    if (pubItem != null && provider != null &&
+                        !pubItem.getPublisher().getNode().equals(sub.getNode())) {
                         // TODO: the scope should come from subscription option
                         provider.wakeup(WakeupProvider.Scope.all_devices, sub,
                                       node, notification, pubItem);
