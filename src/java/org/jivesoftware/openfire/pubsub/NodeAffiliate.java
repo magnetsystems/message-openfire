@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Element;
-import org.jivesoftware.openfire.privacy.PrivacyList;
-import org.jivesoftware.openfire.privacy.PrivacyListManager;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 
