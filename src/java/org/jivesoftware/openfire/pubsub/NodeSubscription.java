@@ -135,11 +135,7 @@ public class NodeSubscription {
      * Indicates if the subscription is present in the database.
      */
     private boolean savedToDB = false;
-    /**
-     * Flag indicating whether an entity wants to be waken up via push message
-     * when an item is published and the entity is not connected. [Magnet]
-     */
-    private boolean wakeupEnabled = true;
+
     /**
      * Creates a new subscription of the specified user with the node.
      *
@@ -335,15 +331,6 @@ public class NodeSubscription {
         return keyword;
     }
 
-    /**
-     * Returns whether a disconnected entity wants to be waken up via a push
-     * message when an item is published. [Magnet]
-     * @return true to send push message to the disconnected entity.
-     */
-    public boolean isWakeupEnabled() {
-        return wakeupEnabled;
-    }
-
     void setShouldDeliverNotifications(boolean deliverNotifications) {
         this.deliverNotifications = deliverNotifications;
     }
@@ -382,11 +369,6 @@ public class NodeSubscription {
 
     void setSavedToDB(boolean savedToDB) {
         this.savedToDB = savedToDB;
-    }
-
-    // [Magnet]
-    void setWakeupEnabled(boolean wakeupEnable) {
-        this.wakeupEnabled = wakeupEnable;
     }
 
     /**

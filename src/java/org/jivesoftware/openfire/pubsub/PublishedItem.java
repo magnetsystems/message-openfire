@@ -109,7 +109,6 @@ public class PublishedItem implements Serializable {
      * @param id
      * @param creationDate
      */
-    
     public PublishedItem(LeafNode node, JID publisher, String id, Date creationDate) {
         this.node = node;
         this.nodeId = node.getNodeID();

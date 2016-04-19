@@ -206,7 +206,6 @@ public class NodeAffiliate {
      */
     private void sendEventNotification(Message notification,
             List<NodeSubscription> notifySubscriptions) {
-
         if (node.isMultipleSubscriptionsEnabled()) {
             // Group subscriptions with the same subscriber JID
             Map<JID, Collection<String>> groupedSubs = new HashMap<JID, Collection<String>>();
