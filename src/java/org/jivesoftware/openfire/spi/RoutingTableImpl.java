@@ -42,8 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmpp.packet.*;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 
@@ -283,16 +281,7 @@ public class RoutingTableImpl extends BasicModule implements RoutingTable, Clust
 	private boolean routeToLocalDomain(JID jid, Packet packet,
 			boolean fromServer) {
 		boolean routed = false;
-		Log.debug("routeToLocalDomain : recipientjid={}, from={}, to={}, messageId={} ", new Object[]{jid.toString(), packet.getFrom(), packet.getTo(), packet.getID()});
-		try {
-        	throw new RuntimeException();
-        } catch (RuntimeException e){
-        	StringWriter sw = new StringWriter();
-        	PrintWriter pw = new PrintWriter(sw);
-        //	e.printStackTrace(pw);
-        // 	Log.debug("routeToLocalDomain : path={}", sw.toString());
-        }
-		Element privateElement = packet.getElement().element(QName.get("private", "urn:xmpp:carbons:2"));
+        Element privateElement = packet.getElement().element(QName.get("private", "urn:xmpp:carbons:2"));
         boolean isPrivate = privateElement != null;
         // The receiving server and SHOULD remove the <private/> element before delivering to the recipient.
         packet.getElement().remove(privateElement);
@@ -352,8 +341,7 @@ public class RoutingTableImpl extends BasicModule implements RoutingTable, Clust
 
                         // This is a route to a local user hosted in this node
                         try {
-                    		Log.debug("Routing to localdomain : getting route for jid={}", jid.toString());
-                        	localRoutingTable.getRoute(jid.toString()).process(packet);
+		                    localRoutingTable.getRoute(jid.toString()).process(packet);
 		                    routed = true;
 		                } catch (UnauthorizedException e) {
 		                    Log.error("Unable to route packet " + packet.toXML(), e);
